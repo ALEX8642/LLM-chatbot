@@ -16,26 +16,12 @@ MANUALS_JSON = MANUALS_DIR / "manuals.json"
 
 # --- Manual mapping (filename → id/label/product_id)
 MANUALS = {
-    "03-032-20256-04_Linea_ML_8k_16k_Color_Camera.pdf": {
-        "id": "linea-ml-16k-color",
-        "label": "Linea ML 8k/16k Color Camera",
-        "product_id": "LineaML",
-    },
-    "03-032-20295-07_Falcon4-CLHS_Series_User.pdf": {
-        "id": "falcon4-clhs-series",
-        "label": "Falcon4 CLHS Series Camera",
-        "product_id": "Falcon4",
-    },
-    "03-032-25022-09_AxCIS_User_Manual.pdf": {
-        "id": "axcis-user",
-        "label": "AxCIS User Manual",
-        "product_id": "AxCIS",
-    },
-    "03-032-25036-05_Linea_HS2_Series_User_Manual.pdf": {
-        "id": "linea-hs2-series",
-        "label": "Linea HS2 Series Camera",
-        "product_id": "LineaHS2",
-    },
+    # Example format:
+    # "manual.pdf": {
+    #     "id": "unique-manual-id",
+    #     "label": "Human readable name",
+    #     "product_id": "ProductFamily",
+    # },
 }
 
 def pdf_to_docs(pdf_path: str, manual_id: str, product_id: str):
