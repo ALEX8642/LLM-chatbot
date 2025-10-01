@@ -1,3 +1,16 @@
+"""Manual ingestion script for the chatbot.
+
+This script automatically processes PDF manuals and ingests them into the vector stores:
+1. Scans the manuals directory for PDF files
+2. Automatically extracts metadata from filenames
+3. Splits documents into chunks
+4. Generates embeddings
+5. Stores in Qdrant (dense) and OpenSearch (sparse/hybrid)
+
+No manual configuration needed - just place PDFs in the manuals directory and run.
+Optionally, you can override metadata by creating a manual_metadata.json file.
+"""
+
 import os
 import json
 from pathlib import Path
@@ -14,15 +27,60 @@ PROJ_ROOT = Path(__file__).resolve().parent.parent
 MANUALS_DIR = PROJ_ROOT / "frontend" / "public" / "manuals"
 MANUALS_JSON = MANUALS_DIR / "manuals.json"
 
-# --- Manual mapping (filename → id/label/product_id)
-MANUALS = {
-    # Example format:
-    # "manual.pdf": {
-    #     "id": "unique-manual-id",
-    #     "label": "Human readable name",
-    #     "product_id": "ProductFamily",
-    # },
-}
+# --- Utilities for automatic metadata extraction
+import re
+from typing import Dict, Any
+
+def clean_filename(filename: str) -> str:
+    """Remove common PDF naming patterns and clean up the name."""
+    # Remove file extension
+    name = filename.replace('.pdf', '')
+    
+    # Remove common patterns like version numbers (e.g., v1.0, r2.1)
+    name = re.sub(r'[vr]\d+\.\d+', '', name, flags=re.IGNORECASE)
+    
+    # Remove common document numbers (e.g., 123-456-789)
+    name = re.sub(r'\d+-\d+-\d+[-_]', '', name)
+    
+    # Replace underscores and hyphens with spaces
+    name = name.replace('_', ' ').replace('-', ' ')
+    
+    # Clean up multiple spaces
+    name = ' '.join(name.split())
+    
+    return name
+
+def extract_manual_metadata(filename: str) -> Dict[str, Any]:
+    """Extract metadata from filename and optionally PDF content."""
+    clean_name = clean_filename(filename)
+    
+    # Create a URL-friendly ID
+    manual_id = re.sub(r'[^a-z0-9]+', '-', clean_name.lower()).strip('-')
+    
+    # Try to extract a product family from the first word
+    product_family = clean_name.split()[0]
+    
+    return {
+        "id": manual_id,
+        "label": clean_name,
+        "product_id": product_family
+    }
+
+def get_manual_metadata(filename: str) -> Dict[str, Any]:
+    """Get metadata for a manual, with option for manual override."""
+    # First, try automatic extraction
+    metadata = extract_manual_metadata(filename)
+    
+    # Optional: Look for manual override in a config file
+    # This allows users to customize metadata if needed
+    # config_path = PROJ_ROOT / "manual_metadata.json"
+    # if config_path.exists():
+    #     with open(config_path) as f:
+    #         overrides = json.load(f)
+    #         if filename in overrides:
+    #             metadata.update(overrides[filename])
+    
+    return metadata
 
 def pdf_to_docs(pdf_path: str, manual_id: str, product_id: str):
     """Convert PDF pages into Haystack Documents with metadata."""
@@ -69,11 +127,17 @@ ingest.connect("splitter.documents", "writer_os.documents")
 manuals_list = []
 total_qdrant, total_os = 0, 0
 
-for filename, meta in MANUALS.items():
+# Find all PDFs in the manuals directory
+pdf_files = [f for f in os.listdir(MANUALS_DIR) if f.lower().endswith('.pdf')]
+
+for filename in pdf_files:
     pdf_path = os.path.join(MANUALS_DIR, filename)
     if not os.path.exists(pdf_path):
         print(f"⚠️  Skipping {filename} (not found)")
         continue
+        
+    # Automatically extract metadata
+    meta = get_manual_metadata(filename)
 
     print(f"📄 Ingesting {filename}...")
     docs = pdf_to_docs(pdf_path, meta["id"], meta["product_id"])

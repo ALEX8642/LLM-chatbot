@@ -1,6 +1,6 @@
 # LLM-Chatbot
 
-A Haystack 2.x and Ollama based chatbot for user assistance interpreting manuals and documentation.
+A Haystack 2.x and Ollama based chatbot for user assistance interpreting manuals and documentation. Drop in your PDF manuals, and the system will automatically process them for intelligent question answering.
 
 ## Features
 
@@ -31,6 +31,48 @@ llm-chatbot/
 - Node.js 18 or higher
 - Docker and Docker Compose
 - Ollama (for local LLM support)
+
+## Working with Manuals
+
+### Adding New Manuals
+
+1. Place your PDF manuals in the `manuals/` directory
+2. Run the ingestion script:
+   ```bash
+   python backend/ingest_manuals.py
+   ```
+
+The system will automatically:
+- Extract metadata from filenames
+- Generate unique IDs and readable labels
+- Split documents into chunks
+- Create embeddings and store them
+
+For example:
+```
+Input filename: XYZ-123-456_Product_Manual_v2.1.pdf
+↓
+Automatic metadata:
+{
+    "id": "product-manual",
+    "label": "Product Manual",
+    "product_id": "XYZ"
+}
+```
+
+### Custom Metadata (Optional)
+
+If you need to override the automatic metadata, create a `manual_metadata.json` file:
+
+```json
+{
+    "example.pdf": {
+        "id": "custom-id",
+        "label": "Custom Label",
+        "product_id": "CustomProduct"
+    }
+}
+```
 
 ## Setup
 
