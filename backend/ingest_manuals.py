@@ -1,5 +1,9 @@
 """Manual ingestion script for the chatbot.
 
+# © 2025 Alexander Feht
+# Licensed under the MIT License
+# This project was created independently and is not affiliated with any employer.
+
 This script automatically processes PDF manuals and ingests them into the vector stores:
 1. Scans the manuals directory for PDF files
 2. Automatically extracts metadata from filenames
