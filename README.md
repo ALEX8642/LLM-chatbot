@@ -158,3 +158,5 @@ python backend/ingest_manuals.py
 Data is persisted in Docker volumes:
 - `opensearch_data`: OpenSearch data
 - `qdrant_data`: Qdrant vectors and metadata
+
+This project is independently developed by Alexander Feht during personal time using personal hardware. It is not affiliated with or commissioned by any employer, and was licensed under MIT prior to any discussions with external parties.
