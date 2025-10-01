@@ -1,4 +1,9 @@
 # api.py
+
+# © 2025 Alexander Feht
+# Licensed under the MIT License
+# This project was created independently and is not affiliated with any employer.
+
 import os
 import json
 import requests
