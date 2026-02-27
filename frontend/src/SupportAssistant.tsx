@@ -49,6 +49,22 @@ export default function SupportAssistant() {
   // Manuals + manual selection
   const [manuals, setManuals] = useState<Manual[]>([]);
   const [manualId, setManualId] = useState<string>("");
+  const [guardrailsEnabled, setGuardrailsEnabled] = useState(true);
+
+  const BLOCKED_KEYWORDS = [
+    "password",
+    "credit card",
+    "social insurance",
+    "sin",
+    "api key",
+    "secret",
+    "confidential",
+  ];
+
+function violatesGuardrail(q: string) {
+  const s = q.toLowerCase();
+  return BLOCKED_KEYWORDS.some(k => s.includes(k.toLowerCase()));
+}
 
   useEffect(() => {
     fetch(`${config.BACKEND_BASE}/manuals`)
@@ -89,6 +105,16 @@ export default function SupportAssistant() {
   async function handleAsk() {
     setAskError("");
     setLoading(true);
+    if (guardrailsEnabled && violatesGuardrail(query)) {
+    setAnswer(
+      "Sorry — I cannot help with requests involving sensitive information. " +
+      "Please remove confidential data and ask again."
+    );
+    setCitations([]);
+    setSections([]);
+    setLoading(false);
+    return;
+    }
     setAnswer("");
     setCitations([]);
     setSections([]);
@@ -100,6 +126,7 @@ export default function SupportAssistant() {
         body: JSON.stringify({
           manual_id: manualId,
           query,
+          guardrailsEnabled,
         }),
       });
 
@@ -159,6 +186,20 @@ export default function SupportAssistant() {
           placeholder="Ask your question…"
           className="w-full p-3 border rounded-lg focus:ring focus:ring-blue-400 min-h-[120px]"
         />
+
+        <label style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
+          <input
+            type="checkbox"
+            checked={guardrailsEnabled}
+            onChange={(e) => setGuardrailsEnabled(e.target.checked)}
+          />
+          Guardrails enabled
+        </label>
+        <span className="text-xs text-gray-500 block mt-1">
+          {guardrailsEnabled
+            ? "Deterministic validation active"
+            : "Validation disabled — model output unbounded"}
+        </span>
 
         <button
           onClick={handleAsk}
