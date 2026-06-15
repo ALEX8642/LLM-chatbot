@@ -69,3 +69,6 @@ gpu_logs/
 # Project specific
 manuals/
 local_data/
+
+# Claude Code
+CLAUDE.md
