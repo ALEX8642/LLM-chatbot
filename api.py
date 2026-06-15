@@ -4,28 +4,31 @@
 # Licensed under the MIT License
 # This project was created independently and is not affiliated with any employer.
 
-import os
 import json
+import os
+from typing import Any, Dict, List, Optional
+
 import requests
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any
 
 # -------------------------
 # Haystack / Retrieval Setup
 # -------------------------
 from haystack import Pipeline
-from haystack.components.joiners import DocumentJoiner
 from haystack.components.embedders import SentenceTransformersTextEmbedder
-from haystack.components.rankers import TransformersSimilarityRanker
-from haystack.components.rankers import SentenceTransformersDiversityRanker
-from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
-from haystack_integrations.document_stores.opensearch import OpenSearchDocumentStore
-from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
+from haystack.components.joiners import DocumentJoiner
+from haystack.components.rankers import (
+    SentenceTransformersDiversityRanker,
+    TransformersSimilarityRanker,
+)
 from haystack_integrations.components.retrievers.opensearch import (
     OpenSearchBM25Retriever,
 )
+from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
+from haystack_integrations.document_stores.opensearch import OpenSearchDocumentStore
+from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
+from pydantic import BaseModel, Field
 
 qdrant = QdrantDocumentStore(
     url="http://localhost:6333", index="manuals", embedding_dim=384

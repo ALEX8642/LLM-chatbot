@@ -15,16 +15,17 @@ No manual configuration needed - just place PDFs in the manuals directory and ru
 Optionally, you can override metadata by creating a manual_metadata.json file.
 """
 
-import os
 import json
+import os
 from pathlib import Path
+
 import fitz  # PyMuPDF
 from haystack import Document, Pipeline
-from haystack.components.preprocessors import DocumentSplitter
 from haystack.components.embedders import SentenceTransformersDocumentEmbedder
+from haystack.components.preprocessors import DocumentSplitter
 from haystack.components.writers import DocumentWriter
-from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
 from haystack_integrations.document_stores.opensearch import OpenSearchDocumentStore
+from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
 
 # --- Paths
 PROJ_ROOT = Path(__file__).resolve().parent.parent
@@ -33,7 +34,7 @@ MANUALS_JSON = MANUALS_DIR / "manuals.json"
 
 # --- Utilities for automatic metadata extraction
 import re
-from typing import Dict, Any
+from typing import Any, Dict
 
 
 def clean_filename(filename: str) -> str:
