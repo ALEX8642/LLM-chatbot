@@ -35,46 +35,45 @@ MANUALS_JSON = MANUALS_DIR / "manuals.json"
 import re
 from typing import Dict, Any
 
+
 def clean_filename(filename: str) -> str:
     """Remove common PDF naming patterns and clean up the name."""
     # Remove file extension
-    name = filename.replace('.pdf', '')
-    
+    name = filename.replace(".pdf", "")
+
     # Remove common patterns like version numbers (e.g., v1.0, r2.1)
-    name = re.sub(r'[vr]\d+\.\d+', '', name, flags=re.IGNORECASE)
-    
+    name = re.sub(r"[vr]\d+\.\d+", "", name, flags=re.IGNORECASE)
+
     # Remove common document numbers (e.g., 123-456-789)
-    name = re.sub(r'\d+-\d+-\d+[-_]', '', name)
-    
+    name = re.sub(r"\d+-\d+-\d+[-_]", "", name)
+
     # Replace underscores and hyphens with spaces
-    name = name.replace('_', ' ').replace('-', ' ')
-    
+    name = name.replace("_", " ").replace("-", " ")
+
     # Clean up multiple spaces
-    name = ' '.join(name.split())
-    
+    name = " ".join(name.split())
+
     return name
+
 
 def extract_manual_metadata(filename: str) -> Dict[str, Any]:
     """Extract metadata from filename and optionally PDF content."""
     clean_name = clean_filename(filename)
-    
+
     # Create a URL-friendly ID
-    manual_id = re.sub(r'[^a-z0-9]+', '-', clean_name.lower()).strip('-')
-    
+    manual_id = re.sub(r"[^a-z0-9]+", "-", clean_name.lower()).strip("-")
+
     # Try to extract a product family from the first word
     product_family = clean_name.split()[0]
-    
-    return {
-        "id": manual_id,
-        "label": clean_name,
-        "product_id": product_family
-    }
+
+    return {"id": manual_id, "label": clean_name, "product_id": product_family}
+
 
 def get_manual_metadata(filename: str) -> Dict[str, Any]:
     """Get metadata for a manual, with option for manual override."""
     # First, try automatic extraction
     metadata = extract_manual_metadata(filename)
-    
+
     # Optional: Look for manual override in a config file
     # This allows users to customize metadata if needed
     # config_path = PROJ_ROOT / "manual_metadata.json"
@@ -83,8 +82,9 @@ def get_manual_metadata(filename: str) -> Dict[str, Any]:
     #         overrides = json.load(f)
     #         if filename in overrides:
     #             metadata.update(overrides[filename])
-    
+
     return metadata
+
 
 def pdf_to_docs(pdf_path: str, manual_id: str, product_id: str):
     """Convert PDF pages into Haystack Documents with metadata."""
@@ -96,10 +96,15 @@ def pdf_to_docs(pdf_path: str, manual_id: str, product_id: str):
             documents.append(
                 Document(
                     content=text,
-                    meta={"page": page_num, "manual_id": manual_id, "product_id": product_id}
+                    meta={
+                        "page": page_num,
+                        "manual_id": manual_id,
+                        "product_id": product_id,
+                    },
                 )
             )
     return documents
+
 
 print("🔄 Resetting vector stores (Qdrant + OpenSearch)...")
 
@@ -108,12 +113,18 @@ qdrant = QdrantDocumentStore(
     url="http://localhost:6333", index="manuals", embedding_dim=384, recreate_index=True
 )
 opensearch = OpenSearchDocumentStore(
-    hosts="http://localhost:9200", username="admin", password="admin", index="manuals", recreate_index=True
+    hosts="http://localhost:9200",
+    username="admin",
+    password="admin",
+    index="manuals",
+    recreate_index=True,
 )
 
 # --- Ingestion pipeline
 splitter = DocumentSplitter(split_by="word", split_length=250, split_overlap=50)
-embedder = SentenceTransformersDocumentEmbedder(model="sentence-transformers/all-MiniLM-L6-v2")
+embedder = SentenceTransformersDocumentEmbedder(
+    model="sentence-transformers/all-MiniLM-L6-v2"
+)
 writer_qdrant = DocumentWriter(document_store=qdrant, policy="upsert")
 writer_os = DocumentWriter(document_store=opensearch, policy="upsert")
 
@@ -132,14 +143,14 @@ manuals_list = []
 total_qdrant, total_os = 0, 0
 
 # Find all PDFs in the manuals directory
-pdf_files = [f for f in os.listdir(MANUALS_DIR) if f.lower().endswith('.pdf')]
+pdf_files = [f for f in os.listdir(MANUALS_DIR) if f.lower().endswith(".pdf")]
 
 for filename in pdf_files:
     pdf_path = os.path.join(MANUALS_DIR, filename)
     if not os.path.exists(pdf_path):
         print(f"⚠️  Skipping {filename} (not found)")
         continue
-        
+
     # Automatically extract metadata
     meta = get_manual_metadata(filename)
 
@@ -153,11 +164,13 @@ for filename in pdf_files:
 
     print(f"   ✅ {qd_count} → Qdrant, {os_count} → OpenSearch")
 
-    manuals_list.append({
-        "id": meta["id"],
-        "label": meta["label"],
-        "pdf_url": f"/manuals/{filename}",
-    })
+    manuals_list.append(
+        {
+            "id": meta["id"],
+            "label": meta["label"],
+            "pdf_url": f"/manuals/{filename}",
+        }
+    )
 
 # --- Save manuals.json
 if manuals_list:

@@ -23,14 +23,20 @@ from haystack.components.rankers import SentenceTransformersDiversityRanker
 from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
 from haystack_integrations.document_stores.opensearch import OpenSearchDocumentStore
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
-from haystack_integrations.components.retrievers.opensearch import OpenSearchBM25Retriever
+from haystack_integrations.components.retrievers.opensearch import (
+    OpenSearchBM25Retriever,
+)
 
-qdrant = QdrantDocumentStore(url="http://localhost:6333", index="manuals", embedding_dim=384)
+qdrant = QdrantDocumentStore(
+    url="http://localhost:6333", index="manuals", embedding_dim=384
+)
 opensearch = OpenSearchDocumentStore(
     hosts="http://localhost:9200", username="admin", password="admin", index="manuals"
 )
 
-query_embedder = SentenceTransformersTextEmbedder(model="sentence-transformers/all-MiniLM-L6-v2")
+query_embedder = SentenceTransformersTextEmbedder(
+    model="sentence-transformers/all-MiniLM-L6-v2"
+)
 
 # Retrieve broadly (recall) then filter/rerank (precision)
 RETRIEVE_TOP_K = int(os.getenv("RAG_RETRIEVE_TOP_K", "30"))
@@ -41,7 +47,9 @@ MAX_CONTEXT_CHUNKS = int(os.getenv("RAG_MAX_CONTEXT_CHUNKS", "5"))
 MIN_DOC_SCORE = float(os.getenv("RAG_MIN_DOC_SCORE", "0.2"))
 
 dense_retriever = QdrantEmbeddingRetriever(document_store=qdrant, top_k=RETRIEVE_TOP_K)
-bm25_retriever = OpenSearchBM25Retriever(document_store=opensearch, top_k=RETRIEVE_TOP_K)
+bm25_retriever = OpenSearchBM25Retriever(
+    document_store=opensearch, top_k=RETRIEVE_TOP_K
+)
 
 # Join + fuse scores across retrievers rather than blindly concatenating.
 # Options include: reciprocal_rank_fusion, distribution_based_rank_fusion, merge, concatenate.
@@ -92,6 +100,7 @@ except Exception:
 OLLAMA_URL = "http://localhost:11434"
 OLLAMA_MODEL = "command-r7b:latest"
 
+
 def query_ollama(prompt: str, model: str = None, url: str = OLLAMA_URL) -> str:
     """Calls Ollama /api/chat in streaming mode and concatenates the chunks."""
     model = model or OLLAMA_MODEL
@@ -117,13 +126,16 @@ def query_ollama(prompt: str, model: str = None, url: str = OLLAMA_URL) -> str:
             break
     return full_text.strip()
 
+
 # -------------------------
 # Prompt + wrappers
 # -------------------------
 def make_prompt(user_query: str, docs, top_k: int = 5) -> str:
     picked = docs[:top_k] if docs else []
     if picked:
-        context = "\n\n".join([f"[Page {d.meta.get('page')}] {d.content}" for d in picked])
+        context = "\n\n".join(
+            [f"[Page {d.meta.get('page')}] {d.content}" for d in picked]
+        )
     else:
         context = "(No sufficiently relevant manual excerpts were retrieved for this question.)"
     return f"""You are a careful technical support assistant. 
@@ -141,22 +153,32 @@ Manual excerpts:
 {context}
 """
 
-def build_citations(docs) -> List[Dict[str, Any]]:
-    return [{"page": d.meta.get("page", 1), "product": d.meta.get("product_id")} for d in docs]
 
-def build_manual_sections(docs, max_sections: int = 3, snippet_chars: int = 280) -> List[Dict[str, Any]]:
+def build_citations(docs) -> List[Dict[str, Any]]:
+    return [
+        {"page": d.meta.get("page", 1), "product": d.meta.get("product_id")}
+        for d in docs
+    ]
+
+
+def build_manual_sections(
+    docs, max_sections: int = 3, snippet_chars: int = 280
+) -> List[Dict[str, Any]]:
     sections = []
     for d in docs[:max_sections]:
         txt = (d.content or "").replace("\n", " ").strip()
         snippet = txt[:snippet_chars]
         if len(txt) > snippet_chars:
             snippet += "…"
-        sections.append({
-            "page": d.meta.get("page", 1),
-            "product": d.meta.get("product_id"),
-            "snippet": snippet
-        })
+        sections.append(
+            {
+                "page": d.meta.get("page", 1),
+                "product": d.meta.get("product_id"),
+                "snippet": snippet,
+            }
+        )
     return sections
+
 
 def answer_with_ollama(
     user_query: str,
@@ -173,13 +195,15 @@ def answer_with_ollama(
 
     filter_condition = {"operator": "==", "field": "manual_id", "value": manual_id}
 
-    res = pipe.run({
-        "query_embedder": {"text": user_query},
-        "dense": {"filters": filter_condition},
-        "sparse": {"query": user_query, "filters": filter_condition},
-        "rerank": {"query": user_query, "top_k": MAX_CONTEXT_CHUNKS},
-        "diverse": {"query": user_query, "top_k": MAX_CONTEXT_CHUNKS},
-    })
+    res = pipe.run(
+        {
+            "query_embedder": {"text": user_query},
+            "dense": {"filters": filter_condition},
+            "sparse": {"query": user_query, "filters": filter_condition},
+            "rerank": {"query": user_query, "top_k": MAX_CONTEXT_CHUNKS},
+            "diverse": {"query": user_query, "top_k": MAX_CONTEXT_CHUNKS},
+        }
+    )
 
     # Prefer the final diverse-ranked list, but fall back gracefully.
     docs = []
@@ -190,7 +214,9 @@ def answer_with_ollama(
         if not docs:
             docs = (res.get("join") or {}).get("documents") or []
 
-    min_score = float(os.getenv("RAG_MIN_DOC_SCORE", os.getenv("MIN_DOC_SCORE", "0.35")))
+    min_score = float(
+        os.getenv("RAG_MIN_DOC_SCORE", os.getenv("MIN_DOC_SCORE", "0.35"))
+    )
     eligible = [d for d in docs if (getattr(d, "score", 0.0) or 0.0) >= min_score]
 
     if strict_mode:
@@ -227,15 +253,30 @@ def answer_with_ollama(
         "top_pages": [s["page"] for s in sections],
     }
 
+
 # -------------------------
 # FastAPI setup
 # -------------------------
 app = FastAPI(title="Manual Support API")
 
-# Allow both localhost and 127.0.0.1 for dev
+# Allow localhost dev server on any port (5173-5180)
 origins = [
     "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "http://localhost:5176",
+    "http://localhost:5177",
+    "http://localhost:5178",
+    "http://localhost:5179",
+    "http://localhost:5180",
     "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
+    "http://127.0.0.1:5175",
+    "http://127.0.0.1:5176",
+    "http://127.0.0.1:5177",
+    "http://127.0.0.1:5178",
+    "http://127.0.0.1:5179",
+    "http://127.0.0.1:5180",
 ]
 
 app.add_middleware(
@@ -255,6 +296,7 @@ if os.path.exists(MANUALS_PATH):
 else:
     manuals = []
 
+
 # -------------------------
 # Pydantic models
 # -------------------------
@@ -266,14 +308,17 @@ class AskRequest(BaseModel):
     query: str
     guardrails_enabled: bool = Field(default=False, alias="guardrailsEnabled")
 
+
 class Citation(BaseModel):
     page: int
     product: Optional[str] = None
+
 
 class Section(BaseModel):
     page: int
     product: Optional[str] = None
     snippet: Optional[str] = None
+
 
 class AskResponse(BaseModel):
     answer: str
@@ -282,6 +327,7 @@ class AskResponse(BaseModel):
     used_model: str
     top_pages: List[int]
     manual_id: Optional[str] = None
+
 
 # -------------------------
 # Endpoints
@@ -292,9 +338,16 @@ def get_manuals():
         return {"error": "No manuals found. Run ingestion first."}
     return manuals
 
+
 @app.post("/ask", response_model=AskResponse)
 def ask(req: AskRequest):
-    result = answer_with_ollama(req.query, manual_id=req.manual_id, model=OLLAMA_MODEL, max_sections=None, strict_mode=req.guardrails_enabled)
+    result = answer_with_ollama(
+        req.query,
+        manual_id=req.manual_id,
+        model=OLLAMA_MODEL,
+        max_sections=None,
+        strict_mode=req.guardrails_enabled,
+    )
     return AskResponse(
         answer=result["answer"],
         citations=[Citation(**c) for c in result["citations"]],
