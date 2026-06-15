@@ -17,7 +17,9 @@ Optionally, you can override metadata by creating a manual_metadata.json file.
 
 import json
 import os
+import re
 from pathlib import Path
+from typing import Any, Dict
 
 import fitz  # PyMuPDF
 from haystack import Document, Pipeline
@@ -33,8 +35,6 @@ MANUALS_DIR = PROJ_ROOT / "frontend" / "public" / "manuals"
 MANUALS_JSON = MANUALS_DIR / "manuals.json"
 
 # --- Utilities for automatic metadata extraction
-import re
-from typing import Any, Dict
 
 
 def clean_filename(filename: str) -> str:

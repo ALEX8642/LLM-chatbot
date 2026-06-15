@@ -1,0 +1,5 @@
+[flake8]
+max-line-length = 88
+# E203: whitespace before ':' — black formats this way
+# E501: line too long — black owns line length; comments/strings are left intentionally long
+extend-ignore = E203, E501
