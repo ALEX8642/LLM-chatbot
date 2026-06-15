@@ -1,5 +1,12 @@
 # LLM-Chatbot
 
+[![CI](https://github.com/ALEX8642/LLM-chatbot/actions/workflows/ci.yml/badge.svg)](https://github.com/ALEX8642/LLM-chatbot/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.112%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Haystack](https://img.shields.io/badge/Haystack-2.x-brightgreen)](https://haystack.deepset.ai)
+
 A Haystack 2.x and Ollama based chatbot for user assistance interpreting manuals and documentation. Drop in your PDF manuals, and the system will automatically process them for intelligent question answering.
 
 ## Features
