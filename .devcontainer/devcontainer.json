@@ -1,0 +1,26 @@
+{
+  "name": "llm-chatbot",
+  "image": "ghcr.io/astral-sh/uv:python3.12-bookworm-slim",
+  "postCreateCommand": "uv sync --all-extras",
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": { "label": "FastAPI" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "ms-python.flake8"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter",
+          "editor.formatOnSave": true
+        }
+      }
+    }
+  }
+}
