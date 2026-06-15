@@ -6,10 +6,12 @@
 
 import json
 import os
+from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import requests
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 # -------------------------
@@ -30,80 +32,125 @@ from haystack_integrations.document_stores.opensearch import OpenSearchDocumentS
 from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
 from pydantic import BaseModel, Field
 
-qdrant = QdrantDocumentStore(
-    url="http://localhost:6333", index="manuals", embedding_dim=384
-)
-opensearch = OpenSearchDocumentStore(
-    hosts="http://localhost:9200", username="admin", password="admin", index="manuals"
-)
+# -------------------------
+# Runtime constants (env-configurable)
+# -------------------------
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "command-r7b:latest")
 
-query_embedder = SentenceTransformersTextEmbedder(
-    model="sentence-transformers/all-MiniLM-L6-v2"
-)
-
-# Retrieve broadly (recall) then filter/rerank (precision)
 RETRIEVE_TOP_K = int(os.getenv("RAG_RETRIEVE_TOP_K", "30"))
 MAX_CONTEXT_CHUNKS = int(os.getenv("RAG_MAX_CONTEXT_CHUNKS", "5"))
 
 # Moderate-confidence gate. Tune per manual set.
-# Note: Haystack score ranges differ by retriever/joiner mode; start conservative and adjust.
 MIN_DOC_SCORE = float(os.getenv("RAG_MIN_DOC_SCORE", "0.2"))
 
-dense_retriever = QdrantEmbeddingRetriever(document_store=qdrant, top_k=RETRIEVE_TOP_K)
-bm25_retriever = OpenSearchBM25Retriever(
-    document_store=opensearch, top_k=RETRIEVE_TOP_K
+
+# -------------------------
+# Lifespan: deferred service init
+# -------------------------
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    qdrant = QdrantDocumentStore(
+        url=os.getenv("QDRANT_URL", "http://localhost:6333"),
+        index="manuals",
+        embedding_dim=384,
+    )
+    opensearch = OpenSearchDocumentStore(
+        hosts=os.getenv("OPENSEARCH_HOST", "http://localhost:9200"),
+        username=os.getenv("OPENSEARCH_USER", "admin"),
+        password=os.getenv("OPENSEARCH_PASS", "admin"),
+        index="manuals",
+    )
+
+    query_embedder = SentenceTransformersTextEmbedder(
+        model="sentence-transformers/all-MiniLM-L6-v2"
+    )
+
+    # Retrieve broadly (recall) then filter/rerank (precision)
+    dense_retriever = QdrantEmbeddingRetriever(
+        document_store=qdrant, top_k=RETRIEVE_TOP_K
+    )
+    bm25_retriever = OpenSearchBM25Retriever(
+        document_store=opensearch, top_k=RETRIEVE_TOP_K
+    )
+
+    # Join + fuse scores across retrievers
+    joiner = DocumentJoiner(
+        join_mode=os.getenv("RAG_JOIN_MODE", "reciprocal_rank_fusion")
+    )
+
+    # Precision stage 1: cross-encoder rerank for true relevance
+    ranker = TransformersSimilarityRanker(
+        model=os.getenv("RAG_RERANK_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2"),
+        top_k=MAX_CONTEXT_CHUNKS,
+    )
+
+    # Precision stage 2: diversity (MMR) to avoid near-duplicate citations
+    diversity_ranker = SentenceTransformersDiversityRanker(
+        model=os.getenv(
+            "RAG_DIVERSITY_MODEL", "sentence-transformers/all-MiniLM-L6-v2"
+        ),
+        top_k=MAX_CONTEXT_CHUNKS,
+        strategy="maximum_margin_relevance",
+        lambda_threshold=float(os.getenv("RAG_MMR_LAMBDA", "0.7")),
+    )
+
+    pipe = Pipeline()
+    pipe.add_component("query_embedder", query_embedder)
+    pipe.add_component("dense", dense_retriever)
+    pipe.add_component("sparse", bm25_retriever)
+    pipe.add_component("join", joiner)
+    pipe.add_component("rerank", ranker)
+    pipe.add_component("diverse", diversity_ranker)
+    pipe.connect("query_embedder.embedding", "dense.query_embedding")
+    pipe.connect("dense.documents", "join.documents")
+    pipe.connect("sparse.documents", "join.documents")
+    pipe.connect("join.documents", "rerank.documents")
+    pipe.connect("rerank.documents", "diverse.documents")
+
+    # Warm-up rankers to avoid first-request latency spikes
+    try:
+        ranker.warm_up()
+    except Exception:
+        pass
+    try:
+        diversity_ranker.warm_up()
+    except Exception:
+        pass
+
+    manuals_path = (
+        Path(__file__).parent / "frontend" / "public" / "manuals" / "manuals.json"
+    )
+    app.state.manuals = (
+        json.loads(manuals_path.read_text()) if manuals_path.exists() else []
+    )
+    app.state.pipe = pipe
+
+    yield
+
+
+# -------------------------
+# App + CORS
+# -------------------------
+origins = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:5173,http://localhost:5174,http://localhost:5175,"
+    "http://127.0.0.1:5173",
+).split(",")
+
+app = FastAPI(title="Manual Support API", lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Join + fuse scores across retrievers rather than blindly concatenating.
-# Options include: reciprocal_rank_fusion, distribution_based_rank_fusion, merge, concatenate.
-joiner = DocumentJoiner(join_mode=os.getenv("RAG_JOIN_MODE", "reciprocal_rank_fusion"))
-
-# Precision stage 1: cross-encoder rerank for true relevance.
-ranker = TransformersSimilarityRanker(
-    model=os.getenv("RAG_RERANK_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2"),
-    top_k=MAX_CONTEXT_CHUNKS,
-)
-
-# Precision stage 2: diversity (MMR) to avoid near-duplicate citations.
-diversity_ranker = SentenceTransformersDiversityRanker(
-    model=os.getenv("RAG_DIVERSITY_MODEL", "sentence-transformers/all-MiniLM-L6-v2"),
-    top_k=MAX_CONTEXT_CHUNKS,
-    strategy="maximum_margin_relevance",
-    lambda_threshold=float(os.getenv("RAG_MMR_LAMBDA", "0.7")),
-)
-
-pipe = Pipeline()
-pipe.add_component("query_embedder", query_embedder)
-pipe.add_component("dense", dense_retriever)
-pipe.add_component("sparse", bm25_retriever)
-pipe.add_component("join", joiner)
-pipe.add_component("rerank", ranker)
-pipe.add_component("diverse", diversity_ranker)
-pipe.connect("query_embedder.embedding", "dense.query_embedding")
-pipe.connect("dense.documents", "join.documents")
-pipe.connect("sparse.documents", "join.documents")
-
-# Rankers need both query and documents
-pipe.connect("join.documents", "rerank.documents")
-pipe.connect("rerank.documents", "diverse.documents")
-
-# Warm-up rankers at startup to avoid first-request latency spikes.
-try:
-    ranker.warm_up()
-except Exception:
-    pass
-try:
-    diversity_ranker.warm_up()
-except Exception:
-    pass
 
 # -------------------------
 # Ollama (chat endpoint)
 # -------------------------
-OLLAMA_URL = "http://localhost:11434"
-OLLAMA_MODEL = "command-r7b:latest"
-
-
 def query_ollama(prompt: str, model: str = None, url: str = OLLAMA_URL) -> str:
     """Calls Ollama /api/chat in streaming mode and concatenates the chunks."""
     model = model or OLLAMA_MODEL
@@ -142,7 +189,7 @@ def make_prompt(user_query: str, docs, top_k: int = 5) -> str:
     else:
         context = "(No sufficiently relevant manual excerpts were retrieved for this question.)"
     return f"""You are a careful technical support assistant.
-Answer the user’s question following these rules:
+Answer the user's question following these rules:
 - Use the manual excerpts as the primary source of truth.
 - Prefer exact terminology from the excerpts (e.g., feature names, selectors, parameters).
 - If you cannot find enough information, say so clearly.
@@ -186,6 +233,7 @@ def build_manual_sections(
 def answer_with_ollama(
     user_query: str,
     manual_id: str,
+    pipe,
     model: str = OLLAMA_MODEL,
     max_sections: int | None = None,
     strict_mode: bool = False,
@@ -193,9 +241,8 @@ def answer_with_ollama(
     """Retrieve, gate, and answer.
 
     strict_mode=False (guardrails OFF): always provide some context if any docs exist (fallback to top-1).
-    strict_mode=True (guardrails ON): only provide context if docs exceed MIN_DOC_SCORE; otherwise abstain (no citations).
+    strict_mode=True (guardrails ON): only provide context if docs exceed MIN_DOC_SCORE; otherwise abstain.
     """
-
     filter_condition = {"operator": "==", "field": "manual_id", "value": manual_id}
 
     res = pipe.run(
@@ -258,49 +305,6 @@ def answer_with_ollama(
 
 
 # -------------------------
-# FastAPI setup
-# -------------------------
-app = FastAPI(title="Manual Support API")
-
-# Allow localhost dev server on any port (5173-5180)
-origins = [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:5175",
-    "http://localhost:5176",
-    "http://localhost:5177",
-    "http://localhost:5178",
-    "http://localhost:5179",
-    "http://localhost:5180",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:5174",
-    "http://127.0.0.1:5175",
-    "http://127.0.0.1:5176",
-    "http://127.0.0.1:5177",
-    "http://127.0.0.1:5178",
-    "http://127.0.0.1:5179",
-    "http://127.0.0.1:5180",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-print("✅ CORS middleware enabled")
-
-# --- Load manuals.json dynamically ---
-MANUALS_PATH = "/home/alex8642/LLM-chatbot/frontend/public/manuals/manuals.json"
-if os.path.exists(MANUALS_PATH):
-    with open(MANUALS_PATH) as f:
-        manuals = json.load(f)
-else:
-    manuals = []
-
-
-# -------------------------
 # Pydantic models
 # -------------------------
 class AskRequest(BaseModel):
@@ -335,22 +339,32 @@ class AskResponse(BaseModel):
 # -------------------------
 # Endpoints
 # -------------------------
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
 @app.get("/manuals")
-def get_manuals():
+def get_manuals(request: Request):
+    manuals = request.app.state.manuals
     if not manuals:
         return {"error": "No manuals found. Run ingestion first."}
     return manuals
 
 
 @app.post("/ask", response_model=AskResponse)
-def ask(req: AskRequest):
-    result = answer_with_ollama(
-        req.query,
-        manual_id=req.manual_id,
-        model=OLLAMA_MODEL,
-        max_sections=None,
-        strict_mode=req.guardrails_enabled,
-    )
+def ask(req: AskRequest, request: Request):
+    try:
+        result = answer_with_ollama(
+            req.query,
+            manual_id=req.manual_id,
+            pipe=request.app.state.pipe,
+            model=OLLAMA_MODEL,
+            max_sections=None,
+            strict_mode=req.guardrails_enabled,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     return AskResponse(
         answer=result["answer"],
         citations=[Citation(**c) for c in result["citations"]],
