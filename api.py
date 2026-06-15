@@ -354,6 +354,15 @@ def get_manuals(request: Request):
 
 @app.post("/ask", response_model=AskResponse)
 def ask(req: AskRequest, request: Request):
+    if len(req.query) > 2000:
+        raise HTTPException(
+            status_code=422, detail="Query exceeds 2000-character limit."
+        )
+    known_ids = {m.get("id") for m in request.app.state.manuals if m.get("id")}
+    if known_ids and req.manual_id not in known_ids:
+        raise HTTPException(
+            status_code=404, detail=f"Unknown manual_id: {req.manual_id!r}"
+        )
     try:
         result = answer_with_ollama(
             req.query,

@@ -16,6 +16,7 @@ Optionally, you can override metadata by creating a manual_metadata.json file.
 """
 
 import json
+import logging
 import os
 import re
 from pathlib import Path
@@ -28,6 +29,9 @@ from haystack.components.preprocessors import DocumentSplitter
 from haystack.components.writers import DocumentWriter
 from haystack_integrations.document_stores.opensearch import OpenSearchDocumentStore
 from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
+
+logging.basicConfig(level=logging.INFO, format="%(message)s")
+log = logging.getLogger(__name__)
 
 # --- Paths
 PROJ_ROOT = Path(__file__).resolve().parent.parent
@@ -107,16 +111,19 @@ def pdf_to_docs(pdf_path: str, manual_id: str, product_id: str):
     return documents
 
 
-print("🔄 Resetting vector stores (Qdrant + OpenSearch)...")
+log.info("Resetting vector stores (Qdrant + OpenSearch)...")
 
 # --- Reset stores
 qdrant = QdrantDocumentStore(
-    url="http://localhost:6333", index="manuals", embedding_dim=384, recreate_index=True
+    url=os.getenv("QDRANT_URL", "http://localhost:6333"),
+    index="manuals",
+    embedding_dim=384,
+    recreate_index=True,
 )
 opensearch = OpenSearchDocumentStore(
-    hosts="http://localhost:9200",
-    username="admin",
-    password="admin",
+    hosts=os.getenv("OPENSEARCH_HOST", "http://localhost:9200"),
+    username=os.getenv("OPENSEARCH_USER", "admin"),
+    password=os.getenv("OPENSEARCH_PASS", "admin"),
     index="manuals",
     recreate_index=True,
 )
@@ -149,13 +156,13 @@ pdf_files = [f for f in os.listdir(MANUALS_DIR) if f.lower().endswith(".pdf")]
 for filename in pdf_files:
     pdf_path = os.path.join(MANUALS_DIR, filename)
     if not os.path.exists(pdf_path):
-        print(f"⚠️  Skipping {filename} (not found)")
+        log.warning("Skipping %s (not found)", filename)
         continue
 
     # Automatically extract metadata
     meta = get_manual_metadata(filename)
 
-    print(f"📄 Ingesting {filename}...")
+    log.info("Ingesting %s...", filename)
     docs = pdf_to_docs(pdf_path, meta["id"], meta["product_id"])
     res = ingest.run({"splitter": {"documents": docs}})
     qd_count = res["writer_qdrant"]["documents_written"]
@@ -163,7 +170,7 @@ for filename in pdf_files:
     total_qdrant += qd_count
     total_os += os_count
 
-    print(f"   ✅ {qd_count} → Qdrant, {os_count} → OpenSearch")
+    log.info("  %d -> Qdrant, %d -> OpenSearch", qd_count, os_count)
 
     manuals_list.append(
         {
@@ -177,8 +184,8 @@ for filename in pdf_files:
 if manuals_list:
     with open(MANUALS_JSON, "w") as f:
         json.dump(manuals_list, f, indent=2)
-    print(f"\n🎉 Ingested {len(manuals_list)} manuals.")
-    print(f"   Total chunks: {total_qdrant} → Qdrant, {total_os} → OpenSearch")
-    print(f"   📂 manuals.json written to {MANUALS_JSON}")
+    log.info("Ingested %d manuals.", len(manuals_list))
+    log.info("  Total chunks: %d -> Qdrant, %d -> OpenSearch", total_qdrant, total_os)
+    log.info("  manuals.json written to %s", MANUALS_JSON)
 else:
-    print("\n❌ No manuals ingested! Check MANUALS_DIR or filenames.")
+    log.error("No manuals ingested! Check MANUALS_DIR or filenames.")
