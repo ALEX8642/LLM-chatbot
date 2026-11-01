@@ -57,8 +57,8 @@ gpu_logs/
 
 # Project specific
 /archive/
-/manuals/*
-!manuals/.gitkeep
+# Bundled public manuals live in /manuals (tracked). v1 ingests from a copy here:
+frontend/public/manuals/
 
 # Local development
 .DS_Store
@@ -66,8 +66,6 @@ gpu_logs/
 *.swp
 *.swo
 
-# Project specific
-manuals/
 local_data/
 
 # Claude Code
