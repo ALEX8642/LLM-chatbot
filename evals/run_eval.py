@@ -41,6 +41,7 @@ import requests
 EVAL_DIR = Path(__file__).resolve().parent
 DEFAULT_QA = EVAL_DIR / "qa.jsonl"
 K_VALUES = (1, 5, 10)
+MAX_CONSECUTIVE_ERRORS = 3
 
 # -------------------------
 # Shared helpers
@@ -210,13 +211,21 @@ def cmd_generate(args) -> None:
         )
 
     runs = []
+    consecutive_errors = 0
     for r in range(args.repeats):
         items = []
         for i, item in enumerate(qa, 1):
             try:
                 out = run(item["question"], item["manual"])
                 out["error"] = None
-            except Exception as e:  # keep going; failures are reported, not hidden
+                consecutive_errors = 0
+            except Exception as e:  # isolated failures are recorded, not hidden
+                consecutive_errors += 1
+                if consecutive_errors >= MAX_CONSECUTIVE_ERRORS:
+                    sys.exit(
+                        f"aborting: {consecutive_errors} consecutive errors, last: {e!r}"
+                        " (is a dependency down?). No results written."
+                    )
                 out = {
                     "answer": "",
                     "ranked_pages": [],
