@@ -56,6 +56,7 @@ engineering.
 - **Eval set:** about 40 questions in `evals/qa.jsonl`. Each has the gold page(s) and a short
   reference answer. Include answerable questions (single-page, multi-page, table lookups) and
   unanswerable ones (the manual does not cover it, so the right answer is to decline).
+- Include figure-dependent questions (see Phase 2). v1 will mostly fail them; that is the baseline.
 - **Retrieval metrics:**
   - recall@k for k = 1, 5, 10
   - MRR
@@ -77,13 +78,30 @@ Make one change at a time where practical and re-run the eval, so each gain can 
 - **LLM client:** OpenAI-compatible (`/v1/chat/completions`), with base URL, key and model from env.
   Keep Ollama working through its OpenAI-compatible endpoint. The default model remains Cohere
   Command R7B; compare it against at least one larger model through the gateway.
-- **Ingestion:** Docling (local library, or a docling-serve URL from env) with page numbers kept for
-  citations. Chunk by document structure, not fixed length.
+- **Ingestion: choose the parser by eval, not by default.** Docling is the starting candidate (the
+  owner's stack already runs docling-serve), but pull in something better if it exists. Shortlist
+  current open-source parsers (for example Docling, MinerU, Marker, olmOCR and similar), run 2–3 of
+  them on the bundled manuals, and score them on the eval's retrieval metrics plus table and figure
+  fidelity. Record the comparison in the README. Whichever parser wins: keep page numbers for
+  citations, chunk by document structure rather than fixed length, and keep figures as images
+  with their captions.
 - **Embeddings:** a stronger current model, chosen by the eval rather than by reputation.
 - **Retrieval:** keep the hybrid design (dense + BM25 → fusion → cross-encoder rerank), and fix the
   MMR ordering. Consider local, serverless stores for development (for example Qdrant local mode and
   an in-memory BM25) so the app runs without Docker. Keep the Docker Compose path for full deployment.
 - **Chat:** multi-turn history and streamed answers to the UI.
+- **Charts, graphs and figures (owner-requested feature).** The assistant must be able to *interpret*
+  figures in the manuals (charts, graphs, wiring and exploded diagrams, tables rendered as images) and
+  *show* them in its answers.
+  - Extract figures at ingestion with page number, bounding box and caption.
+  - Make them retrievable. Options to compare by eval:
+    - a vision model writes a description or a data table for each figure, and that text is indexed
+    - visual page retrieval (ColPali-style page-image embeddings) alongside text retrieval
+  - At answer time, pass the relevant figure image to a vision-capable model when the question
+    depends on it, for example reading a value off a curve.
+  - Return the figure (image plus page citation) in the response, and render it inline in the UI.
+  - **Eval:** add figure-dependent questions to `evals/qa.jsonl` (read a value from a chart, identify
+    a part in a diagram) and report them as their own category, including misses.
 - **Abstention:** decide on threshold behaviour in code, and measure it.
 - **Cleanup:** prune unused dependencies, add tests for the pipeline, keep CI green.
 
