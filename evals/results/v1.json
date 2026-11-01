@@ -1,0 +1,3979 @@
+{
+  "kind": "scored",
+  "created": "2026-11-01T21:21:56+00:00",
+  "raw_file": "evals/results/raw/v1.json",
+  "qa_sha256": "7c86dee4d89e5746fff49e185ef8e2506b96539338c5dbb8b80a2e5907307285",
+  "config": {
+    "system": "v1",
+    "strict_mode": false,
+    "llm_backend": "ollama",
+    "llm_model": "command-r7b:latest",
+    "retrieve_top_k": 30,
+    "max_context_chunks": 5,
+    "min_doc_score": "0.35",
+    "app_version": "v1",
+    "llm_model_digest": "ff4e9696ef9f19b62e3f7d7261c95dcc9bb15a7c0398493366d851119fe2e1ef"
+  },
+  "judge": {
+    "model": "Qwen3.8-Flash-Next-NVFP4-Fast",
+    "temperature": 0,
+    "seed": 0
+  },
+  "n_repeats": 3,
+  "summary": {
+    "n": {
+      "mean": 42,
+      "min": 42,
+      "max": 42
+    },
+    "n_answerable": {
+      "mean": 36,
+      "min": 36,
+      "max": 36
+    },
+    "n_unanswerable": {
+      "mean": 6,
+      "min": 6,
+      "max": 6
+    },
+    "recall@1": {
+      "mean": 0.5278,
+      "min": 0.5278,
+      "max": 0.5278
+    },
+    "recall@5": {
+      "mean": 0.8889,
+      "min": 0.8889,
+      "max": 0.8889
+    },
+    "recall@10": {
+      "mean": 0.8889,
+      "min": 0.8889,
+      "max": 0.8889
+    },
+    "mrr": {
+      "mean": 0.6722,
+      "min": 0.6722,
+      "max": 0.6722
+    },
+    "candidate_recall": {
+      "mean": 0.9444,
+      "min": 0.9444,
+      "max": 0.9444
+    },
+    "citation_hit": {
+      "mean": 0.6944,
+      "min": 0.6944,
+      "max": 0.6944
+    },
+    "citation_precision": {
+      "mean": 0.4653,
+      "min": 0.4653,
+      "max": 0.4653
+    },
+    "correctness": {
+      "mean": 0.4907,
+      "min": 0.4722,
+      "max": 0.5278
+    },
+    "faithfulness": {
+      "mean": 0.4787,
+      "min": 0.4375,
+      "max": 0.5147
+    },
+    "n_faithfulness_judged": {
+      "mean": 32.3333,
+      "min": 31,
+      "max": 34
+    },
+    "abstention_precision": {
+      "mean": 0.3492,
+      "min": 0.2727,
+      "max": 0.4
+    },
+    "abstention_recall": {
+      "mean": 0.5556,
+      "min": 0.5,
+      "max": 0.6667
+    },
+    "false_abstentions": {
+      "mean": 6.3333,
+      "min": 5,
+      "max": 8
+    },
+    "latency_p50_s": {
+      "mean": 2.38,
+      "min": 2.27,
+      "max": 2.44
+    },
+    "latency_p95_s": {
+      "mean": 6.1233,
+      "min": 5.91,
+      "max": 6.48
+    },
+    "errors": {
+      "mean": 0,
+      "min": 0,
+      "max": 0
+    }
+  },
+  "by_category": {
+    "figure": {
+      "n": {
+        "mean": 5,
+        "min": 5,
+        "max": 5
+      },
+      "n_answerable": {
+        "mean": 5,
+        "min": 5,
+        "max": 5
+      },
+      "n_unanswerable": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      },
+      "recall@1": {
+        "mean": 0.2,
+        "min": 0.2,
+        "max": 0.2
+      },
+      "recall@5": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "recall@10": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "mrr": {
+        "mean": 0.49,
+        "min": 0.49,
+        "max": 0.49
+      },
+      "candidate_recall": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "citation_hit": {
+        "mean": 0.6,
+        "min": 0.6,
+        "max": 0.6
+      },
+      "citation_precision": {
+        "mean": 0.28,
+        "min": 0.28,
+        "max": 0.28
+      },
+      "correctness": {
+        "mean": 0.2,
+        "min": 0.2,
+        "max": 0.2
+      },
+      "faithfulness": {
+        "mean": 0.3472,
+        "min": 0.1667,
+        "max": 0.5
+      },
+      "n_faithfulness_judged": {
+        "mean": 3,
+        "min": 2,
+        "max": 4
+      },
+      "abstention_precision": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "false_abstentions": {
+        "mean": 2,
+        "min": 1,
+        "max": 3
+      },
+      "latency_p50_s": {
+        "mean": 2.1367,
+        "min": 2.0,
+        "max": 2.32
+      },
+      "latency_p95_s": {
+        "mean": 7.1433,
+        "min": 2.54,
+        "max": 11.7
+      },
+      "errors": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "multi_page": {
+      "n": {
+        "mean": 5,
+        "min": 5,
+        "max": 5
+      },
+      "n_answerable": {
+        "mean": 5,
+        "min": 5,
+        "max": 5
+      },
+      "n_unanswerable": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      },
+      "recall@1": {
+        "mean": 0.8,
+        "min": 0.8,
+        "max": 0.8
+      },
+      "recall@5": {
+        "mean": 0.8,
+        "min": 0.8,
+        "max": 0.8
+      },
+      "recall@10": {
+        "mean": 0.8,
+        "min": 0.8,
+        "max": 0.8
+      },
+      "mrr": {
+        "mean": 0.8,
+        "min": 0.8,
+        "max": 0.8
+      },
+      "candidate_recall": {
+        "mean": 0.8,
+        "min": 0.8,
+        "max": 0.8
+      },
+      "citation_hit": {
+        "mean": 0.8,
+        "min": 0.8,
+        "max": 0.8
+      },
+      "citation_precision": {
+        "mean": 0.62,
+        "min": 0.62,
+        "max": 0.62
+      },
+      "correctness": {
+        "mean": 0.5667,
+        "min": 0.5,
+        "max": 0.6
+      },
+      "faithfulness": {
+        "mean": 0.4333,
+        "min": 0.4,
+        "max": 0.5
+      },
+      "n_faithfulness_judged": {
+        "mean": 5,
+        "min": 5,
+        "max": 5
+      },
+      "false_abstentions": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      },
+      "latency_p50_s": {
+        "mean": 4.4767,
+        "min": 3.56,
+        "max": 5.08
+      },
+      "latency_p95_s": {
+        "mean": 6.1667,
+        "min": 5.55,
+        "max": 7.26
+      },
+      "errors": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "single_page": {
+      "n": {
+        "mean": 14,
+        "min": 14,
+        "max": 14
+      },
+      "n_answerable": {
+        "mean": 14,
+        "min": 14,
+        "max": 14
+      },
+      "n_unanswerable": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      },
+      "recall@1": {
+        "mean": 0.5714,
+        "min": 0.5714,
+        "max": 0.5714
+      },
+      "recall@5": {
+        "mean": 0.8571,
+        "min": 0.8571,
+        "max": 0.8571
+      },
+      "recall@10": {
+        "mean": 0.8571,
+        "min": 0.8571,
+        "max": 0.8571
+      },
+      "mrr": {
+        "mean": 0.6845,
+        "min": 0.6845,
+        "max": 0.6845
+      },
+      "candidate_recall": {
+        "mean": 0.9286,
+        "min": 0.9286,
+        "max": 0.9286
+      },
+      "citation_hit": {
+        "mean": 0.7143,
+        "min": 0.7143,
+        "max": 0.7143
+      },
+      "citation_precision": {
+        "mean": 0.3821,
+        "min": 0.3821,
+        "max": 0.3821
+      },
+      "correctness": {
+        "mean": 0.7024,
+        "min": 0.6429,
+        "max": 0.75
+      },
+      "faithfulness": {
+        "mean": 0.7311,
+        "min": 0.6667,
+        "max": 0.8182
+      },
+      "n_faithfulness_judged": {
+        "mean": 11.6667,
+        "min": 11,
+        "max": 12
+      },
+      "abstention_precision": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "false_abstentions": {
+        "mean": 2.3333,
+        "min": 2,
+        "max": 3
+      },
+      "latency_p50_s": {
+        "mean": 2.8533,
+        "min": 2.43,
+        "max": 3.32
+      },
+      "latency_p95_s": {
+        "mean": 6.21,
+        "min": 6.06,
+        "max": 6.48
+      },
+      "errors": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "table": {
+      "n": {
+        "mean": 12,
+        "min": 12,
+        "max": 12
+      },
+      "n_answerable": {
+        "mean": 12,
+        "min": 12,
+        "max": 12
+      },
+      "n_unanswerable": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      },
+      "recall@1": {
+        "mean": 0.5,
+        "min": 0.5,
+        "max": 0.5
+      },
+      "recall@5": {
+        "mean": 0.9167,
+        "min": 0.9167,
+        "max": 0.9167
+      },
+      "recall@10": {
+        "mean": 0.9167,
+        "min": 0.9167,
+        "max": 0.9167
+      },
+      "mrr": {
+        "mean": 0.6806,
+        "min": 0.6806,
+        "max": 0.6806
+      },
+      "candidate_recall": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "citation_hit": {
+        "mean": 0.6667,
+        "min": 0.6667,
+        "max": 0.6667
+      },
+      "citation_precision": {
+        "mean": 0.575,
+        "min": 0.575,
+        "max": 0.575
+      },
+      "correctness": {
+        "mean": 0.3333,
+        "min": 0.25,
+        "max": 0.4167
+      },
+      "faithfulness": {
+        "mean": 0.349,
+        "min": 0.3333,
+        "max": 0.3636
+      },
+      "n_faithfulness_judged": {
+        "mean": 10,
+        "min": 9,
+        "max": 11
+      },
+      "abstention_precision": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "false_abstentions": {
+        "mean": 2,
+        "min": 1,
+        "max": 3
+      },
+      "latency_p50_s": {
+        "mean": 2.05,
+        "min": 1.99,
+        "max": 2.16
+      },
+      "latency_p95_s": {
+        "mean": 4.3567,
+        "min": 3.72,
+        "max": 5.54
+      },
+      "errors": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "unanswerable": {
+      "n": {
+        "mean": 6,
+        "min": 6,
+        "max": 6
+      },
+      "n_answerable": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      },
+      "n_unanswerable": {
+        "mean": 6,
+        "min": 6,
+        "max": 6
+      },
+      "faithfulness": {
+        "mean": 0.1111,
+        "min": 0.0,
+        "max": 0.1667
+      },
+      "n_faithfulness_judged": {
+        "mean": 2.6667,
+        "min": 2,
+        "max": 3
+      },
+      "abstention_precision": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "abstention_recall": {
+        "mean": 0.5556,
+        "min": 0.5,
+        "max": 0.6667
+      },
+      "false_abstentions": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      },
+      "latency_p50_s": {
+        "mean": 2.0967,
+        "min": 2.03,
+        "max": 2.14
+      },
+      "latency_p95_s": {
+        "mean": 3.28,
+        "min": 2.74,
+        "max": 3.89
+      },
+      "errors": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      }
+    }
+  },
+  "by_manual": {
+    "Army_5kW_Generator_Operator_Manual.pdf": {
+      "n": {
+        "mean": 17,
+        "min": 17,
+        "max": 17
+      },
+      "n_answerable": {
+        "mean": 15,
+        "min": 15,
+        "max": 15
+      },
+      "n_unanswerable": {
+        "mean": 2,
+        "min": 2,
+        "max": 2
+      },
+      "recall@1": {
+        "mean": 0.3333,
+        "min": 0.3333,
+        "max": 0.3333
+      },
+      "recall@5": {
+        "mean": 0.8,
+        "min": 0.8,
+        "max": 0.8
+      },
+      "recall@10": {
+        "mean": 0.8,
+        "min": 0.8,
+        "max": 0.8
+      },
+      "mrr": {
+        "mean": 0.5244,
+        "min": 0.5244,
+        "max": 0.5244
+      },
+      "candidate_recall": {
+        "mean": 0.8667,
+        "min": 0.8667,
+        "max": 0.8667
+      },
+      "citation_hit": {
+        "mean": 0.5333,
+        "min": 0.5333,
+        "max": 0.5333
+      },
+      "citation_precision": {
+        "mean": 0.3833,
+        "min": 0.3833,
+        "max": 0.3833
+      },
+      "correctness": {
+        "mean": 0.4889,
+        "min": 0.4333,
+        "max": 0.5333
+      },
+      "faithfulness": {
+        "mean": 0.4991,
+        "min": 0.4231,
+        "max": 0.5385
+      },
+      "n_faithfulness_judged": {
+        "mean": 13.3333,
+        "min": 13,
+        "max": 14
+      },
+      "abstention_precision": {
+        "mean": 0.1667,
+        "min": 0.0,
+        "max": 0.25
+      },
+      "abstention_recall": {
+        "mean": 0.3333,
+        "min": 0.0,
+        "max": 0.5
+      },
+      "false_abstentions": {
+        "mean": 3,
+        "min": 3,
+        "max": 3
+      },
+      "latency_p50_s": {
+        "mean": 2.4467,
+        "min": 2.09,
+        "max": 2.64
+      },
+      "latency_p95_s": {
+        "mean": 5.6333,
+        "min": 5.47,
+        "max": 5.72
+      },
+      "errors": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "Army_5kW_Generator_Parts_Manual.pdf": {
+      "n": {
+        "mean": 8,
+        "min": 8,
+        "max": 8
+      },
+      "n_answerable": {
+        "mean": 6,
+        "min": 6,
+        "max": 6
+      },
+      "n_unanswerable": {
+        "mean": 2,
+        "min": 2,
+        "max": 2
+      },
+      "recall@1": {
+        "mean": 0.5,
+        "min": 0.5,
+        "max": 0.5
+      },
+      "recall@5": {
+        "mean": 0.8333,
+        "min": 0.8333,
+        "max": 0.8333
+      },
+      "recall@10": {
+        "mean": 0.8333,
+        "min": 0.8333,
+        "max": 0.8333
+      },
+      "mrr": {
+        "mean": 0.6389,
+        "min": 0.6389,
+        "max": 0.6389
+      },
+      "candidate_recall": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "citation_hit": {
+        "mean": 0.6667,
+        "min": 0.6667,
+        "max": 0.6667
+      },
+      "citation_precision": {
+        "mean": 0.6667,
+        "min": 0.6667,
+        "max": 0.6667
+      },
+      "correctness": {
+        "mean": 0.0278,
+        "min": 0.0,
+        "max": 0.0833
+      },
+      "faithfulness": {
+        "mean": 0.0611,
+        "min": 0.0,
+        "max": 0.1
+      },
+      "n_faithfulness_judged": {
+        "mean": 5.6667,
+        "min": 5,
+        "max": 6
+      },
+      "abstention_precision": {
+        "mean": 0.7222,
+        "min": 0.5,
+        "max": 1.0
+      },
+      "abstention_recall": {
+        "mean": 0.8333,
+        "min": 0.5,
+        "max": 1.0
+      },
+      "false_abstentions": {
+        "mean": 0.6667,
+        "min": 0,
+        "max": 1
+      },
+      "latency_p50_s": {
+        "mean": 1.7867,
+        "min": 1.63,
+        "max": 1.97
+      },
+      "latency_p95_s": {
+        "mean": 3.9867,
+        "min": 3.53,
+        "max": 4.77
+      },
+      "errors": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "FAA_Weight_and_Balance_Handbook.pdf": {
+      "n": {
+        "mean": 17,
+        "min": 17,
+        "max": 17
+      },
+      "n_answerable": {
+        "mean": 15,
+        "min": 15,
+        "max": 15
+      },
+      "n_unanswerable": {
+        "mean": 2,
+        "min": 2,
+        "max": 2
+      },
+      "recall@1": {
+        "mean": 0.7333,
+        "min": 0.7333,
+        "max": 0.7333
+      },
+      "recall@5": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "recall@10": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "mrr": {
+        "mean": 0.8333,
+        "min": 0.8333,
+        "max": 0.8333
+      },
+      "candidate_recall": {
+        "mean": 1.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "citation_hit": {
+        "mean": 0.8667,
+        "min": 0.8667,
+        "max": 0.8667
+      },
+      "citation_precision": {
+        "mean": 0.4667,
+        "min": 0.4667,
+        "max": 0.4667
+      },
+      "correctness": {
+        "mean": 0.6778,
+        "min": 0.6,
+        "max": 0.7333
+      },
+      "faithfulness": {
+        "mean": 0.6369,
+        "min": 0.5714,
+        "max": 0.7143
+      },
+      "n_faithfulness_judged": {
+        "mean": 13.3333,
+        "min": 12,
+        "max": 14
+      },
+      "abstention_precision": {
+        "mean": 0.2889,
+        "min": 0.2,
+        "max": 0.3333
+      },
+      "abstention_recall": {
+        "mean": 0.5,
+        "min": 0.5,
+        "max": 0.5
+      },
+      "false_abstentions": {
+        "mean": 2.6667,
+        "min": 2,
+        "max": 4
+      },
+      "latency_p50_s": {
+        "mean": 2.5967,
+        "min": 2.32,
+        "max": 2.84
+      },
+      "latency_p95_s": {
+        "mean": 7.2333,
+        "min": 5.94,
+        "max": 7.92
+      },
+      "errors": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      }
+    }
+  },
+  "repeats": [
+    {
+      "summary": {
+        "n": 42,
+        "n_answerable": 36,
+        "n_unanswerable": 6,
+        "recall@1": 0.5278,
+        "recall@5": 0.8889,
+        "recall@10": 0.8889,
+        "mrr": 0.6722,
+        "candidate_recall": 0.9444,
+        "citation_hit": 0.6944,
+        "citation_precision": 0.4653,
+        "correctness": 0.4722,
+        "faithfulness": 0.4839,
+        "n_faithfulness_judged": 31,
+        "abstention_precision": 0.2727,
+        "abstention_recall": 0.5,
+        "false_abstentions": 8,
+        "latency_p50_s": 2.43,
+        "latency_p95_s": 5.91,
+        "errors": 0
+      },
+      "by_category": {
+        "figure": {
+          "n": 5,
+          "n_answerable": 5,
+          "n_unanswerable": 0,
+          "recall@1": 0.2,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.49,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.6,
+          "citation_precision": 0.28,
+          "correctness": 0.2,
+          "faithfulness": 0.5,
+          "n_faithfulness_judged": 2,
+          "abstention_precision": 0.0,
+          "abstention_recall": null,
+          "false_abstentions": 3,
+          "latency_p50_s": 2.09,
+          "latency_p95_s": 2.54,
+          "errors": 0
+        },
+        "multi_page": {
+          "n": 5,
+          "n_answerable": 5,
+          "n_unanswerable": 0,
+          "recall@1": 0.8,
+          "recall@5": 0.8,
+          "recall@10": 0.8,
+          "mrr": 0.8,
+          "candidate_recall": 0.8,
+          "citation_hit": 0.8,
+          "citation_precision": 0.62,
+          "correctness": 0.6,
+          "faithfulness": 0.4,
+          "n_faithfulness_judged": 5,
+          "abstention_precision": null,
+          "abstention_recall": null,
+          "false_abstentions": 0,
+          "latency_p50_s": 5.08,
+          "latency_p95_s": 5.55,
+          "errors": 0
+        },
+        "single_page": {
+          "n": 14,
+          "n_answerable": 14,
+          "n_unanswerable": 0,
+          "recall@1": 0.5714,
+          "recall@5": 0.8571,
+          "recall@10": 0.8571,
+          "mrr": 0.6845,
+          "candidate_recall": 0.9286,
+          "citation_hit": 0.7143,
+          "citation_precision": 0.3821,
+          "correctness": 0.6429,
+          "faithfulness": 0.7083,
+          "n_faithfulness_judged": 12,
+          "abstention_precision": 0.0,
+          "abstention_recall": null,
+          "false_abstentions": 2,
+          "latency_p50_s": 2.43,
+          "latency_p95_s": 6.09,
+          "errors": 0
+        },
+        "table": {
+          "n": 12,
+          "n_answerable": 12,
+          "n_unanswerable": 0,
+          "recall@1": 0.5,
+          "recall@5": 0.9167,
+          "recall@10": 0.9167,
+          "mrr": 0.6806,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.6667,
+          "citation_precision": 0.575,
+          "correctness": 0.3333,
+          "faithfulness": 0.3333,
+          "n_faithfulness_judged": 9,
+          "abstention_precision": 0.0,
+          "abstention_recall": null,
+          "false_abstentions": 3,
+          "latency_p50_s": 2.16,
+          "latency_p95_s": 5.54,
+          "errors": 0
+        },
+        "unanswerable": {
+          "n": 6,
+          "n_answerable": 0,
+          "n_unanswerable": 6,
+          "recall@1": null,
+          "recall@5": null,
+          "recall@10": null,
+          "mrr": null,
+          "candidate_recall": null,
+          "citation_hit": null,
+          "citation_precision": null,
+          "correctness": null,
+          "faithfulness": 0.1667,
+          "n_faithfulness_judged": 3,
+          "abstention_precision": 1.0,
+          "abstention_recall": 0.5,
+          "false_abstentions": 0,
+          "latency_p50_s": 2.12,
+          "latency_p95_s": 2.74,
+          "errors": 0
+        }
+      },
+      "by_manual": {
+        "Army_5kW_Generator_Operator_Manual.pdf": {
+          "n": 17,
+          "n_answerable": 15,
+          "n_unanswerable": 2,
+          "recall@1": 0.3333,
+          "recall@5": 0.8,
+          "recall@10": 0.8,
+          "mrr": 0.5244,
+          "candidate_recall": 0.8667,
+          "citation_hit": 0.5333,
+          "citation_precision": 0.3833,
+          "correctness": 0.5,
+          "faithfulness": 0.5385,
+          "n_faithfulness_judged": 13,
+          "abstention_precision": 0.25,
+          "abstention_recall": 0.5,
+          "false_abstentions": 3,
+          "latency_p50_s": 2.09,
+          "latency_p95_s": 5.72,
+          "errors": 0
+        },
+        "Army_5kW_Generator_Parts_Manual.pdf": {
+          "n": 8,
+          "n_answerable": 6,
+          "n_unanswerable": 2,
+          "recall@1": 0.5,
+          "recall@5": 0.8333,
+          "recall@10": 0.8333,
+          "mrr": 0.6389,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.6667,
+          "citation_precision": 0.6667,
+          "correctness": 0.0833,
+          "faithfulness": 0.0833,
+          "n_faithfulness_judged": 6,
+          "abstention_precision": 0.5,
+          "abstention_recall": 0.5,
+          "false_abstentions": 1,
+          "latency_p50_s": 1.63,
+          "latency_p95_s": 4.77,
+          "errors": 0
+        },
+        "FAA_Weight_and_Balance_Handbook.pdf": {
+          "n": 17,
+          "n_answerable": 15,
+          "n_unanswerable": 2,
+          "recall@1": 0.7333,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.8333,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.8667,
+          "citation_precision": 0.4667,
+          "correctness": 0.6,
+          "faithfulness": 0.625,
+          "n_faithfulness_judged": 12,
+          "abstention_precision": 0.2,
+          "abstention_recall": 0.5,
+          "false_abstentions": 4,
+          "latency_p50_s": 2.63,
+          "latency_p95_s": 5.94,
+          "errors": 0
+        }
+      },
+      "items": [
+        {
+          "id": "faa-01",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 5.933645065000007,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the load factors for normal, utility, and acrobatic categories as 3.8, 4.4, and 6.0 respectively, matching the reference answer.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "Therefore, the structure of a normal category airplane is designed to handle less severe conditions than utility or acrobatic category airplanes."
+          ]
+        },
+        {
+          "id": "faa-02",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 2.1046886859999745,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly states that the CG moves forward, which matches the reference answer, and adds non-contradictory context about fuel imbalance.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-03",
+          "category": "table",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 2.782175437000035,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the information is not in the manual, but the reference answer provides specific data (130 lb at 208 inches) from that same document, making the refusal factually wrong."
+        },
+        {
+          "id": "faa-04",
+          "category": "table",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 2.517047278000007,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the maximum takeoff and landing weight as 3050 lbs, which matches the reference answer and the manual excerpt.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The maximum takeoff and landing weight for the Cirrus SR20 with serial numbers 1878, 1886, or subsequent is 3050 lbs."
+          ]
+        },
+        {
+          "id": "faa-05",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.25,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 3.5251760280000326,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the information is not in the excerpt and points to another document, which counts as abstaining, but the reference answer provides a specific location, making the refusal to answer incorrect."
+        },
+        {
+          "id": "faa-06",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.6,
+          "latency_s": 1.7698466550000376,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the 12-month maximum period and notes that it can be shortened by the authority, matching the reference answer's key facts.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-07",
+          "category": "table",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 5.965016940999988,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the manual does not provide a direct answer and that it is not possible to determine the exact weight, whereas the reference answer provides a specific value (6.68 lb/gal) from the standard weights table."
+        },
+        {
+          "id": "faa-08",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.8,
+          "latency_s": 1.889740880999966,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the specific fluids excluded from empty weight (potable water, lavatory precharge water, and water for injection) which matches the reference answer's key facts.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-09",
+          "category": "multi_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.8,
+          "latency_s": 3.076959335999959,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the net weight as 2,006 lb and the CG as 32.8 inches behind the datum, matching the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-10",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 4.891558935000035,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a contradictory calculation example (stating 230 HP / 2 * 6 = 69 lbs, which is mathematically wrong and contradicts the reference's 'METO horsepower divided by 2' rule for weight) and introduces a confusing, unsupported '115 pounds' example.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "Minimum fuel weight = (230 METO HP / 2) x 6 pounds/gallon = 69 pounds",
+            "The manual provides a specific example where the minimum fuel weight is 115 pounds, which is likely a specific case or a default value.",
+            "The manual does not explicitly state that the minimum fuel weight is 115 pounds for all cases"
+          ]
+        },
+        {
+          "id": "faa-11",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 2.4830416849999892,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the material (lead), color (red), marking text, and attachment requirements, matching all key facts in the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-12",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 5.056202919999976,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant incorrectly defines MAC as 'Maximum Allowable CG' instead of 'Mean Aerodynamic Chord', which is a factual error contradicting standard aviation terminology and the reference's intent.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "When the cumulative change in the center of gravity (CG) position exceeds one-half of 1 percent (0.5 percent) of the MAC (Maximum Allowable CG)."
+          ]
+        },
+        {
+          "id": "faa-13",
+          "category": "multi_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.8,
+          "latency_s": 5.081238231000043,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the plane is within the takeoff envelope but 77 lb over the maximum landing weight, and correctly states the pilot must burn approximately 77 lb of fuel (less than 13 gallons) before landing.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The aircraft is properly loaded for takeoff when the weight and center of gravity (CG) fall within the envelope defined by the solid black line in Figure 5-5.",
+            "For landing, the aircraft is 77 pounds overweight. This means the weight and CG exceed the maximum allowable limits for landing, indicated by the dashed area in Figure 5-5."
+          ]
+        },
+        {
+          "id": "faa-14",
+          "category": "figure",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.25,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.2,
+          "latency_s": 2.1823977010000135,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant failed to answer the specific question, claiming the request was unclear, whereas the reference provides a specific numerical answer."
+        },
+        {
+          "id": "faa-15",
+          "category": "figure",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.2,
+          "latency_s": 2.631453664999981,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the '-O' suffix indicates optional equipment that replaces required or standard items, matching the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-01",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.3333333333333333,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.1372956329998942,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant provides the exact oil pressure values specified in the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-02",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.253501024000002,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly identifies the 17 amps rating for the 120/208 volt connection but omits the additional context provided in the reference regarding ratings for other voltage connections (120/240 V and 120 V) and the specific models (MEP-802A and MEP-812A).",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-03",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 2.5145716560000437,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the fuel consumption rate and calculates the duration based on the tank capacity, matching the reference answer's key facts.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "To determine how long a full tank will last, we need to divide the fuel tank capacity by the fuel consumption rate."
+          ]
+        },
+        {
+          "id": "op-04",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 1.7998727760000293,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a temperature threshold of -25\u00b0F, which contradicts the reference answer of +40\u00b0F.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The cold weather starting aid should be used when the temperature is below -25\u00b0F (-31\u00b0C)."
+          ]
+        },
+        {
+          "id": "op-05",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 1.2089303390000623,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant provides the exact temperature threshold and tolerance specified in the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-06",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 1.3209649709999667,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the restriction indicator as the method for determining when servicing is needed, which aligns with the reference answer's mention of the indicator displaying red.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-07",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.25,
+          "latency_s": 2.3758811159999595,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant lists all four required switch positions and states exactly as specified in the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-08",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 0.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 1.8999351300000171,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claimed the information was not in the manual, but the reference answer provides specific values, indicating the information was available and the assistant failed to retrieve it."
+        },
+        {
+          "id": "op-09",
+          "category": "multi_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 0.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 2.4954001910000443,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a procedure involving the EMERGENCY STOP button, which contradicts the reference answer's specific procedure of opening the circuit interrupter, running unloaded, and turning off the master switch.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The manual also mentions that continued operation using the BATTLE SHORT switch can result in damage to the generator set. Therefore, it is recommended to avoid using this switch for stopping the generator."
+          ]
+        },
+        {
+          "id": "op-10",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 6.376867549000053,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant fails to mention the specific 'PREHEAT' procedure required by the reference answer and instead provides generic troubleshooting steps that do not address the specific cold-weather protocol.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The manual you provided indicates a few potential issues that could be causing your engine to crank but not start in cold weather.",
+            "Page 69 mentions that if the INTERRUPTER SWITCH is closed, the engine will fail to crank.",
+            "Make sure the master switch is in the \"ON\" position and fully engaged.",
+            "Page 69 lists symptoms associated with starting problems, such as: Engine stops when the master switch is released from the start position.",
+            "Page 69 lists symptoms associated with starting problems, such as: Engine stops suddenly.",
+            "Page 69 lists symptoms associated with starting problems, such as: Engine runs erratically or misfires.",
+            "Page 69 lists symptoms associated with starting problems, such as: Engine does not develop full power.",
+            "Page 69 lists symptoms associated with starting problems, such as: Engine knocks.",
+            "Page 69 lists symptoms associated with starting problems, such as: Excessive exhaust smoke (blue, white, black).",
+            "If your engine exhibits any of these symptoms, this could be indicative of a starting system issue.",
+            "Check the battery, starter motor, wiring, and fuel system for potential problems.",
+            "Page 69 mentions low oil pressure as a potential issue.",
+            "Check the engine oil level and ensure it's within the recommended range.",
+            "Cold engines can be more difficult to start.",
+            "Try the following warm-up procedures: Let the engine idle for a few minutes after starting to allow the engine oil to circulate.",
+            "Use a block heater to warm the engine before attempting to start it.",
+            "If the problem persists, consider using a starting fluid or starting spray to help the engine ignite in cold temperatures."
+          ]
+        },
+        {
+          "id": "op-11",
+          "category": "multi_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 5.557878151000068,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly identifies the need to hold the switch until 25 psi oil pressure, but it omits the specific instruction to check the FAULT INDICATOR lights and refer to paragraph 3-3.5.1 for NO FUEL, instead providing a generic list of mechanical checks.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "Check the Propeller Shaft and Propeller Shaft Bearing: Ensure they are properly lubricated and free of damage.",
+            "Inspect for Interrupter Switch Issues: If the interrupter switch is not functioning properly, the engine may not start as expected.",
+            "Check for Exhaust System Issues: Inspect the exhaust system for any signs of damage or malfunction, such as white or blue exhaust smoke, which could indicate a combustion issue.",
+            "Examine the Lubricating System: Low oil pressure can lead to engine failure. Check the oil pressure and ensure the lubricating system is functioning correctly."
+          ]
+        },
+        {
+          "id": "op-12",
+          "category": "multi_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 5.493702450000001,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly identifies improper fuel type and air intake issues but misses the specific reference to Table 3-3 and the generator set overload/ammeter check, while adding irrelevant details about spark plugs and general vehicle maintenance not present in the reference.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "Black smoke often indicates insufficient combustion, which can be caused by using the wrong type of fuel.",
+            "Refer to your vehicle's fuel specifications and ensure you're using the correct fuel type as listed in the owner's manual or vehicle documentation.",
+            "If improper fuel type is ruled out, the issue could be related to the fuel system.",
+            "Check for any leaks, blockages, or contamination in the fuel lines, filter, and injectors.",
+            "Properly functioning fuel components are crucial for efficient combustion.",
+            "Inspect the spark plugs for wear, deposits, or damage.",
+            "Faulty spark plugs can lead to incomplete combustion, resulting in black smoke.",
+            "Monitor the engine's performance, including fuel consumption, idle quality, and power output.",
+            "If the engine is misfiring or not burning fuel efficiently, it may exhibit black smoke.",
+            "Engine overheating can affect combustion quality.",
+            "Ensure the engine is operating at the correct temperature as specified in your vehicle's manual.",
+            "Inspect the air filter and intake system for any blockages or damage.",
+            "Proper air supply is essential for complete combustion.",
+            "Ensure the exhaust system is not clogged or malfunctioning, as it can impact combustion and smoke production."
+          ]
+        },
+        {
+          "id": "op-13",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.3333333333333333,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 3.6592904350000026,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant includes all key facts from the reference answer (checking the circuit breaker, the specific fuse for the contract, and the red band indicator) and adds non-contradictory context about starting the generator and load limits.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "Start the generator set if it is not operating. Refer to Paragraph 2-10 for instructions."
+          ]
+        },
+        {
+          "id": "op-14",
+          "category": "figure",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.2,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 2.094285828000011,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the manual does not contain the information, but the reference answer provides a specific value (4.2 kW), indicating the information is present and the assistant failed to retrieve it."
+        },
+        {
+          "id": "op-15",
+          "category": "figure",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 2.0279285279999613,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the information is not in the manual, but the reference answer provides a specific value (4.3 kW) derived from the manual's tables, indicating the information was available."
+        },
+        {
+          "id": "parts-01",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.1621929980000232,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant provides only one of the two part numbers mentioned in the reference, omitting the distinction between the two alternator models.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The part number of the voltage regulator in the alternator assembly is 105-269."
+          ]
+        },
+        {
+          "id": "parts-02",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.0661755679999487,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant incorrectly identifies the CAGE code (18265) as the part number, whereas the reference states the part number is P14-8969.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The part number of the air cleaner filter element is 18265."
+          ]
+        },
+        {
+          "id": "parts-03",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.1763818260000107,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a part number (81646) that contradicts the reference answer (R28).",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The part number for the radiator filler cap is 81646."
+          ]
+        },
+        {
+          "id": "parts-04",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.3333333333333333,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 3.979463964000047,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the manual does not contain the information and declines to give a definitive answer, whereas the reference provides specific part numbers and quantities, making the refusal incorrect."
+        },
+        {
+          "id": "parts-05",
+          "category": "figure",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.3090870919999134,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant incorrectly identifies the filter element itself as the part holding it in place, whereas the reference specifies a wing nut (part number P10-1870).",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "the part that holds the filter element in place is the FILTER ELEMENT, INTA"
+          ]
+        },
+        {
+          "id": "parts-06",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 5.200135795000051,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant failed to identify the specific item and part number requested, instead providing a generic description of the data format without answering the specific question.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "Stock numbers (e.g., 30554)",
+            "Part numbers (e.g., 5310-01-012-3595)",
+            "Item numbers (e.g., MS51412-4)",
+            "Figures and item numbers (e.g., FIG. 16, ITEM 17)"
+          ]
+        },
+        {
+          "id": "unans-01",
+          "category": "unanswerable",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 2.2823111530000233,
+          "abstained": true,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the provided manual excerpts do not contain the requested information, aligning with the reference answer's instruction to state that it is not covered rather than guessing."
+        },
+        {
+          "id": "unans-02",
+          "category": "unanswerable",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 1.7344495309999957,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provided a specific numerical answer, whereas the reference states the information is not covered and the system should decline.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The useful load of a Cessna 172S as per the provided excerpt is 1,216.62."
+          ]
+        },
+        {
+          "id": "unans-03",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 2.8069627309999987,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The reference states the information is not covered and the assistant should decline, but the assistant provided a specific, confident answer instead.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The engine oil viscosity grade that should be used in arctic temperatures (0\u00b0F to -25\u00b0F or -17\u00b0C to -32\u00b0C) is VV-F-800 GRADE DF-1.",
+            "This recommendation is based on the specific context of diesel fuel and engine oil compatibility."
+          ]
+        },
+        {
+          "id": "unans-04",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 0.9489627560000145,
+          "abstained": true,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the information is not in the provided excerpts, aligning with the reference answer's instruction to decline."
+        },
+        {
+          "id": "unans-05",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 2.553695040999969,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides specific instructions to look for the part number in various indexes, implying the information exists, whereas the reference states the engine is naturally aspirated and the manual does not cover a turbocharger.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The part number of the turbocharger is not explicitly mentioned in the provided excerpts."
+          ]
+        },
+        {
+          "id": "unans-06",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 1.9600442919999068,
+          "abstained": true,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the manual does not contain the requested information and declines to provide a part number, aligning with the reference answer."
+        }
+      ]
+    },
+    {
+      "summary": {
+        "n": 42,
+        "n_answerable": 36,
+        "n_unanswerable": 6,
+        "recall@1": 0.5278,
+        "recall@5": 0.8889,
+        "recall@10": 0.8889,
+        "mrr": 0.6722,
+        "candidate_recall": 0.9444,
+        "citation_hit": 0.6944,
+        "citation_precision": 0.4653,
+        "correctness": 0.4722,
+        "faithfulness": 0.4375,
+        "n_faithfulness_judged": 32,
+        "abstention_precision": 0.4,
+        "abstention_recall": 0.6667,
+        "false_abstentions": 6,
+        "latency_p50_s": 2.44,
+        "latency_p95_s": 5.98,
+        "errors": 0
+      },
+      "by_category": {
+        "figure": {
+          "n": 5,
+          "n_answerable": 5,
+          "n_unanswerable": 0,
+          "recall@1": 0.2,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.49,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.6,
+          "citation_precision": 0.28,
+          "correctness": 0.2,
+          "faithfulness": 0.1667,
+          "n_faithfulness_judged": 3,
+          "abstention_precision": 0.0,
+          "abstention_recall": null,
+          "false_abstentions": 2,
+          "latency_p50_s": 2.0,
+          "latency_p95_s": 11.7,
+          "errors": 0
+        },
+        "multi_page": {
+          "n": 5,
+          "n_answerable": 5,
+          "n_unanswerable": 0,
+          "recall@1": 0.8,
+          "recall@5": 0.8,
+          "recall@10": 0.8,
+          "mrr": 0.8,
+          "candidate_recall": 0.8,
+          "citation_hit": 0.8,
+          "citation_precision": 0.62,
+          "correctness": 0.6,
+          "faithfulness": 0.4,
+          "n_faithfulness_judged": 5,
+          "abstention_precision": null,
+          "abstention_recall": null,
+          "false_abstentions": 0,
+          "latency_p50_s": 3.56,
+          "latency_p95_s": 5.69,
+          "errors": 0
+        },
+        "single_page": {
+          "n": 14,
+          "n_answerable": 14,
+          "n_unanswerable": 0,
+          "recall@1": 0.5714,
+          "recall@5": 0.8571,
+          "recall@10": 0.8571,
+          "mrr": 0.6845,
+          "candidate_recall": 0.9286,
+          "citation_hit": 0.7143,
+          "citation_precision": 0.3821,
+          "correctness": 0.7143,
+          "faithfulness": 0.6667,
+          "n_faithfulness_judged": 12,
+          "abstention_precision": 0.0,
+          "abstention_recall": null,
+          "false_abstentions": 2,
+          "latency_p50_s": 2.81,
+          "latency_p95_s": 6.06,
+          "errors": 0
+        },
+        "table": {
+          "n": 12,
+          "n_answerable": 12,
+          "n_unanswerable": 0,
+          "recall@1": 0.5,
+          "recall@5": 0.9167,
+          "recall@10": 0.9167,
+          "mrr": 0.6806,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.6667,
+          "citation_precision": 0.575,
+          "correctness": 0.25,
+          "faithfulness": 0.35,
+          "n_faithfulness_judged": 10,
+          "abstention_precision": 0.0,
+          "abstention_recall": null,
+          "false_abstentions": 2,
+          "latency_p50_s": 1.99,
+          "latency_p95_s": 3.72,
+          "errors": 0
+        },
+        "unanswerable": {
+          "n": 6,
+          "n_answerable": 0,
+          "n_unanswerable": 6,
+          "recall@1": null,
+          "recall@5": null,
+          "recall@10": null,
+          "mrr": null,
+          "candidate_recall": null,
+          "citation_hit": null,
+          "citation_precision": null,
+          "correctness": null,
+          "faithfulness": 0.0,
+          "n_faithfulness_judged": 2,
+          "abstention_precision": 1.0,
+          "abstention_recall": 0.6667,
+          "false_abstentions": 0,
+          "latency_p50_s": 2.14,
+          "latency_p95_s": 3.21,
+          "errors": 0
+        }
+      },
+      "by_manual": {
+        "Army_5kW_Generator_Operator_Manual.pdf": {
+          "n": 17,
+          "n_answerable": 15,
+          "n_unanswerable": 2,
+          "recall@1": 0.3333,
+          "recall@5": 0.8,
+          "recall@10": 0.8,
+          "mrr": 0.5244,
+          "candidate_recall": 0.8667,
+          "citation_hit": 0.5333,
+          "citation_precision": 0.3833,
+          "correctness": 0.4333,
+          "faithfulness": 0.4231,
+          "n_faithfulness_judged": 13,
+          "abstention_precision": 0.25,
+          "abstention_recall": 0.5,
+          "false_abstentions": 3,
+          "latency_p50_s": 2.64,
+          "latency_p95_s": 5.47,
+          "errors": 0
+        },
+        "Army_5kW_Generator_Parts_Manual.pdf": {
+          "n": 8,
+          "n_answerable": 6,
+          "n_unanswerable": 2,
+          "recall@1": 0.5,
+          "recall@5": 0.8333,
+          "recall@10": 0.8333,
+          "mrr": 0.6389,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.6667,
+          "citation_precision": 0.6667,
+          "correctness": 0.0,
+          "faithfulness": 0.1,
+          "n_faithfulness_judged": 5,
+          "abstention_precision": 0.6667,
+          "abstention_recall": 1.0,
+          "false_abstentions": 1,
+          "latency_p50_s": 1.97,
+          "latency_p95_s": 3.66,
+          "errors": 0
+        },
+        "FAA_Weight_and_Balance_Handbook.pdf": {
+          "n": 17,
+          "n_answerable": 15,
+          "n_unanswerable": 2,
+          "recall@1": 0.7333,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.8333,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.8667,
+          "citation_precision": 0.4667,
+          "correctness": 0.7,
+          "faithfulness": 0.5714,
+          "n_faithfulness_judged": 14,
+          "abstention_precision": 0.3333,
+          "abstention_recall": 0.5,
+          "false_abstentions": 2,
+          "latency_p50_s": 2.84,
+          "latency_p95_s": 7.84,
+          "errors": 0
+        }
+      },
+      "items": [
+        {
+          "id": "faa-01",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 2.063657140000032,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant provides the exact load factors for normal, utility, and acrobatic categories as stated in the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-02",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 2.7964569929999925,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly states that the CG moves forward when fuel is used from the outboard tanks, matching the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-03",
+          "category": "table",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 2.152131822000001,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the information is not in the excerpt, but the reference answer provides specific values (130 lb at 208 inches), indicating the information was present and the assistant failed to retrieve it."
+        },
+        {
+          "id": "faa-04",
+          "category": "table",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 2.8439838199999485,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the maximum takeoff and landing weight as 3050 lbs, which matches the reference answer.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The maximum takeoff and landing weight for a Cirrus SR20 with serial number 1878, 1886, or subsequent is 3050 lbs."
+          ]
+        },
+        {
+          "id": "faa-05",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.25,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 3.51375236399997,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the information is not in the manual and points to another document, whereas the reference answer provides a specific location, making the assistant's refusal to answer incorrect."
+        },
+        {
+          "id": "faa-06",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.6,
+          "latency_s": 2.1391705300000012,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the 12-month maximum period and notes the conditions under which it may be shortened, matching the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-07",
+          "category": "table",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 3.2306895499999655,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant states the weight is 6.75 pounds, which contradicts the reference answer of 6.68 pounds (the assistant incorrectly attributes the 32 \u00b0F weight to 59 \u00b0F).",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "the weight of Jet A fuel at 59 \u00b0F is 6.75 pounds per U.S. gallon"
+          ]
+        },
+        {
+          "id": "faa-08",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.8,
+          "latency_s": 2.0358971809999957,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly lists the excluded fluids but omits the reference's clarification that hydraulic and other reservoirs needed for normal operation should be full.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-09",
+          "category": "multi_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.8,
+          "latency_s": 3.15831423599991,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the net weight as 2,006 lb and the CG as 32.8 inches behind the datum, matching the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-10",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 5.940427155000066,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that minimum fuel is based on half an hour at rated maximum continuous power, uses the 1/12 gallon per METO horsepower factor, and correctly derives that the weight in pounds is METO horsepower divided by 2 (via the 6 lb/gal conversion).",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The minimum fuel quantity in pounds is calculated by multiplying the fuel quantity in gallons by the weight per gallon (1/12 gallon * METO horsepower * 6 pounds/gallon)."
+          ]
+        },
+        {
+          "id": "faa-11",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 6.281478706999906,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the key requirements from the reference answer: using lead blocks, painting them red, marking them with the specific warning text, and securing them rigidly to the structure.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "Formula: Ballast needed = (Aircraft empty weight) \u00d7 (1 - (Distance between ballast and the affected limit / CG range for the loaded weight))",
+            "Example: For an aircraft with an empty weight of 1,876 pounds and an EWCG (+32.2) that needs to be adjusted to +33.0 within a CG range of +33.0 to +46.0, the calculation would be: Ballast needed = 1,876 \u00d7 (1 - (228 - 33) / (2250 - 1876)) \u2248 7.7 pounds",
+            "Documentation: Record the weight, location, and purpose of the installed permanent ballast for future reference and maintenance."
+          ]
+        },
+        {
+          "id": "faa-12",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 4.766863224999952,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the 0.5% thresholds for weight and CG changes relative to maximum landing weight and MAC, matching the reference answer's key criteria.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "This applies to all aircraft, including rotorcraft and those that do not have a MAC-based CG envelope."
+          ]
+        },
+        {
+          "id": "faa-13",
+          "category": "multi_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.8,
+          "latency_s": 4.512480443999948,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the plane is within the takeoff envelope but 77 lb over the landing weight limit, and correctly states that the pilot needs to burn approximately 77 lb of fuel (less than 13 gallons) before landing, matching the reference answer's key facts.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The pilot should perform adverse-load CG checks (as described on page 67) to ensure the aircraft's weight distribution is within safe limits for landing."
+          ]
+        },
+        {
+          "id": "faa-14",
+          "category": "figure",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.25,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.2,
+          "latency_s": 14.096604376999949,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a generic summary of weight and balance procedures and mentions Figure 5-6 in passing, but fails to provide the specific numerical answer (approx. 16.8 lb-in/1,000) required by the question.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "Weight = (390 gallons * 6.7 lb/gal) + (390 gallons * 6.8 lb/gal) / 2",
+            "Moment Index = (390 gallons * Moment Index for 6.7 lb/gal) + (390 gallons * Moment Index for 6.8 lb/gal) / 2"
+          ]
+        },
+        {
+          "id": "faa-15",
+          "category": "figure",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.2,
+          "latency_s": 1.8160703400000102,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that '-O' denotes optional equipment items that replace required or standard items, which matches the key fact in the reference answer.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The suffix letter \"-O\" on an item number in the comprehensive equipment list (Figure 2-17) means that the item is an optional equipment item replacing required or standard item(s)."
+          ]
+        },
+        {
+          "id": "op-01",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.3333333333333333,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.3416788869999436,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant provides the exact oil pressure value specified in the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-02",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.1938181579999991,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly identifies the 17 amps rating for the 120/208 volt connection but omits the additional context provided in the reference regarding the ratings for other voltage connections and the applicability to both MEP-802A and MEP-812A models.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "This information is found in the table under the \"AC Generator - Continued\" section, specifically for the MEP-812A type."
+          ]
+        },
+        {
+          "id": "op-03",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 2.6426525880000327,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly identifies the fuel consumption rate but fails to provide the specific duration (approx. 9 hours) stated in the reference, instead claiming the manual does not provide a specific calculation.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The manual does not provide a specific calculation or formula for this."
+          ]
+        },
+        {
+          "id": "op-04",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 1.140832621999948,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a temperature threshold (-25\u00b0F) that contradicts the reference answer's threshold (+40\u00b0F).",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The cold weather starting aid should be used when the ambient temperature is as low as -25\u00b0F (-31\u00b0C) or below."
+          ]
+        },
+        {
+          "id": "op-05",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 1.3036753669999825,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the shutdown temperature threshold and the mechanism (high temperature switch) as stated in the reference.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-06",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 4.63660404299992,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant mentions the restriction indicator but fails to specify the critical detail from the reference that it displays red, and includes extraneous information not in the reference.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The manual emphasizes inspecting for leaks, corrosion, and any missing parts in the air cleaner assembly.",
+            "Inspecting the air cleaner assembly for loose, damaged, or missing parts is essential. This includes checking the grounding rod assembly and the connections to ensure they are secure and intact.",
+            "Examine the exhaust/intake system... Look for any signs of damage, corrosion, or excessive wear that could be affecting the air cleaner's performance."
+          ]
+        },
+        {
+          "id": "op-07",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.25,
+          "latency_s": 2.636239915000033,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly lists all required switch positions for engine start as specified in the reference answer, and the additional information about cranking does not contradict the reference.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-08",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 0.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 1.4242288609999605,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claimed the information was missing, but the reference answer provides specific details, indicating the assistant failed to retrieve available information."
+        },
+        {
+          "id": "op-09",
+          "category": "multi_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 0.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 3.559634545999984,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant describes emergency shutdown procedures (EMERGENCY STOP, BATTLE SHORT) rather than the standard shutdown procedure outlined in the reference (opening circuit interrupter, running unloaded, turning off master switch, etc.).",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "If the generator set is not already shut down, you may also lift the cover on the BATTLE SHORT switch and position it to OFF."
+          ]
+        },
+        {
+          "id": "op-10",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 2.8177503509999724,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant fails to mention the critical PREHEAT procedure required for cold weather starts and instead provides irrelevant or incorrect information about the MASTER SWITCH position.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "if the engine cranks but will not start in cold weather, you should check the MASTER SWITCH",
+            "This suggests that the MASTER SWITCH might not be properly engaged or might be stuck in the START position, preventing the engine from starting."
+          ]
+        },
+        {
+          "id": "op-11",
+          "category": "multi_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 5.984065950999934,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly identifies the need to hold the switch until 25 psi is reached, but it fails to mention checking the FAULT INDICATOR lights (specifically NO FUEL) as the primary diagnostic step, instead offering generic troubleshooting steps.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "Ensure the DEAD CRANK switch is in the NORMAL position.",
+            "Push in the DC Control power circuit breaker.",
+            "Ensure the EMERGENCY STOP SWITCH is in the OUT position.",
+            "Move the MASTER SWITCH to the START position.",
+            "Refer to Paragraph 2-10.1.3.3 for more information.",
+            "Check the fuel filter and water separator for dirt.",
+            "Refer to Paragraph 3-3.6.2 for more information.",
+            "Ensure the interrupter switch is closed.",
+            "Check the cranking relay and its connections.",
+            "Verify the batteries are functioning properly and have sufficient charge."
+          ]
+        },
+        {
+          "id": "op-12",
+          "category": "multi_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 2.6439608209999506,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly identifies improper fuel type as a cause but fails to mention the other two causes (dirty air cleaner and generator set overload) listed in the reference answer.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "Refer to your vehicle's owner's manual or fuel type recommendations to ensure you are using the correct fuel.",
+            "Contact your vehicle manufacturer's service department or a qualified mechanic for further assistance and guidance.",
+            "Consider having your vehicle's fuel system inspected and serviced to ensure proper fuel delivery and combustion."
+          ]
+        },
+        {
+          "id": "op-13",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.3333333333333333,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 5.3407085210000105,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant includes all key troubleshooting steps from the reference answer (checking the circuit breaker, the specific fuse for contract DAAK01-88-D-D080, and the red band on the reset button) without contradicting the reference, while adding plausible contextual steps.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "Test the AC Circuit Interrupter light by depressing it. If the light fails to light, refer to the next higher maintenance level."
+          ]
+        },
+        {
+          "id": "op-14",
+          "category": "figure",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.2,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 1.9418076969999447,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the manual does not provide the specific kW capacity for JP4, whereas the reference answer explicitly states it is 4.2 kW."
+        },
+        {
+          "id": "op-15",
+          "category": "figure",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 2.135349951999956,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claimed the information was missing, but the reference answer provides a specific value (4.3 kW) derived from the manual's tables, indicating the information was present."
+        },
+        {
+          "id": "parts-01",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.8275789300000724,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a part number 'PBFZZ' which does not match the specific part numbers (105-269 or 105-311) listed in the reference answer.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The part number of the voltage regulator in the alternator assembly is **PBFZZ**."
+          ]
+        },
+        {
+          "id": "parts-02",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.1264723359998925,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a part number (24161) that contradicts the reference answer (P14-8969).",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The part number of the air cleaner filter element is 24161."
+          ]
+        },
+        {
+          "id": "parts-03",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 2.434113432999993,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides part number 81646, which contradicts the reference answer's part number R28.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The part number of the radiator filler cap is 81646."
+          ]
+        },
+        {
+          "id": "parts-04",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.3333333333333333,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 1.5976205850000724,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the information is not in the manual, but the reference answer provides specific part numbers and quantities, making the refusal incorrect."
+        },
+        {
+          "id": "parts-05",
+          "category": "figure",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.9994883260000051,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant identifies the filter element itself (Item 17) as the part holding it in place, whereas the reference states it is the wing nut (Item 16).",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The part that holds the filter element in place is described as FILTER ELEMENT, INTA (Item No. 17).",
+            "This part is designed to hold the filter in place within the air cleaner assembly."
+          ]
+        },
+        {
+          "id": "parts-06",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 4.322934495000027,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant failed to identify the specific item and part number requested, instead providing a generic description of the table structure without answering the question.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The table is organized with a sequential item number (e.g., 1, 2, 3) and includes a page number (125) for reference."
+          ]
+        },
+        {
+          "id": "unans-01",
+          "category": "unanswerable",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 2.4434897679999494,
+          "abstained": true,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the provided manual excerpts do not contain the information and declines to guess, which aligns with the reference answer."
+        },
+        {
+          "id": "unans-02",
+          "category": "unanswerable",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 2.124000100000103,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The reference states the information is not covered and the system should decline, but the assistant provided a specific numerical answer instead of declining.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The useful load of a Cessna 172S, as shown in Figure 7-3, is 1,216.62 pounds.",
+            "The new licensed empty weight with these changes is 1,216.62 pounds."
+          ]
+        },
+        {
+          "id": "unans-03",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 3.4701422670000284,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The reference states the information is not covered and the assistant should decline, but the assistant provided a specific, confident answer instead.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The provided manual excerpts contain information regarding engine oil viscosity grades.",
+            "The recommended engine oil viscosity grades for arctic temperatures are listed in the manual.",
+            "VV-F-800 GRADE DF-A is an engine oil viscosity grade.",
+            "For arctic temperatures (below -17\u00b0C), you should use VV-F-800 GRADE DF-A engine oil."
+          ]
+        },
+        {
+          "id": "unans-04",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 1.3631226640000023,
+          "abstained": true,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the information is not in the provided excerpts and declines to answer, matching the reference answer's instruction to decline."
+        },
+        {
+          "id": "unans-05",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 2.1495811310001045,
+          "abstained": true,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the manual does not contain the information and declines to provide a part number, which aligns with the reference answer stating the question is not covered."
+        },
+        {
+          "id": "unans-06",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 1.9378868939999165,
+          "abstained": true,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the information is not in the manual and declines to provide a part number, which aligns with the reference answer."
+        }
+      ]
+    },
+    {
+      "summary": {
+        "n": 42,
+        "n_answerable": 36,
+        "n_unanswerable": 6,
+        "recall@1": 0.5278,
+        "recall@5": 0.8889,
+        "recall@10": 0.8889,
+        "mrr": 0.6722,
+        "candidate_recall": 0.9444,
+        "citation_hit": 0.6944,
+        "citation_precision": 0.4653,
+        "correctness": 0.5278,
+        "faithfulness": 0.5147,
+        "n_faithfulness_judged": 34,
+        "abstention_precision": 0.375,
+        "abstention_recall": 0.5,
+        "false_abstentions": 5,
+        "latency_p50_s": 2.27,
+        "latency_p95_s": 6.48,
+        "errors": 0
+      },
+      "by_category": {
+        "figure": {
+          "n": 5,
+          "n_answerable": 5,
+          "n_unanswerable": 0,
+          "recall@1": 0.2,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.49,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.6,
+          "citation_precision": 0.28,
+          "correctness": 0.2,
+          "faithfulness": 0.375,
+          "n_faithfulness_judged": 4,
+          "abstention_precision": 0.0,
+          "abstention_recall": null,
+          "false_abstentions": 1,
+          "latency_p50_s": 2.32,
+          "latency_p95_s": 7.19,
+          "errors": 0
+        },
+        "multi_page": {
+          "n": 5,
+          "n_answerable": 5,
+          "n_unanswerable": 0,
+          "recall@1": 0.8,
+          "recall@5": 0.8,
+          "recall@10": 0.8,
+          "mrr": 0.8,
+          "candidate_recall": 0.8,
+          "citation_hit": 0.8,
+          "citation_precision": 0.62,
+          "correctness": 0.5,
+          "faithfulness": 0.5,
+          "n_faithfulness_judged": 5,
+          "abstention_precision": null,
+          "abstention_recall": null,
+          "false_abstentions": 0,
+          "latency_p50_s": 4.79,
+          "latency_p95_s": 7.26,
+          "errors": 0
+        },
+        "single_page": {
+          "n": 14,
+          "n_answerable": 14,
+          "n_unanswerable": 0,
+          "recall@1": 0.5714,
+          "recall@5": 0.8571,
+          "recall@10": 0.8571,
+          "mrr": 0.6845,
+          "candidate_recall": 0.9286,
+          "citation_hit": 0.7143,
+          "citation_precision": 0.3821,
+          "correctness": 0.75,
+          "faithfulness": 0.8182,
+          "n_faithfulness_judged": 11,
+          "abstention_precision": 0.0,
+          "abstention_recall": null,
+          "false_abstentions": 3,
+          "latency_p50_s": 3.32,
+          "latency_p95_s": 6.48,
+          "errors": 0
+        },
+        "table": {
+          "n": 12,
+          "n_answerable": 12,
+          "n_unanswerable": 0,
+          "recall@1": 0.5,
+          "recall@5": 0.9167,
+          "recall@10": 0.9167,
+          "mrr": 0.6806,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.6667,
+          "citation_precision": 0.575,
+          "correctness": 0.4167,
+          "faithfulness": 0.3636,
+          "n_faithfulness_judged": 11,
+          "abstention_precision": 0.0,
+          "abstention_recall": null,
+          "false_abstentions": 1,
+          "latency_p50_s": 2.0,
+          "latency_p95_s": 3.81,
+          "errors": 0
+        },
+        "unanswerable": {
+          "n": 6,
+          "n_answerable": 0,
+          "n_unanswerable": 6,
+          "recall@1": null,
+          "recall@5": null,
+          "recall@10": null,
+          "mrr": null,
+          "candidate_recall": null,
+          "citation_hit": null,
+          "citation_precision": null,
+          "correctness": null,
+          "faithfulness": 0.1667,
+          "n_faithfulness_judged": 3,
+          "abstention_precision": 1.0,
+          "abstention_recall": 0.5,
+          "false_abstentions": 0,
+          "latency_p50_s": 2.03,
+          "latency_p95_s": 3.89,
+          "errors": 0
+        }
+      },
+      "by_manual": {
+        "Army_5kW_Generator_Operator_Manual.pdf": {
+          "n": 17,
+          "n_answerable": 15,
+          "n_unanswerable": 2,
+          "recall@1": 0.3333,
+          "recall@5": 0.8,
+          "recall@10": 0.8,
+          "mrr": 0.5244,
+          "candidate_recall": 0.8667,
+          "citation_hit": 0.5333,
+          "citation_precision": 0.3833,
+          "correctness": 0.5333,
+          "faithfulness": 0.5357,
+          "n_faithfulness_judged": 14,
+          "abstention_precision": 0.0,
+          "abstention_recall": 0.0,
+          "false_abstentions": 3,
+          "latency_p50_s": 2.61,
+          "latency_p95_s": 5.71,
+          "errors": 0
+        },
+        "Army_5kW_Generator_Parts_Manual.pdf": {
+          "n": 8,
+          "n_answerable": 6,
+          "n_unanswerable": 2,
+          "recall@1": 0.5,
+          "recall@5": 0.8333,
+          "recall@10": 0.8333,
+          "mrr": 0.6389,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.6667,
+          "citation_precision": 0.6667,
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "n_faithfulness_judged": 6,
+          "abstention_precision": 1.0,
+          "abstention_recall": 1.0,
+          "false_abstentions": 0,
+          "latency_p50_s": 1.76,
+          "latency_p95_s": 3.53,
+          "errors": 0
+        },
+        "FAA_Weight_and_Balance_Handbook.pdf": {
+          "n": 17,
+          "n_answerable": 15,
+          "n_unanswerable": 2,
+          "recall@1": 0.7333,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr": 0.8333,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.8667,
+          "citation_precision": 0.4667,
+          "correctness": 0.7333,
+          "faithfulness": 0.7143,
+          "n_faithfulness_judged": 14,
+          "abstention_precision": 0.3333,
+          "abstention_recall": 0.5,
+          "false_abstentions": 2,
+          "latency_p50_s": 2.32,
+          "latency_p95_s": 7.92,
+          "errors": 0
+        }
+      },
+      "items": [
+        {
+          "id": "faa-01",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 2.8761525859999892,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the load factors for normal, utility, and acrobatic categories as 3.8, 4.4, and 6.0 respectively, matching the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-02",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 2.2020537289999993,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly states that the CG moves forward when using outboard fuel and aft when using inboard fuel, matching the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-03",
+          "category": "table",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 2.088744571999996,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claimed the information was not in the excerpt, but the reference answer provides specific data (130 lb at 208 inches), indicating the information was present and the assistant failed to retrieve it."
+        },
+        {
+          "id": "faa-04",
+          "category": "table",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 2.137957475999997,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant provides the correct weight of 3050 lbs, which matches the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-05",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.25,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 1.99800338,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the information is not in the manual, but the reference answer provides a specific location, indicating the information is available and the assistant failed to retrieve it."
+        },
+        {
+          "id": "faa-06",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.6,
+          "latency_s": 2.234510206999971,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the 12-month maximum period and notes the conditions under which it may be shortened, matching the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-07",
+          "category": "table",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 3.4750845730000037,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the weight as 6.68 pounds per gallon at 59 \u00b0F, matching the reference answer, despite mentioning a conflicting figure from another chart before resolving to the correct value.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "At 59 \u00b0F (32.8 \u00b0C), Jet A fuel weighs approximately 6.75 pounds per gallon."
+          ]
+        },
+        {
+          "id": "faa-08",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.8,
+          "latency_s": 1.8723393730000453,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly lists the three excluded fluids but omits the reference's clarification that hydraulic and other reservoirs needed for normal operation should be full.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "faa-09",
+          "category": "multi_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.8,
+          "latency_s": 4.788171375999923,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the net weight as 2,006 lb and the CG as 32.8 inches behind the datum, matching the reference answer.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The total moment was calculated by multiplying the net weight at each weighing point by its arm (distance from the datum) and summing these values. This calculation is not explicitly shown in the provided excerpts"
+          ]
+        },
+        {
+          "id": "faa-10",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 6.471443770000064,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the method for determining minimum fuel (1/12 gallon per METO horsepower, converted to pounds using 6 lb/gal) and provides a consistent calculation example that aligns with the reference answer's logic.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "You can find this information in the manual or by consulting other sources."
+          ]
+        },
+        {
+          "id": "faa-11",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 5.199310351999998,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the material (lead), color (red), marking text, and attachment requirements, which aligns with the reference answer, while adding non-contradictory procedural details.",
+          "faithfulness": "faithful",
+          "unsupported_claims": [
+            "To make and mark permanent ballast, you should follow these steps:"
+          ]
+        },
+        {
+          "id": "faa-12",
+          "category": "single_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.4,
+          "latency_s": 5.493219285000009,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the specific thresholds for reestablishing OEW by calculation (0.5% of MLW and 0.5% of MAC/CG range) which match the reference answer, despite a minor typo in the definition of MAC.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "MAC (Maximum Allowable Cabin)"
+          ]
+        },
+        {
+          "id": "faa-13",
+          "category": "multi_page",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.8,
+          "latency_s": 7.809311903999969,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly identifies that the plane is 77 lb over the maximum landing weight, but it fails to specify the required action of burning fuel (as stated in the reference) and instead suggests removing baggage or fuel, which is less precise and potentially misleading compared to the specific fuel-burning instruction.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "Draw a horizontal line to the right from the loaded weight of 3,027 pounds."
+          ]
+        },
+        {
+          "id": "faa-14",
+          "category": "figure",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.25,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.2,
+          "latency_s": 8.383036593999918,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a completely different calculation for 390 gallons of fuel instead of answering the specific question about 60 gallons, and the resulting values do not match the reference answer.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "Weight: 390 gallons * 6.75 lb/gal = 2625 pounds (Interpolated between 6.7 lb/gal and 6.8 lb/gal)",
+            "Moment index: 390 gallons * 6.75 lb/gal * 7,866 lb-in/100 / 2633 pounds = 12,500 lb-in/100"
+          ]
+        },
+        {
+          "id": "faa-15",
+          "category": "figure",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.2,
+          "latency_s": 2.322457604999954,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the '-O' suffix denotes optional equipment items that replace required or standard items, which aligns with the reference answer.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "This is based on the excerpt you provided from Page 62 and Page 30, which outlines the coding system for the equipment list."
+          ]
+        },
+        {
+          "id": "op-01",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.3333333333333333,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.2308765420000327,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant provides the exact oil pressure value specified in the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-02",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 0.8983277029999499,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the 17 amps rating for the 120/208 volt connection, which matches the key fact in the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-03",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 2.6093783039999607,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the fuel consumption rate and calculates the duration based on the tank capacity, matching the reference answer's key facts.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "a full tank of the 60 Hz set is estimated to last approximately 9.09 hours"
+          ]
+        },
+        {
+          "id": "op-04",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 0.998342090000051,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a temperature threshold of -25\u00b0F, which contradicts the reference answer's threshold of +40\u00b0F.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The cold weather starting aid should be used when the ambient temperature is below -25\u00b0F (-31\u00b0C)."
+          ]
+        },
+        {
+          "id": "op-05",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 1.588110004999976,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant provides the exact temperature threshold and mechanism specified in the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-06",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 3.963943249999943,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies the restriction indicator as the primary sign, which aligns with the reference answer, and adds non-contradictory context about clogging.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "Leaks, damaged, or missing parts in the exhaust/intake system generally indicate that the system may need maintenance, which could include the air cleaner element."
+          ]
+        },
+        {
+          "id": "op-07",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.25,
+          "latency_s": 2.7207683910000924,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant lists all four required switch positions and states exactly as specified in the reference answer.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-08",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 0.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 5.510065299000075,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the manual does not contain the information, whereas the reference answer provides specific time limits (15 seconds), making the assistant's refusal to answer incorrect."
+        },
+        {
+          "id": "op-09",
+          "category": "multi_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 0.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 4.403725208000083,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a procedure for emergency stopping and restarting, which contradicts the reference answer's specific procedure for normal shutdown (opening circuit interrupter, running unloaded, etc.).",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "Please note that continued operation using the BATTLE SHORT switch can result in damage to the generator set, as stated in the same paragraph."
+          ]
+        },
+        {
+          "id": "op-10",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 6.485642382000037,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the manual does not contain the information, whereas the reference answer provides specific steps (using the MASTER SWITCH to PREHEAT) that are clearly part of the procedure."
+        },
+        {
+          "id": "op-11",
+          "category": "multi_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 5.08503710399998,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly identifies the need to hold the switch until 25 psi, but it omits the specific instruction to check FAULT INDICATOR lights and refer to paragraph 3-3.5.1 for NO FUEL, instead providing generic component checks and unrelated references.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "Ensure that the MASTER SWITCH is held in the START position until the engine reaches 25 psi (172 kPa). This is mentioned in paragraph 2-10.1.3-3.",
+            "Check these components [Engine Starting System components] to ensure they are functioning correctly.",
+            "INTERRUPTER SWITCH: It is also mentioned on page 69 that the INTERRUPTER SWITCH should be closed. If it is not, it could be a potential issue.",
+            "Check the fuel filter and water separator for dirt as mentioned in paragraph 3-3.6.2."
+          ]
+        },
+        {
+          "id": "op-12",
+          "category": "multi_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.4881331179999506,
+          "abstained": false,
+          "correctness": "partial",
+          "correctness_reason": "The assistant correctly identifies improper fuel type as a cause but omits other causes listed in the reference, such as a dirty air cleaner and generator set overload.",
+          "faithfulness": "faithful",
+          "unsupported_claims": []
+        },
+        {
+          "id": "op-13",
+          "category": "single_page",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.3333333333333333,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 0.5,
+          "latency_s": 3.7642942530000028,
+          "abstained": false,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies all key troubleshooting steps from the reference, including checking the circuit breaker, the fuse for the specific contract, the red band on the reset button, and escalating if it cannot be reset.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The manual explicitly warns about the dangers of working with power and emphasizes the importance of following these steps to avoid electrical hazards."
+          ]
+        },
+        {
+          "id": "op-14",
+          "category": "figure",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.2,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 2.4360150890000796,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant states the capacity is 5 kW, which contradicts the reference answer of 4.2 kW for JP4 (5 kW is for other fuels).",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The generator's kW capacity when running on JP4 is 5 kW, according to the set rating plate.",
+            "The table on Page 21 (not included in the excerpt) provides the leading particulars for each model"
+          ]
+        },
+        {
+          "id": "op-15",
+          "category": "figure",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 2.062941146999947,
+          "abstained": true,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant claims the information is not in the manual, but the reference answer provides a specific value (4.3 kW) derived from the manual's data, making the assistant's refusal incorrect."
+        },
+        {
+          "id": "parts-01",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.5,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.9075964820000308,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant incorrectly identifies the CAGE code (68505) as the part number, whereas the reference specifies distinct part numbers (105-269 or 105-311) depending on the alternator model.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The part number of the voltage regulator in the alternator assembly is 68505.",
+            "This part is listed under the \"VOLTAGE REGULATOR, ELECTRICAL C\" item in the manual."
+          ]
+        },
+        {
+          "id": "parts-02",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.1434255670000084,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a part number (24161) that contradicts the reference answer (P14-8969).",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The part number for the air cleaner filter element is 24161."
+          ]
+        },
+        {
+          "id": "parts-03",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.107940155999927,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a part number (81646) that contradicts the reference answer (R28).",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The radiator filler cap part number is 81646."
+          ]
+        },
+        {
+          "id": "parts-04",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 0.3333333333333333,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 2.2373880999999756,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides the wrong part number (confusing CAGE code with part number) and an incorrect quantity, contradicting the reference answer.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The part number of the battery cover is 30554.",
+            "The item number \"23\" in the table corresponds to a battery cover bracket.",
+            "The item number \"24\" is a battery storage bracket.",
+            "Two battery covers are used based on the description of related items.",
+            "Two battery covers are also included with these brackets."
+          ]
+        },
+        {
+          "id": "parts-05",
+          "category": "figure",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "rr": 1.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 1.0,
+          "citation_precision": 1.0,
+          "latency_s": 1.8075087180000082,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant identifies the filter element itself as the holding part, whereas the reference states it is a wing nut (item 16, P10-1870).",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The part that holds the filter element in place is the FILTER ELEMENT, INTA",
+            "The FILTER ELEMENT, INTA is specifically designed to support the filter element within the air cleaner assembly"
+          ]
+        },
+        {
+          "id": "parts-06",
+          "category": "table",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": true,
+          "error": null,
+          "recall@1": 0.0,
+          "recall@5": 0.0,
+          "recall@10": 0.0,
+          "rr": 0.0,
+          "candidate_recall": 1.0,
+          "citation_hit": 0.0,
+          "citation_precision": 0.0,
+          "latency_s": 4.221164778000002,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant failed to identify the specific item and part number requested, instead providing a generic description of a table that does not answer the question.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The table seems to be organized by a serial number or identification number in the first column.",
+            "There are multiple rows with the same identification number (e.g., 30554) but different associated serial numbers or part numbers.",
+            "The table includes a variety of part types, such as tools, equipment, and weapons."
+          ]
+        },
+        {
+          "id": "unans-01",
+          "category": "unanswerable",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 2.3096559519999573,
+          "abstained": true,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the provided manual excerpts do not contain the requested information, aligning with the reference answer's instruction to state that the data is not covered."
+        },
+        {
+          "id": "unans-02",
+          "category": "unanswerable",
+          "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 2.0340139190000173,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provided a specific numerical answer instead of declining as required by the reference, which states the information is not covered.",
+          "faithfulness": "partial",
+          "unsupported_claims": [
+            "The useful load of a Cessna 172S ... is 1,216.62 pounds"
+          ]
+        },
+        {
+          "id": "unans-03",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 4.422627075000037,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provides a substantive answer with general advice instead of declining or pointing to the specific lubrication order as required by the reference, which states the information is not covered.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The manual mentions the use of diesel fuel in various temperature ranges, but it does not provide specific information about engine oil viscosity grades for arctic temperatures.",
+            "For engine oil, it is recommended to use a grade that provides adequate protection against cold temperatures and ensures proper lubrication of engine components.",
+            "Typically, for arctic or extreme cold temperatures, engine oils with a higher viscosity index (VI) and a higher viscosity grade (e.g., 0W, 5W, 10W) are recommended to maintain fluidity and lubrication at low temperatures.",
+            "It is advised to consult the manufacturer's recommendations or consult a technical expert for specific engine oil viscosity grade requirements based on the engine type and operating conditions in arctic environments."
+          ]
+        },
+        {
+          "id": "unans-04",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 2.0345555720000448,
+          "abstained": false,
+          "correctness": "incorrect",
+          "correctness_reason": "The assistant provided a specific torque value and page reference, whereas the reference answer states that the manual does not contain this information and the system should decline.",
+          "faithfulness": "unfaithful",
+          "unsupported_claims": [
+            "The torque specification for the cylinder head bolts can be found on page 91 of the manual.",
+            "Cylinder Head Bolts: 30-35 ft-lbs (40-47 Nm)",
+            "This torque value should be applied when installing or tightening the cylinder head bolts to ensure proper tightening and prevent damage to the engine."
+          ]
+        },
+        {
+          "id": "unans-05",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 1.7107924640000647,
+          "abstained": true,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the information is not in the manual and declines to provide a part number, which aligns with the reference answer stating the manual does not cover a turbocharger."
+        },
+        {
+          "id": "unans-06",
+          "category": "unanswerable",
+          "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+          "answerable": false,
+          "error": null,
+          "latency_s": 1.6125051960000292,
+          "abstained": true,
+          "correctness": "correct",
+          "correctness_reason": "The assistant correctly identifies that the manual does not contain the specific part number and declines to provide a definitive answer, which aligns with the reference instruction to decline."
+        }
+      ]
+    }
+  ]
+}
