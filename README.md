@@ -9,10 +9,12 @@
 
 A Haystack 2.x and Ollama based chatbot for user assistance interpreting manuals and documentation. Drop in your PDF manuals, and the system will automatically process them for intelligent question answering.
 
+The default model is **Cohere Command R7B** (`command-r7b`) served locally by Ollama; set `OLLAMA_MODEL` to use another.
+
 ## Features
 
 - FastAPI backend with Haystack 2.x for document processing and QA
-- Vector search using Qdrant and text search using OpenSearch
+- Hybrid retrieval: Qdrant dense vectors + OpenSearch BM25, fused and reranked (see [Retrieval pipeline](#retrieval-pipeline))
 - Local LLM support via Ollama
 - React/TypeScript frontend
 - Document ingestion pipeline for manuals and documentation
@@ -156,10 +158,23 @@ python backend/ingest_manuals.py
 - **Haystack**: Document processing and QA pipeline
 - **React Frontend**: User interface and chat interactions
 
+## Retrieval pipeline
+
+Each question runs a Haystack pipeline that retrieves broadly for recall, then narrows for precision:
+
+1. **Dense retrieval:** the query is embedded with `sentence-transformers/all-MiniLM-L6-v2` and searched in Qdrant.
+2. **Sparse retrieval:** the same query runs as BM25 keyword search in OpenSearch, which catches part numbers and exact terms that embeddings miss.
+3. **Fusion:** both result lists (top 30 each by default) are merged with reciprocal rank fusion (`DocumentJoiner`).
+4. **Reranking:** a transformer cross-encoder (`cross-encoder/ms-marco-MiniLM-L-6-v2`) rescores the fused candidates against the question.
+5. **Diversity:** maximum-marginal-relevance selection drops near-duplicate chunks, so the answer cites distinct passages.
+6. **Grounding gate:** with guardrails on, chunks below a minimum relevance score are dropped. If none remain, the model receives no excerpts and is instructed to say the manual does not cover the question. With guardrails off, the top chunk is always passed through.
+
+Retrieval is filtered to the selected manual. Answers carry citations back to the source pages. Every stage is configurable through environment variables (`RAG_RETRIEVE_TOP_K`, `RAG_MAX_CONTEXT_CHUNKS`, `RAG_JOIN_MODE`, `RAG_RERANK_MODEL`, `RAG_DIVERSITY_MODEL`, `RAG_MMR_LAMBDA`, `RAG_MIN_DOC_SCORE`).
+
 ## Docker Services
 
 - **Qdrant**: Vector search (port 6333)
-- **OpenSearch**: Text search and document storage (port 9200)
+- **OpenSearch**: BM25 text search and document storage (port 9200). Set `OPENSEARCH_PASS` in the environment or a root `.env` before `docker compose up`; there is no default password
 - **OpenSearch Dashboards**: Search visualization (port 5601)
 
 Data is persisted in Docker volumes:
