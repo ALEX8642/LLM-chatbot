@@ -1,0 +1,113 @@
+# LLM-chatbot v2: plan and brief
+
+Owner: Alexander Feht. This file briefs the coding-agent session that builds v2. Read it in full
+before changing anything, and keep it current as decisions are made.
+
+## Goal
+
+Turn this manual-QA chatbot into a **measured** retrieval and agent system. The deliverable is not
+only better code: it is a before/after story backed by an evaluation.
+
+1. **Build the eval first, score v1 as it is today.** That is the baseline.
+2. **Rebuild on a branch**, using the eval to decide every change.
+3. **Score v2 with the same eval** and merge with a before/after table in the README.
+4. **Add an agent layer** (tools + multi-step tasks) with its own scored task set.
+
+The audience is a hiring engineer at an AI company (Cohere, for one) reading the repo for 2–5
+minutes. They should see sound retrieval, honest evaluation that reports misses, and clean
+engineering.
+
+## Ground rules
+
+- **Git:** tag the current `main` as `v1` before any change, then work on branch `v2`. Never rewrite
+  history. Push the branch as you go. Merge to `main` only with Alexander's approval.
+- **Show Alexander every change before pushing to a public branch** (this repo is public).
+- **No secrets in the repo.** Endpoints, keys and hostnames go in `.env` (gitignored). The repo must
+  run against any OpenAI-compatible endpoint, not just the owner's.
+- **Public data only.** Bundle a few public-domain or permissively licensed manuals (US government
+  publications, open-hardware documentation, and so on) so anyone can clone and run it. Record the
+  source and licence of each one in `manuals/SOURCES.md`.
+- **No invented numbers.** Every figure in the README comes from a committed results file.
+- **Report misses.** Keep failures and negative results in the docs; don't tune them away.
+- **Authorship framing:** the README says the code was written with AI coding agents (Claude Code,
+  Codex, GitHub Copilot CLI) under Alexander's specification and review. Never claim hand-written code.
+- Keep the closing licensing paragraph of the README (personal time, personal hardware, MIT).
+
+## v1 review findings (2026-11-01)
+
+- **No evaluation at all.** The tests cover helper functions only. This is the biggest gap.
+- **Single-turn only**, with no conversation history. Answers are buffered and returned whole, not
+  streamed to the UI.
+- **Hard-wired to Ollama's `/api/chat`**, so it cannot use an OpenAI-compatible gateway (LiteLLM, vLLM).
+- **Ingestion is PyMuPDF text only**, so tables and figures are lost. Docling would preserve structure.
+- **Embeddings are `all-MiniLM-L6-v2`** (2021, 384-dim, 256-token window), weak for technical text.
+- **The pipeline's MMR stage is a no-op.** The cross-encoder keeps 5 chunks, then MMR picks 5 of those 5.
+  Diversity should select from a larger reranked pool.
+- **Two relevance thresholds disagree:** the `MIN_DOC_SCORE` constant defaults to 0.2, the runtime
+  default is 0.35.
+- **Abstention is prompt-only.** With no eligible chunks the model is still called with an empty
+  context. Decide whether v2 abstains in code.
+- **Heavy dependencies** (`unstructured`, `pandas`, `scikit-learn`, Jupyter) that look unused.
+- **No sample manuals**, so a reviewer cannot run it.
+
+## Phase 1: evaluation (before touching the app)
+
+- **Corpus:** 3–5 bundled public manuals of different styles (procedures, spec tables, troubleshooting).
+- **Eval set:** about 40 questions in `evals/qa.jsonl`. Each has the gold page(s) and a short
+  reference answer. Include answerable questions (single-page, multi-page, table lookups) and
+  unanswerable ones (the manual does not cover it, so the right answer is to decline).
+- **Retrieval metrics:**
+  - recall@k for k = 1, 5, 10
+  - MRR
+  - citation correctness: the cited page holds the answer
+- **Answer metrics:**
+  - faithfulness: every claim is supported by the retrieved text. Use an LLM judge with a fixed
+    prompt, and spot-check it by hand.
+  - correctness against the reference answer
+  - abstention: precision and recall on the unanswerable items
+- **Runtime metrics:** latency p50 and p95.
+- **Harness:** `evals/run_eval.py`, which writes results JSON to `evals/results/`. It must be
+  re-runnable and deterministic where possible (fixed seeds, temperature 0 for the judge).
+- **Score v1 unchanged.** Commit those results as the baseline.
+
+## Phase 2: rebuild (branch `v2`)
+
+Make one change at a time where practical and re-run the eval, so each gain can be attributed.
+
+- **LLM client:** OpenAI-compatible (`/v1/chat/completions`), with base URL, key and model from env.
+  Keep Ollama working through its OpenAI-compatible endpoint. The default model remains Cohere
+  Command R7B; compare it against at least one larger model through the gateway.
+- **Ingestion:** Docling (local library, or a docling-serve URL from env) with page numbers kept for
+  citations. Chunk by document structure, not fixed length.
+- **Embeddings:** a stronger current model, chosen by the eval rather than by reputation.
+- **Retrieval:** keep the hybrid design (dense + BM25 → fusion → cross-encoder rerank), and fix the
+  MMR ordering. Consider local, serverless stores for development (for example Qdrant local mode and
+  an in-memory BM25) so the app runs without Docker. Keep the Docker Compose path for full deployment.
+- **Chat:** multi-turn history and streamed answers to the UI.
+- **Abstention:** decide on threshold behaviour in code, and measure it.
+- **Cleanup:** prune unused dependencies, add tests for the pipeline, keep CI green.
+
+## Phase 3: agent
+
+- **Tools:** `search_manuals` (the v2 retriever), `web_search` (SearXNG, URL from env, optional),
+  `ask_user` (a clarifying question), and possibly `read_page`.
+- **Loop:** ReAct or plan-and-execute. Choose by measured task success, not fashion.
+- **Task set:** 20–30 multi-step tasks in `evals/agent_tasks.jsonl`, for example "find the torque spec
+  in manual A, then check whether manual B's procedure uses the same value", or "the manual doesn't
+  cover X: ask or decline".
+- **Score:** task success, tool-call correctness, number of steps and latency.
+- Run it against at least two models through the gateway (for example Command R7B and a larger
+  model) and report both.
+
+## README for v2 (in this order)
+
+1. What it is, in one paragraph.
+2. Architecture diagram.
+3. **Evaluation:** the v1 → v2 table, then the agent results, then misses.
+4. How to run it: local mode, and Docker Compose.
+5. How it was built.
+
+## Reporting
+
+At the end of each working session, commit to the branch and give Alexander a short summary: what
+was done, the numbers, blockers and the next step.
