@@ -26,7 +26,6 @@ import argparse
 import hashlib
 import json
 import os
-import platform
 import re
 import statistics
 import subprocess
@@ -170,10 +169,12 @@ def make_v1_adapter(app_dir: Path, strict_mode: bool) -> Callable[..., Dict[str,
             "timings": {"total_s": total, "llm_s": record.get("llm_s")},
         }
 
+    # Endpoints and host names stay out of results: the repo is public.
+    run.llm_url = api.OLLAMA_URL  # type: ignore[attr-defined]
     run.config = {  # type: ignore[attr-defined]
         "system": "v1",
         "strict_mode": strict_mode,
-        "llm_url": api.OLLAMA_URL,
+        "llm_backend": "ollama",
         "llm_model": api.OLLAMA_MODEL,
         "retrieve_top_k": api.RETRIEVE_TOP_K,
         "max_context_chunks": api.MAX_CONTEXT_CHUNKS,
@@ -205,9 +206,9 @@ def cmd_generate(args) -> None:
         qa = qa[: args.limit]
     run = ADAPTERS[args.system](args)
     config = dict(run.config)
-    if "llm_url" in config:
+    if config.get("llm_backend") == "ollama":
         config["llm_model_digest"] = ollama_model_digest(
-            config["llm_url"], config["llm_model"]
+            run.llm_url, config["llm_model"]
         )
 
     runs = []
@@ -250,7 +251,6 @@ def cmd_generate(args) -> None:
         "qa_file": str(Path(args.qa).name),
         "qa_sha256": sha256_file(Path(args.qa)),
         "config": config,
-        "host": platform.node(),
         "repeats": runs,
     }
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
