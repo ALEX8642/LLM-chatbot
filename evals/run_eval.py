@@ -262,6 +262,10 @@ def cmd_generate(args) -> None:
 # Judge
 # -------------------------
 
+# Judge prompts. Versioned: changing them changes every score, so bump JUDGE_VERSION
+# and re-score every system being compared.
+JUDGE_VERSION = 2
+
 JUDGE_CORRECTNESS = """You grade answers from a technical-manual assistant.
 
 Question: {question}
@@ -269,15 +273,16 @@ Reference answer: {reference}
 Assistant answer: {answer}
 
 Decide two things.
-1. "abstained": true if the assistant declines to answer or says the manual does not
-   contain the information (pointing the user to another document counts as declining);
-   false if it gives a substantive answer.
+1. "abstained": true if the assistant does not commit to an answer: it declines, or says
+   the manual or the excerpts do not contain the information. This holds even if it then
+   suggests where else to look (an index, another document, a technician). False if it
+   gives a substantive answer, even a wrong or hedged one.
 2. "correctness", comparing the assistant answer with the reference answer:
    - "correct": contains the key facts of the reference and nothing that contradicts it
    - "partial": some key facts right, others missing or wrong
    - "incorrect": wrong, contradicts the reference, or gives no answer
    If the reference says the question is not covered by the manual, the answer is
-   "correct" only if the assistant declines; a confident answer is "incorrect".
+   "correct" if the assistant abstains and "incorrect" if it gives a substantive answer.
    Ignore style, length and extra detail that does not contradict the reference.
 
 Reply with JSON only: {{"abstained": true|false, "correctness": "correct"|"partial"|"incorrect", "reason": "<one sentence>"}}"""
@@ -295,8 +300,13 @@ Assistant answer:
 >>>
 
 List each factual claim in the answer that is NOT supported by the excerpts.
-Statements that the manual lacks the information, and generic advice to consult a
-technician, are not claims. Then rate:
+- Excerpts come from PDF text extraction. Tables are often flattened to one cell per
+  line, in column order (for example item, codes, part number, description, quantity).
+  Read them carefully before calling a value unsupported.
+- Not claims: statements that the manual or excerpts lack the information, generic
+  advice to consult a technician, and arithmetic or reasoning steps applied to supported
+  facts (but a wrong result of such a step is an unsupported claim).
+Then rate:
 - "faithful": every claim is supported
 - "partial": at least one claim is unsupported, but most are supported
 - "unfaithful": most claims are unsupported
@@ -500,7 +510,12 @@ def cmd_score(args) -> None:
         "qa_sha256": raw["qa_sha256"],
         "config": raw["config"],
         "judge": (
-            {"model": judge.model, "temperature": 0, "seed": judge.seed}
+            {
+                "model": judge.model,
+                "version": JUDGE_VERSION,
+                "temperature": 0,
+                "seed": judge.seed,
+            }
             if judge
             else None
         ),
