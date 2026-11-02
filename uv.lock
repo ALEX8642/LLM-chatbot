@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = "==3.12.*"
 
 [[package]]
@@ -1244,10 +1244,12 @@ dependencies = [
     { name = "opensearch-haystack" },
     { name = "opensearch-py" },
     { name = "pandas" },
+    { name = "pillow" },
     { name = "pymupdf" },
     { name = "python-dotenv" },
     { name = "qdrant-client" },
     { name = "qdrant-haystack" },
+    { name = "rapidfuzz" },
     { name = "requests" },
     { name = "scikit-learn" },
     { name = "sentence-transformers" },
@@ -1288,11 +1290,13 @@ requires-dist = [
     { name = "opensearch-haystack", specifier = "==4.2.0" },
     { name = "opensearch-py", specifier = "==2.6.0" },
     { name = "pandas", specifier = "==2.2.2" },
+    { name = "pillow", specifier = ">=10.0" },
     { name = "pymupdf", specifier = ">=1.24.10" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
     { name = "qdrant-client", specifier = ">=1.12.0" },
     { name = "qdrant-haystack", specifier = "==9.2.0" },
+    { name = "rapidfuzz", specifier = ">=3.0" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "scikit-learn", specifier = ">=1.5.1" },
     { name = "sentence-transformers", specifier = ">=3.0.0" },

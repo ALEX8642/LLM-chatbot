@@ -23,16 +23,16 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: uv sync --all-extras
+        run: uv sync --extra dev
 
       - name: Black (format check)
-        run: uv run black --check api.py backend/
+        run: uv run black --check api.py backend/ manualqa/ evals/spike/ tests/manualqa/
 
       - name: isort (import order)
-        run: uv run isort --check --diff api.py backend/
+        run: uv run isort --check --diff api.py backend/ manualqa/ evals/spike/ tests/manualqa/
 
       - name: Flake8 (lint)
-        run: uv run flake8 api.py backend/
+        run: uv run flake8 api.py backend/ manualqa/ evals/spike/ tests/manualqa/
 
       - name: Run tests
         run: uv run pytest tests/ -v --tb=short
