@@ -29,7 +29,8 @@ def test_match_cell_boxes_leaves_unmatched_none():
     assert [c.box for c in cells] == [None, None]
 
 
-def test_match_cell_boxes_uses_each_box_once():
+def test_match_cell_boxes_repeated_text_gets_no_box():
+    # two cells reading "4": text alone cannot say which box is whose
     cells = [Cell(0, 0, "4", None), Cell(1, 0, "4", None)]
     boxes = [Box(0.1, 0.1, 0.2, 0.15), Box(0.1, 0.2, 0.2, 0.25)]
     lines = [
@@ -37,7 +38,33 @@ def test_match_cell_boxes_uses_each_box_once():
         Line("4", Box(0.12, 0.21, 0.18, 0.24)),
     ]
     match_cell_boxes(cells, boxes, lines)
-    assert {cells[0].box, cells[1].box} == set(boxes)
+    assert [c.box for c in cells] == [None, None]
+
+
+def test_match_cell_boxes_never_shifts_rows():
+    # three parts rows share CAGE 68505; the detector found row 0's item box and
+    # the CAGE boxes of rows 1 and 2 only (review finding: boxes shifted a row)
+    cells = [
+        Cell(r, c, text, None)
+        for r in range(3)
+        for c, text in enumerate([f"10{r}", "68505"])
+    ]
+    item0 = Box(0.1, 0.10, 0.2, 0.15)
+    cage1, cage2 = Box(0.3, 0.20, 0.4, 0.25), Box(0.3, 0.30, 0.4, 0.35)
+    lines = [
+        Line("100", Box(0.11, 0.11, 0.19, 0.14)),
+        Line("68505", Box(0.31, 0.21, 0.39, 0.24)),
+        Line("68505", Box(0.31, 0.31, 0.39, 0.34)),
+    ]
+    match_cell_boxes(cells, [item0, cage1, cage2], lines)
+    assert {(c.row, c.col): c.box for c in cells} == {
+        (0, 0): item0,
+        (0, 1): None,
+        (1, 0): None,
+        (1, 1): None,
+        (2, 0): None,
+        (2, 1): None,
+    }
 
 
 def parse(manual, name, page):

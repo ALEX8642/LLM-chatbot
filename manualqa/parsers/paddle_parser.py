@@ -8,6 +8,7 @@ converted with ``PageFrame.from_px`` using the size of that render.
 from __future__ import annotations
 
 import time
+from collections import Counter
 from pathlib import Path
 
 from rapidfuzz import fuzz
@@ -49,43 +50,32 @@ def _inside(box: Box, x: float, y: float) -> bool:
 
 
 def match_cell_boxes(cells: list[Cell], boxes: list[Box], lines: list[Line]) -> None:
-    """Give each HTML cell the detected cell box whose OCR text matches it best.
+    """Give an HTML cell the detected cell box whose OCR text matches it.
 
-    A box's text is the OCR lines whose centres fall inside it. Pairs are assigned
-    best score first, each box and cell at most once; equal scores prefer pairs at the
-    same position in reading order. Cells without a match keep ``box=None``."""
+    A box's text is the OCR lines whose centres fall inside it. A pair is accepted only
+    when text identifies it exactly: the cell's text is unique among the table's cells
+    and the box's text unique among the boxes. Repeated values (CAGE codes, quantities)
+    would otherwise get another row's box, a wrong highlight that looks right. Cells
+    without a match keep ``box=None``."""
+    cell_text = [norm(c.text) for c in cells]
     box_text = [
         norm(" ".join(ln.text for ln in lines if _inside(b, *ln.box.center)))
         for b in boxes
     ]
-    box_rank = {
-        i: r
-        for r, i in enumerate(
-            sorted(range(len(boxes)), key=lambda i: (boxes[i].y0, boxes[i].x0))
-        )
-    }
-    cell_rank = {
-        i: r
-        for r, i in enumerate(
-            sorted(range(len(cells)), key=lambda i: (cells[i].row, cells[i].col))
-        )
-    }
     pairs = []
-    for ci, cell in enumerate(cells):
-        text = norm(cell.text)
+    for ci, text in enumerate(cell_text):
         if not text:
             continue
         for bi, btext in enumerate(box_text):
-            score = fuzz.ratio(text, btext) if btext else 0
-            if score >= CELL_MATCH_MIN:
-                pairs.append((score, -abs(box_rank[bi] - cell_rank[ci]), ci, bi))
-    used_cells, used_boxes = set(), set()
-    for _score, _closeness, ci, bi in sorted(pairs, reverse=True):
-        if ci in used_cells or bi in used_boxes:
-            continue
-        cells[ci].box = boxes[bi]
-        used_cells.add(ci)
-        used_boxes.add(bi)
+            if btext and fuzz.ratio(text, btext) >= CELL_MATCH_MIN:
+                pairs.append((ci, bi))
+    cells_hit = Counter(ci for ci, _ in pairs)
+    boxes_hit = Counter(bi for _, bi in pairs)
+    repeated = {t for t, n in Counter(cell_text).items() if n > 1}
+    for ci, bi in pairs:
+        unique = cells_hit[ci] == 1 and boxes_hit[bi] == 1
+        if unique and cell_text[ci] not in repeated:
+            cells[ci].box = boxes[bi]
 
 
 class PaddleParser:
