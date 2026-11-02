@@ -1,10 +1,19 @@
 import os
+import sys
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pymupdf
 import pytest
 
 MANUALS = Path(__file__).resolve().parents[2] / "manuals"
+
+# v1's tests/conftest.py replaces `requests` with a mock; the parser libraries need the
+# real one. Restore it only for GPU parser runs, which never run v1's tests.
+if os.environ.get("MANUALQA_PARSERS") == "1" and isinstance(
+    sys.modules.get("requests"), MagicMock
+):
+    del sys.modules["requests"]
 
 
 def pytest_collection_modifyitems(config, items):
