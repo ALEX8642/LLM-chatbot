@@ -65,7 +65,7 @@ a minimum credible version first, planned as a
 |---|---|
 | Eval harness, 42 dev questions, v1 baseline | done ([`evals/`](evals/)) |
 | Design (revision 4) | done |
-| Plan 1: coordinate spike (parsers, OCR detection, overlays) | in progress: coordinate system, block schema, OCR detection, text-layer reference and spike runner done; Docling and PaddleOCR-VL runs next |
+| Plan 1: coordinate spike (parsers, OCR detection, overlays) | done: PaddleOCR-VL chosen over Docling ([decision 001](docs/decisions/001-parser-and-coordinates.md)) |
 | Plans 2–8: ingestion, answer path, overlay UI, eval set and judge, component selection, pre-registered final run, presentation | not started |
 
 ## Repository layout
@@ -76,7 +76,7 @@ manualqa/              v2 package
   blocks.py            block schema every parser emits (lines, tables with cells, figures)
   ocr_detect.py        decides per page whether the PDF text layer can be trusted
   overlay.py           draws parses over rendered pages for checking by eye
-  parsers/             parser adapters (text layer now; Docling and PaddleOCR-VL next)
+  parsers/             parser adapters (text layer reference, Docling, PaddleOCR-VL)
 evals/
   qa.jsonl             42 dev questions with gold pages and reference answers
   run_eval.py          harness: generate, score (retrieval metrics, LLM judge), summarise
@@ -87,6 +87,7 @@ docs/
   superpowers/specs/   the v2 design
   superpowers/plans/   implementation plans
   spike/               spike overlays and metrics
+  decisions/           decision records (what was tried, what won, by how much)
 api.py, backend/, frontend/, docker-compose.yaml, scripts/
                        v1 code (scored as the baseline; to be replaced)
 ```
