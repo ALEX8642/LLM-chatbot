@@ -95,6 +95,8 @@ def main(argv: list[str] | None = None) -> int:
                 decision = needs_ocr(page)
                 pp = _parse_one(parser, pdf, n, decision, page)
                 parses.append(pp)
+                status = pp.error or f"{len(pp.blocks)} blocks"
+                print(f"{pdf.stem} p{n}: {pp.seconds:.1f}s, {status}", flush=True)
 
                 img, _ = render_page(page)
                 draw_overlay(img, pp).save(
