@@ -13,10 +13,10 @@ from manualqa.textnorm import norm
 LINE_MATCH_MIN = 90  # fuzz.ratio for a parser line to count as the same line
 
 
-def coord_agreement(pp: PageParse, ref: list[Line]) -> float | None:
-    """Median IoU between reference lines and the parser lines with the same text."""
+def _matched_pairs(pp: PageParse, ref: list[Line]) -> list[tuple[Line, Line]]:
+    """(reference line, parser line with the same text) pairs."""
     lines = [(norm(ln.text), ln) for b in pp.blocks for ln in b.lines]
-    ious = []
+    pairs = []
     for r in ref:
         target = norm(r.text)
         if not target or not lines:
@@ -26,8 +26,29 @@ def coord_agreement(pp: PageParse, ref: list[Line]) -> float | None:
             key=lambda pair: pair[0],
         )
         if score >= LINE_MATCH_MIN:
-            ious.append(r.box.iou(best.box))
+            pairs.append((r, best))
+    return pairs
+
+
+def coord_agreement(pp: PageParse, ref: list[Line]) -> float | None:
+    """Median IoU between reference lines and the parser lines with the same text.
+    Correct boxes can score ~0.65 here: PyMuPDF's line boxes include the font's
+    ascent and descent, glyph-tight boxes do not (see ``coord_offset``)."""
+    ious = [r.box.iou(p.box) for r, p in _matched_pairs(pp, ref)]
     return statistics.median(ious) if ious else None
+
+
+def coord_offset(pp: PageParse, ref: list[Line]) -> float | None:
+    """Median distance between centres of matched lines (the larger of the x and y
+    differences, in page units). Separates misplaced boxes from box conventions."""
+    offsets = [
+        max(
+            abs(r.box.center[0] - p.box.center[0]),
+            abs(r.box.center[1] - p.box.center[1]),
+        )
+        for r, p in _matched_pairs(pp, ref)
+    ]
+    return statistics.median(offsets) if offsets else None
 
 
 def _squash(text: str) -> str:

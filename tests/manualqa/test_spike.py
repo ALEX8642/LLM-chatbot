@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from evals.spike import run_spike
-from evals.spike.metrics import cell_checks, coord_agreement, ocr_cer
+from evals.spike.metrics import cell_checks, coord_agreement, coord_offset, ocr_cer
 from evals.spike.report import summarise
 from manualqa import parsers
 from manualqa.blocks import Block, Cell, Line, PageParse
@@ -40,6 +40,25 @@ def test_coord_agreement_no_text_match_is_none():
 def test_coord_agreement_shifted_box():
     shifted = [Line(ln.text, Box(0.3, ln.box.y0, 0.7, ln.box.y1)) for ln in REF]
     assert coord_agreement(text_page(shifted), REF) == pytest.approx(1 / 3)
+
+
+def test_coord_offset_tight_boxes_are_close():
+    # glyph-tight boxes (as Docling gives) vs line boxes with ascent/descent
+    tight = [
+        Line(ln.text, Box(ln.box.x0, ln.box.y0 + 0.01, ln.box.x1, ln.box.y1 - 0.005))
+        for ln in REF
+    ]
+    assert coord_offset(text_page(tight), REF) == pytest.approx(0.0025)
+
+
+def test_coord_offset_shifted_box():
+    shifted = [Line(ln.text, Box(0.3, ln.box.y0, 0.7, ln.box.y1)) for ln in REF]
+    assert coord_offset(text_page(shifted), REF) == pytest.approx(0.2)
+
+
+def test_coord_offset_no_match_is_none():
+    other = [Line("Something else entirely", Box(0.1, 0.1, 0.5, 0.15))]
+    assert coord_offset(text_page(other), REF) is None
 
 
 def test_ocr_cer_ignores_whitespace_and_case():
@@ -125,6 +144,7 @@ def test_runner_textlayer_two_pages(tmp_path):
         assert (tmp_path / f"docs/textlayer/{stem}-p{n:03d}.jpg").exists()
     by_page = {p["page"]: p for p in metrics["pages"]}
     assert by_page[16]["coord_agreement"] == 1.0
+    assert by_page[16]["coord_offset"] == 0.0
     assert by_page[1]["ocr"] is True
     assert by_page[1]["coord_agreement"] is None
 

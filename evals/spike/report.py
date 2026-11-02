@@ -11,15 +11,15 @@ import sys
 from pathlib import Path
 
 HEADER = (
-    "| parser | pages | errors | validate problems | coord agreement (median IoU) "
+    "| parser | pages | errors | validate problems | coord agreement (median IoU) | centre offset (median) "
     "| CER letter-spaced (median) | cell checks | cells with boxes | s/page |\n"
-    "|---|---|---|---|---|---|---|---|---|"
+    "|---|---|---|---|---|---|---|---|---|---|"
 )
 
 
-def _median(values: list) -> str:
+def _median(values: list, fmt: str = "{:.2f}") -> str:
     values = [v for v in values if v is not None]
-    return f"{statistics.median(values):.2f}" if values else "n/a"
+    return fmt.format(statistics.median(values)) if values else "n/a"
 
 
 def summarise(all_metrics: list[dict]) -> str:
@@ -38,6 +38,7 @@ def summarise(all_metrics: list[dict]) -> str:
                     str(sum(p["error"] is not None for p in pages)),
                     str(sum(len(p["problems"]) for p in pages)),
                     _median([p["coord_agreement"] for p in pages]),
+                    _median([p.get("coord_offset") for p in pages], "{:.4f}"),
                     _median([p["cer"] for p in pages]),
                     f"{sum(c['passed'] for c in checks)}/{len(checks)}",
                     f"{boxed}/{cells}" if cells else "n/a",

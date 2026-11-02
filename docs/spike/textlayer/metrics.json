@@ -1,15 +1,16 @@
 {
  "parser": "textlayer",
  "versions": {
-  "pymupdf": "2.0"
+  "pymupdf": "2.1"
  },
+ "ocr_engine": null,
  "pages": [
   {
    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
    "page": 16,
    "ocr": false,
    "ocr_reason": null,
-   "seconds": 0.096,
+   "seconds": 0.024,
    "error": null,
    "blocks": 16,
    "lines": 103,
@@ -17,6 +18,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -24,7 +26,7 @@
    "page": 19,
    "ocr": true,
    "ocr_reason": "image_cover",
-   "seconds": 0.067,
+   "seconds": 0.056,
    "error": null,
    "blocks": 16,
    "lines": 77,
@@ -32,6 +34,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": null,
+   "coord_offset": null,
    "cer": null
   },
   {
@@ -39,7 +42,7 @@
    "page": 28,
    "ocr": false,
    "ocr_reason": null,
-   "seconds": 0.019,
+   "seconds": 0.02,
    "error": null,
    "blocks": 16,
    "lines": 98,
@@ -47,6 +50,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -62,6 +66,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -69,7 +74,7 @@
    "page": 31,
    "ocr": true,
    "ocr_reason": "vector_text",
-   "seconds": 0.064,
+   "seconds": 0.063,
    "error": null,
    "blocks": 2,
    "lines": 2,
@@ -77,6 +82,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": null,
+   "coord_offset": null,
    "cer": null
   },
   {
@@ -84,7 +90,7 @@
    "page": 36,
    "ocr": false,
    "ocr_reason": null,
-   "seconds": 0.031,
+   "seconds": 0.033,
    "error": null,
    "blocks": 30,
    "lines": 101,
@@ -92,6 +98,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -107,6 +114,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -122,6 +130,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -137,6 +146,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -144,7 +154,7 @@
    "page": 67,
    "ocr": false,
    "ocr_reason": null,
-   "seconds": 0.033,
+   "seconds": 0.039,
    "error": null,
    "blocks": 61,
    "lines": 118,
@@ -152,6 +162,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -159,7 +170,7 @@
    "page": 22,
    "ocr": false,
    "ocr_reason": null,
-   "seconds": 0.014,
+   "seconds": 0.009,
    "error": null,
    "blocks": 18,
    "lines": 63,
@@ -167,6 +178,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -182,6 +194,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -197,6 +210,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -204,7 +218,7 @@
    "page": 25,
    "ocr": false,
    "ocr_reason": null,
-   "seconds": 0.033,
+   "seconds": 0.03,
    "error": null,
    "blocks": 6,
    "lines": 35,
@@ -212,6 +226,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -219,7 +234,7 @@
    "page": 28,
    "ocr": false,
    "ocr_reason": null,
-   "seconds": 0.02,
+   "seconds": 0.022,
    "error": null,
    "blocks": 9,
    "lines": 42,
@@ -227,6 +242,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -242,6 +258,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": null,
+   "coord_offset": null,
    "cer": 0.0
   },
   {
@@ -257,6 +274,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": null,
+   "coord_offset": null,
    "cer": 0.0
   },
   {
@@ -272,6 +290,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": null,
+   "coord_offset": null,
    "cer": null
   },
   {
@@ -287,6 +306,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": null,
+   "coord_offset": null,
    "cer": 0.0
   },
   {
@@ -294,7 +314,7 @@
    "page": 72,
    "ocr": true,
    "ocr_reason": "letter_spaced",
-   "seconds": 0.006,
+   "seconds": 0.007,
    "error": null,
    "blocks": 26,
    "lines": 50,
@@ -302,6 +322,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": null,
+   "coord_offset": null,
    "cer": 0.0
   },
   {
@@ -317,6 +338,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": null,
+   "coord_offset": null,
    "cer": null
   },
   {
@@ -332,6 +354,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -347,6 +370,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": null,
+   "coord_offset": null,
    "cer": null
   },
   {
@@ -362,6 +386,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -377,6 +402,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -384,7 +410,7 @@
    "page": 58,
    "ocr": true,
    "ocr_reason": "image_cover",
-   "seconds": 0.047,
+   "seconds": 0.049,
    "error": null,
    "blocks": 2,
    "lines": 3,
@@ -392,6 +418,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": null,
+   "coord_offset": null,
    "cer": null
   },
   {
@@ -399,7 +426,7 @@
    "page": 59,
    "ocr": false,
    "ocr_reason": null,
-   "seconds": 0.006,
+   "seconds": 0.007,
    "error": null,
    "blocks": 4,
    "lines": 163,
@@ -407,6 +434,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -414,7 +442,7 @@
    "page": 60,
    "ocr": true,
    "ocr_reason": "image_cover",
-   "seconds": 0.05,
+   "seconds": 0.055,
    "error": null,
    "blocks": 2,
    "lines": 3,
@@ -422,6 +450,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": null,
+   "coord_offset": null,
    "cer": null
   },
   {
@@ -437,6 +466,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   },
   {
@@ -452,6 +482,7 @@
    "cells_with_boxes": 0,
    "problems": [],
    "coord_agreement": 1.0,
+   "coord_offset": 0.0,
    "cer": null
   }
  ],

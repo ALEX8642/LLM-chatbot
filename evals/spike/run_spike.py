@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pymupdf
 
-from evals.spike.metrics import cell_checks, coord_agreement, ocr_cer
+from evals.spike.metrics import cell_checks, coord_agreement, coord_offset, ocr_cer
 from manualqa.blocks import PageParse, dump_pages, validate
 from manualqa.geometry import render_page
 from manualqa.ocr_detect import needs_ocr
@@ -25,7 +25,15 @@ from manualqa.parsers import get_parser
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-PACKAGES = ["pymupdf", "docling", "docling-core", "paddleocr", "paddlepaddle-gpu"]
+PACKAGES = [
+    "pymupdf",
+    "docling",
+    "docling-core",
+    "rapidocr",
+    "torch",
+    "paddleocr",
+    "paddlepaddle-gpu",
+]
 
 
 def _versions() -> dict[str, str]:
@@ -93,12 +101,12 @@ def main(argv: list[str] | None = None) -> int:
                     docs / f"{pdf.stem}-p{n:03d}.jpg", quality=70
                 )
 
-                agreement = cer = None
+                agreement = offset = cer = None
                 if not decision.ocr:
                     (ref,) = reference.parse(pdf, [n], {n: decision})
-                    agreement = coord_agreement(
-                        pp, [ln for b in ref.blocks for ln in b.lines]
-                    )
+                    ref_lines = [ln for b in ref.blocks for ln in b.lines]
+                    agreement = coord_agreement(pp, ref_lines)
+                    offset = coord_offset(pp, ref_lines)
                 elif decision.reason == "letter_spaced":
                     cer = ocr_cer(pp, page.get_text())
 
@@ -117,6 +125,7 @@ def main(argv: list[str] | None = None) -> int:
                         "cells_with_boxes": sum(c.box is not None for c in cells),
                         "problems": validate(pp),
                         "coord_agreement": agreement,
+                        "coord_offset": offset,
                         "cer": cer,
                     }
                 )
@@ -126,6 +135,7 @@ def main(argv: list[str] | None = None) -> int:
     metrics = {
         "parser": parser.name,
         "versions": _versions(),
+        "ocr_engine": getattr(parser, "ocr_engine", None),
         "pages": page_metrics,
         "cell_checks": checks,
     }
