@@ -13,20 +13,31 @@ from manualqa.textnorm import norm
 LINE_MATCH_MIN = 90  # fuzz.ratio for a parser line to count as the same line
 
 
+def _centre_distance(a: Line, b: Line) -> float:
+    (ax, ay), (bx, by) = a.box.center, b.box.center
+    return max(abs(ax - bx), abs(ay - by))
+
+
 def _matched_pairs(pp: PageParse, ref: list[Line]) -> list[tuple[Line, Line]]:
-    """(reference line, parser line with the same text) pairs."""
+    """One-to-one (reference line, parser line) pairs with the same text. Among lines
+    whose text matches, the nearest centres pair first, so repeated texts (a CAGE
+    code on every parts row) pair with their own row, and each line is used once."""
     lines = [(norm(ln.text), ln) for b in pp.blocks for ln in b.lines]
-    pairs = []
-    for r in ref:
+    candidates = []
+    for ri, r in enumerate(ref):
         target = norm(r.text)
-        if not target or not lines:
+        if not target:
             continue
-        score, best = max(
-            ((fuzz.ratio(target, text), ln) for text, ln in lines),
-            key=lambda pair: pair[0],
-        )
-        if score >= LINE_MATCH_MIN:
-            pairs.append((r, best))
+        for pi, (text, ln) in enumerate(lines):
+            if fuzz.ratio(target, text) >= LINE_MATCH_MIN:
+                candidates.append((_centre_distance(r, ln), ri, pi))
+    pairs, used_ref, used_parser = [], set(), set()
+    for _dist, ri, pi in sorted(candidates):
+        if ri in used_ref or pi in used_parser:
+            continue
+        pairs.append((ref[ri], lines[pi][1]))
+        used_ref.add(ri)
+        used_parser.add(pi)
     return pairs
 
 

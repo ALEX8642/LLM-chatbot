@@ -17,7 +17,7 @@ from pathlib import Path
 import pymupdf
 
 from evals.spike.metrics import cell_checks, coord_agreement, coord_offset, ocr_cer
-from manualqa.blocks import PageParse, dump_pages, validate
+from manualqa.blocks import PageParse, dump_pages, load_pages, validate
 from manualqa.geometry import render_page
 from manualqa.ocr_detect import needs_ocr
 from manualqa.overlay import draw_overlay
@@ -46,6 +46,14 @@ def _versions() -> dict[str, str]:
     return found
 
 
+def _safe_error(e: Exception) -> str:
+    """Exception type and message with local paths replaced (results are public)."""
+    text = f"{type(e).__name__}: {e}"
+    for path, label in ((str(ROOT), "<repo>"), (str(Path.home()), "~")):
+        text = text.replace(path, label)
+    return text
+
+
 def _parse_one(parser, pdf: Path, n: int, decision, page) -> PageParse:
     start = time.perf_counter()
     try:
@@ -64,7 +72,7 @@ def _parse_one(parser, pdf: Path, n: int, decision, page) -> PageParse:
             ocr_reason=decision.reason,
             blocks=[],
             seconds=time.perf_counter() - start,
-            error=f"{type(e).__name__}: {e}",
+            error=_safe_error(e),
         )
 
 
@@ -76,15 +84,28 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--manuals", type=Path, default=ROOT / "manuals")
     ap.add_argument("--out", type=Path, default=ROOT / "spike-out")
     ap.add_argument("--docs", type=Path, default=ROOT / "docs" / "spike")
+    ap.add_argument(
+        "--parses",
+        type=Path,
+        help="re-score saved parses (parses.jsonl) instead of running the parser",
+    )
     args = ap.parse_args(argv)
 
-    parser = get_parser(args.parser)
+    saved = (
+        {(pp.manual, pp.page): pp for pp in load_pages(args.parses)}
+        if args.parses
+        else None
+    )
+    parser = None if saved is not None else get_parser(args.parser)
+    name = args.parser if parser is None else parser.name
     reference = get_parser("textlayer")
     expectations = (
         json.loads(args.expectations.read_text()) if args.expectations.exists() else []
     )
-    docs = args.docs / parser.name
+    docs = args.docs / name
     docs.mkdir(parents=True, exist_ok=True)
+    previous = docs / "metrics.json"
+    previous = json.loads(previous.read_text()) if previous.exists() else {}
 
     parses, page_metrics, checks = [], [], []
     for manual, pages in json.loads(args.pages.read_text()).items():
@@ -93,7 +114,10 @@ def main(argv: list[str] | None = None) -> int:
             for n in pages:
                 page = doc[n - 1]
                 decision = needs_ocr(page)
-                pp = _parse_one(parser, pdf, n, decision, page)
+                if saved is None:
+                    pp = _parse_one(parser, pdf, n, decision, page)
+                else:
+                    pp = saved[(manual, n)]
                 parses.append(pp)
                 status = pp.error or f"{len(pp.blocks)} blocks"
                 print(f"{pdf.stem} p{n}: {pp.seconds:.1f}s, {status}", flush=True)
@@ -133,17 +157,22 @@ def main(argv: list[str] | None = None) -> int:
                 )
                 checks += cell_checks(pp, expectations)
 
-    dump_pages(parses, args.out / parser.name / "parses.jsonl")
+    dump_pages(parses, args.out / name / "parses.jsonl")
     metrics = {
-        "parser": parser.name,
-        "versions": _versions(),
-        "ocr_engine": getattr(parser, "ocr_engine", None),
+        "parser": name,
+        # re-scoring keeps the versions and engine of the run that parsed
+        "versions": previous.get("versions", {}) if saved is not None else _versions(),
+        "ocr_engine": (
+            previous.get("ocr_engine")
+            if saved is not None
+            else getattr(parser, "ocr_engine", None)
+        ),
         "pages": page_metrics,
         "cell_checks": checks,
     }
     (docs / "metrics.json").write_text(json.dumps(metrics, indent=1) + "\n")
     errors = sum(p["error"] is not None for p in page_metrics)
-    print(f"{parser.name}: {len(page_metrics)} pages, {errors} errors -> {docs}")
+    print(f"{name}: {len(page_metrics)} pages, {errors} errors -> {docs}")
     return 0
 
 
