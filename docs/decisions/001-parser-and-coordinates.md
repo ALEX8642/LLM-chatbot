@@ -139,10 +139,13 @@ Costs accepted:
 5. **Known Paddle bug:** `PaddleOCRVL` must be created after the other Paddle models; creating one
    after it makes its `predict()` hang with the GPU idle (paddleocr 3.7.0, paddlepaddle-gpu 3.3.1).
 6. Check two or three of the borderline letter-spaced operator pages by eye.
-7. **Licence decision for Alexander:** `manualqa` renders pages and maps coordinates with PyMuPDF,
-   which is AGPL-3.0 (v1 already depended on it). The design asks for a decision when a component is
-   restrictive. The permissive alternative is pypdfium2 (Apache-2.0 / BSD-3-Clause); `geometry.py` is
-   the only module that would change, and its pixel tests would show whether the swap holds.
+7. **PyMuPDF licence (decided 2026-11-02: keep).** `manualqa` renders pages and maps coordinates with
+   PyMuPDF, which is AGPL-3.0 (v1 already depended on it). Alexander's call: performance and accuracy
+   come before licences; cons are recorded instead. Cons: anyone who distributes v2, or runs it as a
+   network service for others, must offer its source under AGPL terms or buy Artifex's commercial
+   licence, so the repo is MIT but a deployment that includes PyMuPDF is not MIT-only. The permissive
+   alternative is pypdfium2 (Apache-2.0 / BSD-3-Clause); `geometry.py` is the only module that would
+   change, and its pixel tests would show whether a swap holds.
 
 ## Reproduce
 
