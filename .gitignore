@@ -70,3 +70,5 @@ local_data/
 
 # Claude Code
 CLAUDE.md
+# parser spike raw outputs
+spike-out/

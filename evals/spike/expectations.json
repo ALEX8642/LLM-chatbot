@@ -1,0 +1,12 @@
+[
+  {"manual": "Army_5kW_Generator_Parts_Manual.pdf", "page": 59, "value": "P14-8969", "match": "exact", "row_has": "18265"},
+  {"manual": "Army_5kW_Generator_Parts_Manual.pdf", "page": 61, "value": "R28", "match": "exact", "row_has": "78225"},
+  {"manual": "Army_5kW_Generator_Parts_Manual.pdf", "page": 12, "value": "88-20243", "match": "exact", "row_has": "30554"},
+  {"manual": "Army_5kW_Generator_Parts_Manual.pdf", "page": 20, "value": "105-269", "match": "exact", "row_has": "68505"},
+  {"manual": "Army_5kW_Generator_Parts_Manual.pdf", "page": 20, "value": "105-311", "match": "exact", "row_has": "68505"},
+  {"manual": "Army_5kW_Generator_Parts_Manual.pdf", "page": 21, "value": "112-95", "match": "exact", "row_has": "ROTOR"},
+  {"manual": "Army_5kW_Generator_Operator_Manual.pdf", "page": 24, "value": "15 ± 3", "match": "contains", "row_has": null},
+  {"manual": "Army_5kW_Generator_Operator_Manual.pdf", "page": 23, "value": ".55 gal", "match": "contains", "row_has": null},
+  {"manual": "FAA_Weight_and_Balance_Handbook.pdf", "page": 28, "value": "3050", "match": "contains", "row_has": null},
+  {"manual": "FAA_Weight_and_Balance_Handbook.pdf", "page": 36, "value": "6.68", "match": "contains", "row_has": null}
+]
