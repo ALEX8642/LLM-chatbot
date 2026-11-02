@@ -3,6 +3,13 @@
 Owner: Alexander Feht. This file briefs the coding-agent session that builds v2. Read it in full
 before changing anything, and keep it current as decisions are made.
 
+> **Superseded in detail by the approved design,**
+> [`docs/superpowers/specs/2026-11-01-v2-design.md`](superpowers/specs/2026-11-01-v2-design.md)
+> (2026-11-01). Where the two differ, the design wins. Main changes: verifiable claim-level citations
+> are the core goal; the best generator is chosen by eval (Command R7B is kept as a like-for-like row,
+> not the default); no Haystack; a held-out test set with a pre-registered headline; a demo stage;
+> delivery tiers starting from a minimum credible version.
+
 ## Goal
 
 Turn this manual-QA chatbot into a **measured** retrieval and agent system. The deliverable is not
@@ -76,13 +83,13 @@ engineering.
 Make one change at a time where practical and re-run the eval, so each gain can be attributed.
 
 - **LLM client:** OpenAI-compatible (`/v1/chat/completions`), with base URL, key and model from env.
-  Keep Ollama working through its OpenAI-compatible endpoint. The default model remains Cohere
-  Command R7B; compare it against at least one larger model through the gateway.
+  Keep Ollama working through its OpenAI-compatible endpoint. Command R7B is kept as the like-for-like
+  row against v1; the default generator is whichever model wins the eval (see the design).
 - **Ingestion: choose the parser by eval, not by default.** Docling is the starting candidate (the
   owner's stack already runs docling-serve), but pull in something better if it exists. Shortlist
   current open-source parsers (for example Docling, MinerU, Marker, olmOCR and similar), run 2–3 of
   them on the bundled manuals, and score them on the eval's retrieval metrics plus table and figure
-  fidelity. Record the comparison in the README. Whichever parser wins: keep page numbers for
+  fidelity. Record the comparison in a decision record (`docs/decisions/`), summarised in the README. Whichever parser wins: keep page numbers for
   citations, chunk by document structure rather than fixed length, and keep figures as images
   with their captions.
 - **Embeddings:** a stronger current model, chosen by the eval rather than by reputation.
@@ -117,12 +124,12 @@ Make one change at a time where practical and re-run the eval, so each gain can 
 - Run it against at least two models through the gateway (for example Command R7B and a larger
   model) and report both.
 
-## README for v2 (in this order)
+## README for v2 (in this order; see the design's Presentation section)
 
-1. What it is, in one paragraph.
-2. Architecture diagram.
-3. **Evaluation:** the v1 → v2 table, then the agent results, then misses.
-4. How to run it: local mode, and Docker Compose.
+1. What it is, in one paragraph, with a short GIF of a claim lighting up its source.
+2. **Evaluation:** the pre-registered v1 → v2 headline table, then misses; method in `EVAL.md`.
+3. Architecture diagram.
+4. How to run it: local mode, Docker Compose, and replay mode.
 5. How it was built.
 
 ## Reporting
