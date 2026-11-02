@@ -1,184 +1,123 @@
-# LLM-Chatbot
+# LLM-Chatbot v2 (in progress)
 
-[![CI](https://github.com/ALEX8642/LLM-chatbot/actions/workflows/ci.yml/badge.svg)](https://github.com/ALEX8642/LLM-chatbot/actions/workflows/ci.yml)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.112%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Haystack](https://img.shields.io/badge/Haystack-2.x-brightgreen)](https://haystack.deepset.ai)
 
-A Haystack 2.x and Ollama based chatbot for user assistance interpreting manuals and documentation. Drop in your PDF manuals, and the system will automatically process them for intelligent question answering.
+A question-answering assistant for technical manuals whose core promise is that **the reader can
+check every claim against the source while reading the answer**. In v2 each claim is tied to a verbatim quote from a
+specific text line, table row or figure, highlighted on the page, and checked before it is shown.
+Every design choice is made by measurement, against an evaluation built before the rebuild started.
 
-The default model is **Cohere Command R7B** (`command-r7b`) served locally by Ollama; set `OLLAMA_MODEL` to use another.
+> **Status (2026-11-02): this branch is a rebuild in progress, not a working app yet.** The shipped
+> v1 app (Haystack 2.x, Ollama, Qdrant + OpenSearch, React UI) is preserved at tag
+> [`v1`](https://github.com/ALEX8642/LLM-chatbot/tree/v1); its README there describes how to run
+> it. Its code is still on this branch only because the v1 baseline is scored from it; v2 replaces it.
 
-## Features
+## Why v2
 
-- FastAPI backend with Haystack 2.x for document processing and QA
-- Hybrid retrieval: Qdrant dense vectors + OpenSearch BM25, fused and reranked (see [Retrieval pipeline](#retrieval-pipeline))
-- Local LLM support via Ollama
-- React/TypeScript frontend
-- Document ingestion pipeline for manuals and documentation
+v1 was scored first, unchanged, on 42 questions over three public manuals
+([`evals/results/NOTES.md`](evals/results/NOTES.md)). The baseline showed that retrieval mostly
+works and reading does not:
 
-## Project Structure
+| v1 (default settings) | Value |
+|---|---|
+| Recall@5 (a gold page among the 5 retrieved) | 0.89 |
+| Answer correctness | 0.49 |
+| Correctness on table questions | 0.33 |
+| Correctness on figure questions | 0.20 |
+| Correctness on the parts manual | 0.03 |
+
+Tables flattened by text extraction wreck answers (one answer gave a CAGE code as a part number: right
+row, wrong column), figures are retrieved but unreadable, and the relevance gate drops correct pages.
+These answers were graded by Qwen3.8, which v2 also uses as a generator, so before any v1–v2
+comparison, v1 is re-graded by an independent judge from another model family.
+
+## What v2 is
+
+Design: [`docs/superpowers/specs/2026-11-01-v2-design.md`](docs/superpowers/specs/2026-11-01-v2-design.md)
+(approved after four independent reviews). In short:
+
+- **Parsing with coordinates:** OCR-grade parsing into text lines, tables (cells intact) and figures,
+  every box in one page-normalised coordinate system, so highlights land on the rendered page. Scanned
+  or malformed pages are always OCR'd.
+- **Tables as data:** every table goes into SQLite; a `lookup_table` tool returns the exact row with
+  its header.
+- **Page images to a vision model** alongside the retrieved text.
+- **Claim-level citations, checked:** the model answers one claim per line with a block id and a
+  verbatim quote. A claim is shown only if its quote matches the source; numbers and identifiers must
+  sit in the column whose header matches. Claims that fail are removed into a "see why" disclosure,
+  and if none survive, the assistant says it could not find the answer.
+- **Evaluation a sceptical engineer would trust:** a held-out test set split by manual section, one
+  pre-registered headline metric with an exact McNemar test and a clustered bootstrap interval, an
+  independent judge from a model family that is not among the generators, human checks of gold
+  answers and grading, and the misses reported.
+- **Plain Python modules behind standard HTTP APIs** (OpenAI-compatible chat, embeddings, rerank), so
+  any compatible endpoint works; no orchestration framework.
+
+The build follows [delivery tiers](docs/superpowers/specs/2026-11-01-v2-design.md#delivery-tiers):
+a minimum credible version first, planned as a
+[sequence of eight plans](docs/superpowers/plans/2026-11-02-tier1-roadmap.md).
+
+## Progress
+
+| Step | State |
+|---|---|
+| Eval harness, 42 dev questions, v1 baseline | done ([`evals/`](evals/)) |
+| Design (revision 4) | done |
+| Plan 1: coordinate spike (parsers, OCR detection, overlays) | in progress: coordinate system, block schema, OCR detection, text-layer reference and spike runner done; Docling and PaddleOCR-VL runs next |
+| Plans 2–8: ingestion, answer path, overlay UI, eval set and judge, component selection, pre-registered final run, presentation | not started |
+
+## Repository layout
 
 ```
-llm-chatbot/
-├── backend/           # FastAPI server and API
-│   ├── .env          # Backend environment variables
-│   └── ingest_manuals.py  # Document ingestion script
-├── frontend/         # React/TypeScript frontend
-├── scripts/          # Utility scripts
-│   └── launch.py     # Service launch and health check script
-├── manuals/          # Place manuals and docs here for ingestion
-├── docker-compose.yaml  # Docker services configuration
-└── pyproject.toml    # Python dependencies and project metadata
+manualqa/              v2 package
+  geometry.py          the one coordinate system (render pages; PDF points and pixels -> [0,1] boxes)
+  blocks.py            block schema every parser emits (lines, tables with cells, figures)
+  ocr_detect.py        decides per page whether the PDF text layer can be trusted
+  overlay.py           draws parses over rendered pages for checking by eye
+  parsers/             parser adapters (text layer now; Docling and PaddleOCR-VL next)
+evals/
+  qa.jsonl             42 dev questions with gold pages and reference answers
+  run_eval.py          harness: generate, score (retrieval metrics, LLM judge), summarise
+  results/             v1 baseline results and raw answers
+  spike/               parser spike: pages, expectations, runner, metrics, report
+manuals/               three public manuals (sources and licences in manuals/SOURCES.md)
+docs/
+  superpowers/specs/   the v2 design
+  superpowers/plans/   implementation plans
+  spike/               spike overlays and metrics
+api.py, backend/, frontend/, docker-compose.yaml, scripts/
+                       v1 code (scored as the baseline; to be replaced)
 ```
 
-## Requirements
+## Running what exists
 
-- Python 3.10 or higher
-- Node.js 18 or higher
-- Docker and Docker Compose
-- Ollama (for local LLM support)
+Requires Python 3.12 and [uv](https://docs.astral.sh/uv/).
 
-## Working with Manuals
-
-### Adding New Manuals
-
-1. Place your PDF manuals in the `manuals/` directory
-2. Run the ingestion script:
-   ```bash
-   python backend/ingest_manuals.py
-   ```
-
-The system will automatically:
-- Extract metadata from filenames
-- Generate unique IDs and readable labels
-- Split documents into chunks
-- Create embeddings and store them
-
-For example:
-```
-Input filename: XYZ-123-456_Product_Manual_v2.1.pdf
-↓
-Automatic metadata:
-{
-    "id": "product-manual",
-    "label": "Product Manual",
-    "product_id": "XYZ"
-}
-```
-
-### Custom Metadata (Optional)
-
-If you need to override the automatic metadata, create a `manual_metadata.json` file:
-
-```json
-{
-    "example.pdf": {
-        "id": "custom-id",
-        "label": "Custom Label",
-        "product_id": "CustomProduct"
-    }
-}
-```
-
-## Setup
-
-1. Install Python dependencies using uv:
-   ```bash
-   python -m pip install uv
-   uv venv
-   source .venv/bin/activate  # or .venv/Scripts/activate on Windows
-   uv pip install -e .
-   ```
-
-   For development:
-   ```bash
-   uv pip install -e ".[dev]"
-   ```
-
-2. Configure environment variables:
-   ```bash
-   cp frontend/.env.example frontend/.env
-   cp backend/.env.example backend/.env
-   # Edit .env files as needed
-   ```
-
-3. Start required services:
-   ```bash
-   python scripts/launch.py
-   ```
-
-4. Set up the frontend:
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
-
-## Development
-
-### Backend Development
-
-The backend uses FastAPI and Haystack 2.x:
-
-1. Start the development server:
-   ```bash
-   uvicorn api:app --reload
-   ```
-
-2. Access the API docs at: http://localhost:8000/docs
-
-### Frontend Development
-
-The frontend is a React application with TypeScript:
-
-1. Start the development server:
-   ```bash
-   cd frontend
-   npm run dev
-   ```
-
-2. Access the UI at: http://localhost:5173
-
-### Adding Documents
-
-Place your documents in the `manuals/` directory and run:
 ```bash
-python backend/ingest_manuals.py
+uv sync --extra dev
+uv run pytest tests/ -q                                    # unit tests (GPU parser tests skip)
+uv run python -m evals.spike.run_spike --parser textlayer  # spike: parses, overlays, metrics
+uv run python -m evals.spike.report docs/spike/*/metrics.json
 ```
 
-## Architecture
+The parser candidates need a GPU and their own optional dependencies; tests that need them run with
+`MANUALQA_PARSERS=1`. Reproducing the v1 baseline is described in [`evals/README.md`](evals/README.md).
 
-- **FastAPI Backend**: Handles API requests, document processing, and LLM interactions
-- **Qdrant**: Vector database for semantic search
-- **OpenSearch**: Text search and document storage
-- **Ollama**: Local LLM integration
-- **Haystack**: Document processing and QA pipeline
-- **React Frontend**: User interface and chat interactions
+## Data
 
-## Retrieval pipeline
+The three bundled manuals are US Government publications (an FAA handbook and two Army technical
+manuals), chosen because they stress different parts of a pipeline: born-digital prose with charts,
+a scan with a letter-spaced text layer, and parts lists paired with exploded views. Sources,
+licences and checksums: [`manuals/SOURCES.md`](manuals/SOURCES.md).
 
-Each question runs a Haystack pipeline that retrieves broadly for recall, then narrows for precision:
+## How this is built
 
-1. **Dense retrieval:** the query is embedded with `sentence-transformers/all-MiniLM-L6-v2` and searched in Qdrant.
-2. **Sparse retrieval:** the same query runs as BM25 keyword search in OpenSearch, which catches part numbers and exact terms that embeddings miss.
-3. **Fusion:** both result lists (top 30 each by default) are merged with reciprocal rank fusion (`DocumentJoiner`).
-4. **Reranking:** a transformer cross-encoder (`cross-encoder/ms-marco-MiniLM-L-6-v2`) rescores the fused candidates against the question.
-5. **Diversity:** maximum-marginal-relevance selection drops near-duplicate chunks, so the answer cites distinct passages.
-6. **Grounding gate:** with guardrails on, chunks below a minimum relevance score are dropped. If none remain, the model receives no excerpts and is instructed to say the manual does not cover the question. With guardrails off, the top chunk is always passed through.
+The code is written with AI coding agents (Claude Code, Codex, GitHub Copilot CLI) under Alexander
+Feht's specification and review. Design decisions, rejected alternatives and every reported number
+are committed in this repository.
 
-Retrieval is filtered to the selected manual. Answers carry citations back to the source pages. Every stage is configurable through environment variables (`RAG_RETRIEVE_TOP_K`, `RAG_MAX_CONTEXT_CHUNKS`, `RAG_JOIN_MODE`, `RAG_RERANK_MODEL`, `RAG_DIVERSITY_MODEL`, `RAG_MMR_LAMBDA`, `RAG_MIN_DOC_SCORE`).
-
-## Docker Services
-
-- **Qdrant**: Vector search (port 6333)
-- **OpenSearch**: BM25 text search and document storage (port 9200). Set `OPENSEARCH_PASS` in the environment or a root `.env` before `docker compose up`; there is no default password
-- **OpenSearch Dashboards**: Search visualization (port 5601)
-
-Data is persisted in Docker volumes:
-- `opensearch_data`: OpenSearch data
-- `qdrant_data`: Qdrant vectors and metadata
-
-This project is independently developed by Alexander Feht during personal time using personal hardware. It is not affiliated with or commissioned by any employer, and was licensed under MIT prior to any discussions with external parties.
+This project is independently developed by Alexander Feht during personal time using personal
+hardware. It is not affiliated with or commissioned by any employer, and was licensed under MIT prior
+to any discussions with external parties.
