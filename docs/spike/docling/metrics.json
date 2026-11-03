@@ -53,8 +53,8 @@
    "cells": 0,
    "cells_with_boxes": 0,
    "problems": [],
-   "coord_agreement": 0.6128150389600606,
-   "coord_offset": 0.0017116032805251091,
+   "coord_agreement": 0.6194954508108194,
+   "coord_offset": 0.001711386488583655,
    "cer": null
   },
   {
@@ -69,8 +69,8 @@
    "cells": 0,
    "cells_with_boxes": 0,
    "problems": [],
-   "coord_agreement": 0.639562827739768,
-   "coord_offset": 0.0017113911535602266,
+   "coord_agreement": 0.6409384440562403,
+   "coord_offset": 0.0017113827586574676,
    "cer": null
   },
   {
@@ -101,8 +101,8 @@
    "cells": 15,
    "cells_with_boxes": 15,
    "problems": [],
-   "coord_agreement": 0.6505361746163641,
-   "coord_offset": 0.0021042981902359426,
+   "coord_agreement": 0.6505361878602518,
+   "coord_offset": 0.0021042862709128585,
    "cer": null
   },
   {
@@ -117,8 +117,8 @@
    "cells": 29,
    "cells_with_boxes": 29,
    "problems": [],
-   "coord_agreement": 0.6505394277427463,
-   "coord_offset": 0.002103372387613267,
+   "coord_agreement": 0.6505406126958988,
+   "coord_offset": 0.0021028579044021223,
    "cer": null
   },
   {
@@ -134,7 +134,7 @@
    "cells_with_boxes": 12,
    "problems": [],
    "coord_agreement": 0.6573974323571137,
-   "coord_offset": 0.0016380248817932375,
+   "coord_offset": 0.0016380188193787504,
    "cer": null
   },
   {
@@ -149,8 +149,8 @@
    "cells": 24,
    "cells_with_boxes": 24,
    "problems": [],
-   "coord_agreement": 0.7076811051547942,
-   "coord_offset": 0.0010315911236293274,
+   "coord_agreement": 0.7117271268578985,
+   "coord_offset": 0.0010145389188683795,
    "cer": null
   },
   {
@@ -165,8 +165,8 @@
    "cells": 57,
    "cells_with_boxes": 57,
    "problems": [],
-   "coord_agreement": 0.6505403099731952,
-   "coord_offset": 0.0021031201500685826,
+   "coord_agreement": 0.6956206169787529,
+   "coord_offset": 0.0015223507765770306,
    "cer": null
   },
   {
@@ -181,8 +181,8 @@
    "cells": 54,
    "cells_with_boxes": 54,
    "problems": [],
-   "coord_agreement": 0.6732167400863446,
-   "coord_offset": 0.0016863744747276366,
+   "coord_agreement": 0.6732169208799934,
+   "coord_offset": 0.0016863683095604265,
    "cer": null
   },
   {
@@ -197,8 +197,8 @@
    "cells": 0,
    "cells_with_boxes": 0,
    "problems": [],
-   "coord_agreement": 0.6732169203571186,
-   "coord_offset": 0.0016863729334359312,
+   "coord_agreement": 0.6732169424034001,
+   "coord_offset": 0.0016863698508522984,
    "cer": null
   },
   {
@@ -213,8 +213,8 @@
    "cells": 51,
    "cells_with_boxes": 51,
    "problems": [],
-   "coord_agreement": 0.6732167651594965,
-   "coord_offset": 0.0016863713921440038,
+   "coord_agreement": 0.6732169350829986,
+   "coord_offset": 0.0016863652269767937,
    "cer": null
   },
   {
@@ -245,7 +245,7 @@
    "cells": 0,
    "cells_with_boxes": 0,
    "problems": [],
-   "coord_agreement": 0.6717495752981281,
+   "coord_agreement": 0.6717496460902287,
    "coord_offset": 0.0015451372088577386,
    "cer": null
   },
@@ -357,8 +357,8 @@
    "cells": 0,
    "cells_with_boxes": 0,
    "problems": [],
-   "coord_agreement": 0.9999689350802272,
-   "coord_offset": 1.6100873827251672e-07,
+   "coord_agreement": 0.9999809440368785,
+   "coord_offset": 1.046025803197459e-07,
    "cer": null
   },
   {
@@ -389,8 +389,8 @@
    "cells": 0,
    "cells_with_boxes": 0,
    "problems": [],
-   "coord_agreement": 0.9999671051747832,
-   "coord_offset": 2.1273834471813302e-07,
+   "coord_agreement": 0.9999762019764269,
+   "coord_offset": 1.1910486708011092e-07,
    "cer": null
   },
   {
@@ -405,8 +405,8 @@
    "cells": 0,
    "cells_with_boxes": 0,
    "problems": [],
-   "coord_agreement": 0.9999751496590682,
-   "coord_offset": 1.1937151062069162e-07,
+   "coord_agreement": 0.9999836054493983,
+   "coord_offset": 7.509790311832631e-08,
    "cer": null
   },
   {
@@ -437,8 +437,8 @@
    "cells": 133,
    "cells_with_boxes": 133,
    "problems": [],
-   "coord_agreement": 0.9999815043863518,
-   "coord_offset": 8.838528919863364e-08,
+   "coord_agreement": 0.9999867883488187,
+   "coord_offset": 6.550490272427822e-08,
    "cer": null
   },
   {
@@ -469,8 +469,8 @@
    "cells": 173,
    "cells_with_boxes": 173,
    "problems": [],
-   "coord_agreement": 0.999968206485855,
-   "coord_offset": 3.7614411041442253e-07,
+   "coord_agreement": 0.9999792132827999,
+   "coord_offset": 2.451459100161202e-07,
    "cer": null
   },
   {
@@ -485,8 +485,8 @@
    "cells": 225,
    "cells_with_boxes": 225,
    "problems": [],
-   "coord_agreement": 0.9999662282282651,
-   "coord_offset": 2.2922708559081073e-07,
+   "coord_agreement": 0.9999827459459898,
+   "coord_offset": 1.0592373947404532e-07,
    "cer": null
   }
  ],

@@ -46,7 +46,22 @@ Not tried here: MinerU (licence to check), Marker (restrictive model licence).
 |---|---|---|---|---|---|---|---|---|---|
 | textlayer | 30 | 0 | 0 | 1.00 | 0.0000 | 0.00 | 0/10 | n/a | 0.02 |
 | docling | 30 | 0 | 0 | 0.67 | 0.0016 | 0.12 | 4/10 | 773/773 | 1.41 |
-| paddle | 30 | 0 | 0 | 0.73 | 0.0011 | 0.04 | 9/10 | 863/2086 | 41.05 |
+| paddle | 30 | 0 | 0 | 0.79 | 0.0007 | 0.04 | 9/10 | 413/2086 | 40.53 |
+
+Results after the independent review (2026-11-02): line pairs are now matched one to one by nearest
+centre (before, repeated texts such as a CAGE code on every parts row paired with other rows, which
+made the coordinate numbers unreliable on table pages), and a detected cell box is kept only when text
+identifies it exactly (before, repeated values could take another row's box). Paddle was re-run;
+Docling and the text layer were re-scored. Centre offset by manual (median, page units):
+
+| Manual | Docling | Paddle |
+|---|---|---|
+| FAA (8 trusted pages) | 0.0017 | 0.0022 |
+| Operator (5 trusted pages) | 0.0017 | 0.0006 |
+| Parts (6 trusted pages) | 0.0000 (its lines are the text layer) | 0.0007 |
+
+Time per page, Docling / Paddle: mean 1.9 / 54.7 s, median 1.4 / 40.5 s, slowest 10.0 / 265.9 s
+(operator p22).
 
 Cell checks per item:
 
@@ -104,16 +119,21 @@ costs little.
 **PaddleOCR (PaddleOCR-VL 1.6 + PP-OCRv5 + table-cell detection) for the thin slice.** It wins on the two
 things v1 failed at: tables (9/10 cell checks against 4/10; Docling missed three whole parts-list
 pages, and the parts manual was v1's worst manual at 0.03 correctness) and the letter-spaced scan
-(median CER 0.04 against 0.12). Its line boxes are at least as well placed (median centre offset 0.0011
-of the page against 0.0016).
+(median CER 0.04 against 0.12). Line placement is not a differentiator: both are within about 0.2% of
+the page of the text layer everywhere, Docling closer on the FAA pages, Paddle closer on the operator
+scans, and the eye check found no misplaced line on any page.
 
 Costs accepted:
 
-- **Speed:** about 41 s a page on the laptop, about 4 hours for the 363 pages, once per ingestion.
-  Docling takes 1.4 s a page.
-- **Cell boxes:** only 41% of Paddle's table cells get a detected cell box, and some detected boxes
-  are misaligned. Table highlights will therefore be drawn from the OCR line boxes inside a cell. Those
-  are accurate on every page; the detected cell boxes are not.
+- **Speed:** a mean of 55 s a page on the laptop (slowest 266 s), about 5.5 hours for the 363 pages,
+  once per ingestion. Docling takes about 2 s a page.
+- **Start-up hang:** in 5 of 7 full runs, PaddleOCR-VL hung on the first page with the GPU idle; once
+  one page went through, the rest of the run completed. The spike runner now saves each page as it
+  finishes and resumes (`--resume`); a watchdog that restarts after 10 minutes without progress got a
+  clean run. Ingestion needs the same guard.
+- **Cell boxes:** only 20% of Paddle's table cells get a detected cell box that text identifies
+  exactly, and some detected boxes are misaligned. Table highlights cannot rely on the detector; see
+  open question 3.
 
 ## What lost and why
 
@@ -132,14 +152,24 @@ Costs accepted:
    parts tables. Measure it against Paddle alone on the same checks.
 2. **Paddle text clean-up:** Paddle writes some symbols as LaTeX (`$ \pm $`). Normalise them to
    Unicode before quote matching.
-3. **Cell highlights:** derive cell boxes from the OCR lines in each cell rather than the cell
-   detector.
+3. **Cell highlights and the text-to-box link (from the review).** The block schema has no link
+   from a block's text to its line boxes, and Paddle's block text (PaddleOCR-VL, with markdown and
+   LaTeX) and its lines (PP-OCRv5) come from two different recognisers; table lines attach to the
+   table block, not to cells. The spec's quote match must map to OCR lines to get highlight boxes, so
+   plan 2 needs either block text built from its lines (VL text kept as a separate field) or an explicit
+   line-to-text-span alignment, tested on a letter-spaced page and on a parts table with repeated
+   values. Cell boxes should come from geometry (the row's y-band and the column's x-band, anchored on
+   cells whose text is unique), not from text alone. The spike ran cell detection on the whole page and
+   kept boxes inside the table; the plan said the table crop, which might box more cells.
 4. **Speed:** PaddleOCR-VL can run behind a vLLM server. Measure that only if ingestion time becomes
    a problem.
 5. **Known Paddle bug:** `PaddleOCRVL` must be created after the other Paddle models; creating one
    after it makes its `predict()` hang with the GPU idle (paddleocr 3.7.0, paddlepaddle-gpu 3.3.1).
 6. Check two or three of the borderline letter-spaced operator pages by eye.
-7. **PyMuPDF licence (decided 2026-11-02: keep).** `manualqa` renders pages and maps coordinates with
+7. **`PageParse.ocr` records the detector's decision**, not whether the parser read pixels (Paddle
+   reads pixels on every page). Plan 2 should name it accordingly or add a `text_source` field before
+   anything trusts the text layer on its strength.
+8. **PyMuPDF licence (decided 2026-11-02: keep).** `manualqa` renders pages and maps coordinates with
    PyMuPDF, which is AGPL-3.0 (v1 already depended on it). Alexander's call: performance and accuracy
    come before licences; cons are recorded instead. Cons: anyone who distributes v2, or runs it as a
    network service for others, must offer its source under AGPL terms or buy Artifex's commercial
