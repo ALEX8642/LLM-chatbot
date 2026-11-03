@@ -93,7 +93,7 @@ class PaddleParser:
         self._cells = TableCellsDetection()
         # PaddleOCR-VL must be created last: creating any other Paddle model after
         # it makes its predict() hang with the GPU idle (paddleocr 3.7, paddle 3.3.1).
-        self._vl = PaddleOCRVL()
+        self._vl = PaddleOCRVL(use_queues=False)
 
     def parse(
         self, pdf: Path, pages: list[int], ocr: dict[int, OcrDecision]
