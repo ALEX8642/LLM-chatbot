@@ -208,6 +208,7 @@ class TableStore:
         manual: str | None = None,
         figure: str | None = None,
         limit: int = 10,
+        block_id: str | None = None,
     ) -> list[RowHit]:
         """Rows matching all given conditions, each with its table's header and boxes.
         ``query``: words that must all appear in the row (ranked by BM25).
@@ -231,6 +232,9 @@ class TableStore:
         if figure:
             where.append("r.figure = ?")
             args.append(str(figure))
+        if block_id:
+            where.append("r.table_id = ?")
+            args.append(block_id)
         if where:
             sql += " WHERE " + " AND ".join(where)
         sql += (

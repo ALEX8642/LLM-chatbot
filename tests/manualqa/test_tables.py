@@ -78,3 +78,10 @@ def test_group_carries_across_pages(tmp_path):
     s.add_page(synthetic_page(2, [["ITEM", "PART NUMBER"], ["2", "105-311"]]))
     (hit,) = s.lookup_table(query="105-311")
     assert hit.figure == "4" and hit.page == 2
+
+
+def test_lookup_by_block_returns_all_rows_in_order(store, parts_pages):
+    table = next(b for b in parts_pages[1].blocks if b.kind == "table")
+    hits = store.lookup_table(block_id=table.id, limit=1000)
+    assert [h.row for h in hits] == sorted(h.row for h in hits)
+    assert len(hits) >= 18 and all(h.page == 59 for h in hits)

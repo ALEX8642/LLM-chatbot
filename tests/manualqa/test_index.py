@@ -1,23 +1,7 @@
-import hashlib
+from fakes import FakeEmbedder
 
 from manualqa.chunks import Chunk
 from manualqa.index import build_index, search, sparse_vector, tokens
-
-
-class FakeEmbedder:
-    """Deterministic bag-of-tokens vectors: enough to exercise the dense path."""
-
-    name, dim = "fake", 64
-
-    def embed(self, texts, query=False):
-        out = []
-        for t in texts:
-            v = [0.0] * self.dim
-            for tok in tokens(t):
-                v[int(hashlib.md5(tok.encode()).hexdigest(), 16) % self.dim] += 1.0
-            norm = sum(x * x for x in v) ** 0.5 or 1.0
-            out.append([x / norm for x in v])
-        return out
 
 
 def chunk(i, manual, text):
