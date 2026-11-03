@@ -186,9 +186,73 @@ def make_v1_adapter(app_dir: Path, strict_mode: bool) -> Callable[..., Dict[str,
     return run
 
 
+def make_v2_adapter(
+    ingest_dir: Optional[Path] = None,
+    embedder: str = "st:Qwen/Qwen3-Embedding-0.6B",
+    reranker: str = "st:BAAI/bge-reranker-v2-m3",
+    ctx: Any = None,
+    gen: Any = None,
+    config: Optional[Dict[str, Any]] = None,
+) -> Callable[..., Dict[str, Any]]:
+    """v2 (the manualqa package) over an ingested corpus. The generator comes from
+    GEN_BASE_URL / GEN_API_KEY / GEN_MODEL; only the model name is recorded."""
+    from dataclasses import asdict
+
+    from manualqa.answer import answer
+    from manualqa.generate import Generator
+    from manualqa.index import make_embedder
+    from manualqa.prompts import PROMPT_VERSION
+    from manualqa.retrieve import CrossEncoderReranker, IngestContext
+
+    if ctx is None:
+        kind, _, model = reranker.partition(":")
+        if kind != "st":
+            raise ValueError(f"unknown reranker {reranker!r}")
+        ctx = IngestContext.load(
+            Path(ingest_dir), make_embedder(embedder), CrossEncoderReranker(model)
+        )
+    gen = gen or Generator.from_env()
+    summary = Path(ctx.root) / "summary.json"
+
+    def run(question: str, manual: str) -> Dict[str, Any]:
+        ans = answer(question, manual, ctx, gen)
+        timings = {k: round(v, 3) for k, v in ans.timings.items()}
+        return {
+            "answer": ans.text,
+            "ranked_pages": ans.retrieval.ranked_pages,
+            "candidate_pages": ans.retrieval.candidate_pages,
+            "cited_pages": dedupe_pages([c.page for c in ans.claims]),
+            "context": "\n\n".join(
+                f"[{e.id}] (page {e.page}) {e.text}" for e in ans.retrieval.evidence
+            ),
+            "timings": timings,
+            "claims": [asdict(c) for c in ans.claims],
+            "removed": [asdict(c) for c in ans.removed],
+            "abstained": ans.abstained,
+            "abstain_reason": ans.abstain_reason,
+            "unknown_blocks": ans.unknown_blocks,
+            "ignored_lines": ans.ignored_lines,
+            "page_images": [p.name for p in ans.retrieval.page_images],
+            "table_hits": ans.retrieval.table_hits,
+        }
+
+    run.config = {
+        "system": "v2",
+        "generator": getattr(gen, "model", None),
+        "embedder": getattr(ctx.embedder, "name", None),
+        "reranker": getattr(ctx.reranker, "name", None),
+        "prompt_version": PROMPT_VERSION,
+        "ingest_summary_sha256": sha256_file(summary) if summary.exists() else None,
+        **(config or {}),
+    }
+    run.llm_url = None
+    return run
+
+
 ADAPTERS = {
     "v1": lambda a: make_v1_adapter(Path(a.app_dir).resolve(), strict_mode=False),
     "v1-strict": lambda a: make_v1_adapter(Path(a.app_dir).resolve(), strict_mode=True),
+    "v2": lambda a: make_v2_adapter(Path(a.ingest), a.embedder, a.reranker),
 }
 
 
@@ -546,6 +610,9 @@ def main() -> None:
     g = sub.add_parser("generate", help="run a system over the QA set")
     g.add_argument("--system", choices=sorted(ADAPTERS), required=True)
     g.add_argument("--app-dir", default=".", help="checkout of the system to evaluate")
+    g.add_argument("--ingest", default="data/ingest", help="v2: ingested corpus")
+    g.add_argument("--embedder", default="st:Qwen/Qwen3-Embedding-0.6B", help="v2")
+    g.add_argument("--reranker", default="st:BAAI/bge-reranker-v2-m3", help="v2")
     g.add_argument("--qa", default=str(DEFAULT_QA))
     g.add_argument("--repeats", type=int, default=1)
     g.add_argument(
