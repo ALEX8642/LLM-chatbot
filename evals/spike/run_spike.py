@@ -17,7 +17,13 @@ from pathlib import Path
 import pymupdf
 
 from evals.spike.metrics import cell_checks, coord_agreement, coord_offset, ocr_cer
-from manualqa.blocks import PageParse, dump_pages, load_pages, validate
+from manualqa.blocks import (
+    PageParse,
+    append_page,
+    dump_pages,
+    load_pages,
+    validate,
+)
 from manualqa.geometry import render_page
 from manualqa.ocr_detect import needs_ocr
 from manualqa.overlay import draw_overlay
@@ -89,6 +95,11 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         help="re-score saved parses (parses.jsonl) instead of running the parser",
     )
+    ap.add_argument(
+        "--resume",
+        action="store_true",
+        help="keep pages already in <out>/<parser>/parses.jsonl and parse the rest",
+    )
     args = ap.parse_args(argv)
 
     saved = (
@@ -106,6 +117,14 @@ def main(argv: list[str] | None = None) -> int:
     docs.mkdir(parents=True, exist_ok=True)
     previous = docs / "metrics.json"
     previous = json.loads(previous.read_text()) if previous.exists() else {}
+    out_file = args.out / name / "parses.jsonl"
+    done = {}
+    if saved is None:  # parsing: every page is saved as soon as it is parsed
+        if args.resume and out_file.exists():
+            done = {(pp.manual, pp.page): pp for pp in load_pages(out_file)}
+        else:
+            out_file.parent.mkdir(parents=True, exist_ok=True)
+            out_file.write_text("")
 
     parses, page_metrics, checks = [], [], []
     for manual, pages in json.loads(args.pages.read_text()).items():
@@ -114,10 +133,13 @@ def main(argv: list[str] | None = None) -> int:
             for n in pages:
                 page = doc[n - 1]
                 decision = needs_ocr(page)
-                if saved is None:
-                    pp = _parse_one(parser, pdf, n, decision, page)
-                else:
+                if saved is not None:
                     pp = saved[(manual, n)]
+                elif (manual, n) in done:
+                    pp = done[(manual, n)]
+                else:
+                    pp = _parse_one(parser, pdf, n, decision, page)
+                    append_page(pp, out_file)
                 parses.append(pp)
                 status = pp.error or f"{len(pp.blocks)} blocks"
                 print(f"{pdf.stem} p{n}: {pp.seconds:.1f}s, {status}", flush=True)
@@ -157,7 +179,8 @@ def main(argv: list[str] | None = None) -> int:
                 )
                 checks += cell_checks(pp, expectations)
 
-    dump_pages(parses, args.out / name / "parses.jsonl")
+    if saved is not None:
+        dump_pages(parses, out_file)
     metrics = {
         "parser": name,
         # re-scoring keeps the versions and engine of the run that parsed

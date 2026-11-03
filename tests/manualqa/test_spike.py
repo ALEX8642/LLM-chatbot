@@ -131,7 +131,7 @@ def test_cell_check_ignores_other_pages():
     assert cell_checks(pp, [other]) == []
 
 
-def run(tmp_path, parser, pages):
+def run(tmp_path, parser, pages, *extra):
     pages_file = tmp_path / "pages.json"
     pages_file.write_text(json.dumps({FAA: pages}))
     code = run_spike.main(
@@ -148,6 +148,7 @@ def run(tmp_path, parser, pages):
             str(tmp_path / "out"),
             "--docs",
             str(tmp_path / "docs"),
+            *extra,
         ]
     )
     assert code == 0
@@ -242,3 +243,34 @@ def test_runner_rescores_saved_parses_without_parsing(tmp_path, monkeypatch):
         return [{k: v for k, v in p.items() if k != "seconds"} for p in m["pages"]]
 
     assert strip(again) == strip(first)
+
+
+class Counting:
+    name = "counting"
+    calls: list = []
+
+    def parse(self, pdf, pages, ocr):
+        Counting.calls += pages
+        return parsers.get_parser("textlayer").parse(pdf, pages, ocr)
+
+
+class DiesOn19(Counting):
+    def parse(self, pdf, pages, ocr):
+        if pages == [19]:
+            raise KeyboardInterrupt  # stands in for a hang killed from outside
+        return super().parse(pdf, pages, ocr)
+
+
+def test_runner_saves_each_page_and_resumes(tmp_path, monkeypatch):
+    monkeypatch.setitem(parsers.PARSERS, "counting", DiesOn19)
+    with pytest.raises(KeyboardInterrupt):
+        run(tmp_path, "counting", [16, 19])
+    saved = (tmp_path / "out/counting/parses.jsonl").read_text().splitlines()
+    assert len(saved) == 1  # page 16 survived the crash
+
+    Counting.calls = []
+    monkeypatch.setitem(parsers.PARSERS, "counting", Counting)
+    metrics = run(tmp_path, "counting", [16, 19], "--resume")
+    assert Counting.calls == [19]  # page 16 was not parsed again
+    assert [p["page"] for p in metrics["pages"]] == [16, 19]
+    assert len((tmp_path / "out/counting/parses.jsonl").read_text().splitlines()) == 2

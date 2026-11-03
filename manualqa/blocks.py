@@ -86,6 +86,14 @@ def dump_pages(pages: Iterable[PageParse], path: Path) -> None:
             f.write(json.dumps(asdict(pp), ensure_ascii=False) + "\n")
 
 
+def append_page(pp: PageParse, path: Path) -> None:
+    """Append one page to a JSON-lines file, flushed, so a crash keeps earlier pages."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(asdict(pp), ensure_ascii=False) + "\n")
+
+
 def load_pages(path: Path) -> list[PageParse]:
     with Path(path).open(encoding="utf-8") as f:
         return [_page_from_dict(json.loads(line)) for line in f if line.strip()]
