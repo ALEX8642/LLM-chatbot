@@ -1,0 +1,117 @@
+import json
+
+from manualqa.answer import answer, answer_stream
+from manualqa.retrieve import retrieve
+
+PARTS = "Army_5kW_Generator_Parts_Manual.pdf"
+Q = "What is the part number of the air cleaner filter element, item 17 in figure 15?"
+
+
+class FakeGen:
+    """Replays canned output in small pieces, like a streaming endpoint."""
+
+    model = "fake"
+
+    def __init__(self, lines):
+        self.text = "\n".join(json.dumps(x) for x in lines) + "\n"
+        self.calls = 0
+
+    def stream(self, messages):
+        self.calls += 1
+        for i in range(0, len(self.text), 9):
+            yield self.text[i : i + 9]
+
+    def complete(self, messages):
+        return "".join(self.stream(messages))
+
+
+def row_id(ctx):
+    rows = [e for e in retrieve(Q, PARTS, ctx).evidence if e.kind == "row"]
+    return next(e.id for e in rows if "P14-8969" in e.cells)
+
+
+def claim(text, block, quote):
+    return {"claim": text, "block": block, "quote": quote}
+
+
+def test_verified_claim_has_boxes(ctx):
+    rid = row_id(ctx)
+    gen = FakeGen([claim("The part number is P14-8969.", rid, "P14-8969")])
+    ans = answer(Q, PARTS, ctx, gen)
+    assert not ans.abstained
+    (c,) = ans.claims
+    assert c.status == "verified" and c.boxes and c.page == 59
+    assert "P14-8969" in ans.text
+
+
+def test_wrong_quote_removed_with_reason(ctx):
+    rid = row_id(ctx)
+    gen = FakeGen([claim("The part number is R28.", rid, "R28")])
+    ans = answer(Q, PARTS, ctx, gen)
+    (c,) = ans.removed
+    assert c.reason == "quote not in cited block" and ans.abstained
+
+
+def test_cage_trap_removed(ctx):
+    rid = row_id(ctx)
+    gen = FakeGen(
+        [
+            claim("The part number of the filter element is 18265.", rid, "18265"),
+            claim(
+                "The part number of the filter element is P14-8969.", rid, "P14-8969"
+            ),
+        ]
+    )
+    ans = answer(Q, PARTS, ctx, gen)
+    assert [c.claim for c in ans.claims] == [
+        "The part number of the filter element is P14-8969."
+    ]
+    assert "FSCM" in ans.removed[0].reason
+
+
+def test_abstains_when_no_claim_survives(ctx):
+    gen = FakeGen([{"abstain": "no turbocharger in this manual"}])
+    ans = answer("What is the part number of the turbocharger?", PARTS, ctx, gen)
+    assert ans.abstained and ans.text.startswith("I could not find the answer")
+    assert "59" in ans.text or "61" in ans.text  # lists pages it looked at
+
+
+def test_unknown_block_dropped_and_counted(ctx):
+    rid = row_id(ctx)
+    gen = FakeGen(
+        [
+            claim("Made up.", "no:such:block", "x"),
+            claim("The part number is P14-8969.", rid, "P14-8969"),
+        ]
+    )
+    ans = answer(Q, PARTS, ctx, gen)
+    assert ans.unknown_blocks == 1 and len(ans.claims) == 1
+
+
+def test_stream_events_order(ctx):
+    rid = row_id(ctx)
+    gen = FakeGen(
+        [
+            claim("The part number is P14-8969.", rid, "P14-8969"),
+            claim("The part number of the filter element is 18265.", rid, "18265"),
+        ]
+    )
+    events = list(answer_stream(Q, PARTS, ctx, gen))
+    kinds = [e.kind for e in events]
+    assert kinds[0] == "retrieved" and kinds[-1] == "done"
+    assert kinds.index("claim_shown") < kinds.index("claim_settled")
+    shown = [e.claim.claim for e in events if e.kind == "claim_shown"]
+    assert "The part number of the filter element is 18265." in shown  # quote matched
+    removed = [e.claim.claim for e in events if e.kind == "claim_removed"]
+    assert removed == ["The part number of the filter element is 18265."]
+
+
+def test_history_triggers_one_rewrite(ctx):
+    rid = row_id(ctx)
+    gen = FakeGen([claim("The part number is P14-8969.", rid, "P14-8969")])
+    history = [
+        {"role": "user", "content": "Tell me about the air cleaner."},
+        {"role": "assistant", "content": "It is in figure 15."},
+    ]
+    answer("And its filter element?", PARTS, ctx, gen, history=history)
+    assert gen.calls == 2  # rewrite + answer

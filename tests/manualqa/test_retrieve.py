@@ -1,33 +1,6 @@
-from pathlib import Path
+from manualqa.retrieve import retrieve
 
-import pytest
-from fakes import FakeEmbedder, FakeReranker
-
-from manualqa import ingest
-from manualqa.chunks import load_chunks
-from manualqa.index import build_index
-from manualqa.retrieve import IngestContext, retrieve
-
-ROOT = Path(__file__).resolve().parents[2]
 PARTS = "Army_5kW_Generator_Parts_Manual.pdf"
-
-
-@pytest.fixture(scope="module")
-def ctx(tmp_path_factory):
-    out = tmp_path_factory.mktemp("ingest")
-    ingest.main(
-        [
-            "--raw",
-            str(ROOT / "tests/fixtures/paddle-raw.jsonl"),
-            "--manuals",
-            str(ROOT / "manuals"),
-            "--out",
-            str(out),
-            "--skip-index",
-        ]
-    )
-    build_index(load_chunks(out / "chunks.jsonl"), out / "qdrant", FakeEmbedder())
-    return IngestContext.load(out, FakeEmbedder(), FakeReranker())
 
 
 def test_retrieve_returns_row_evidence_for_part_number(ctx):

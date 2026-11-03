@@ -49,3 +49,30 @@ def raw_pages():
     return {
         (pp.manual, pp.page): pp for pp in load_pages(FIXTURES / "paddle-raw.jsonl")
     }
+
+
+@pytest.fixture(scope="session")
+def ctx(tmp_path_factory):
+    """Ingest the six fixture pages (no GPU) and index them with the fake embedder."""
+    from fakes import FakeEmbedder, FakeReranker
+
+    from manualqa import ingest
+    from manualqa.chunks import load_chunks
+    from manualqa.index import build_index
+    from manualqa.retrieve import IngestContext
+
+    out = tmp_path_factory.mktemp("ingest")
+    root = Path(__file__).resolve().parents[2]
+    ingest.main(
+        [
+            "--raw",
+            str(FIXTURES / "paddle-raw.jsonl"),
+            "--manuals",
+            str(root / "manuals"),
+            "--out",
+            str(out),
+            "--skip-index",
+        ]
+    )
+    build_index(load_chunks(out / "chunks.jsonl"), out / "qdrant", FakeEmbedder())
+    return IngestContext.load(out, FakeEmbedder(), FakeReranker())
