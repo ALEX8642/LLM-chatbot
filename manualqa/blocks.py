@@ -39,6 +39,7 @@ class Block:
     box: Box
     lines: list[Line] = field(default_factory=list)
     cells: list[Cell] = field(default_factory=list)
+    alt_text: str = ""  # the parser's own text when ``text`` is built from lines
 
 
 @dataclass
@@ -54,6 +55,7 @@ class PageParse:
     blocks: list[Block]
     seconds: float
     error: str | None = None
+    text_source: str = "ocr"  # "text_layer" (PDF text) or "ocr" (read from pixels)
 
 
 def _box(d: dict | None) -> Box | None:
@@ -72,6 +74,7 @@ def _page_from_dict(d: dict) -> PageParse:
                 Cell(c["row"], c["col"], c["text"], _box(c["box"]), c["header"])
                 for c in b["cells"]
             ],
+            alt_text=b.get("alt_text", ""),
         )
         for b in d["blocks"]
     ]

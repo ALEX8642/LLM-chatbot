@@ -98,3 +98,22 @@ def test_validate_flags_duplicate_ids():
 def test_validate_flags_table_without_cells():
     problems = validate(make_page([Block("b0", "table", "x", Box(0, 0, 1, 1))]))
     assert len(problems) == 1 and "table without cells" in problems[0]
+
+
+def test_load_pages_without_new_fields(tmp_path):
+    pp = make_page()
+    path = tmp_path / "old.jsonl"
+    dump_pages([pp], path)
+    old = path.read_text().replace(', "text_source": "ocr"', "")
+    old = old.replace(', "alt_text": ""', "")
+    assert "text_source" not in old and "alt_text" not in old
+    path.write_text(old)
+    (loaded,) = load_pages(path)
+    assert loaded.text_source == "ocr" and loaded.blocks[0].alt_text == ""
+
+
+def test_round_trip_new_fields(tmp_path):
+    pp = replace(make_page(), text_source="text_layer")
+    pp.blocks[1].alt_text = "Air cleaner (VL)"
+    dump_pages([pp], tmp_path / "p.jsonl")
+    assert load_pages(tmp_path / "p.jsonl") == [pp]
