@@ -72,3 +72,6 @@ local_data/
 CLAUDE.md
 # parser spike raw outputs
 spike-out/
+
+# ingestion outputs (raw parses, composed pages, index, renders)
+data/
