@@ -1,7 +1,10 @@
 """Deterministic fact checks on a claim against its quote and evidence.
 
 1. Every number and identifier in the claim must appear in the quote (numbers compare by
-   value: "3,050" = "3050", "0.55" = ".55").
+   value: "3,050" = "3050", "0.55" = ".55", "fifteen" = "15"). Two things count as context
+   rather than a new fact: anything else in the same table row, and anything the question
+   itself mentions that is also on the cited page. A subject the page never mentions still
+   fails, so a figure borrowed from another aircraft's example is removed.
 2. For a table row: a column name in the claim applies to the first fact after it. If that
    fact sits in another column of the row, the claim fails. This catches right row, wrong
    column, e.g. "the part number is 18265" when 18265 is the row's CAGE code (FSCM).
@@ -24,6 +27,14 @@ _IDENT = re.compile(
 )
 _NUMBER = re.compile(r"(?<![\w.])(?:\d{1,3}(?:,\d{3})+|\d+)?(?:\.\d+)?(?![\w])")
 _COLUMN_NUMBER = re.compile(r"^\(\d+\)\s*")
+_SPACED_HYPHEN = re.compile(r"(?<=\d)\s+-\s+(?=\d)")
+_WORDS = (
+    "zero one two three four five six seven eight nine ten eleven twelve thirteen "
+    "fourteen fifteen sixteen seventeen eighteen nineteen twenty"
+).split()
+_NUMBER_WORDS = {w: float(i) for i, w in enumerate(_WORDS)}
+_NUMBER_WORDS.update({"thirty": 30.0, "forty": 40.0, "fifty": 50.0, "sixty": 60.0})
+_WORD = re.compile(r"[a-z]+")
 
 
 @dataclass
@@ -52,6 +63,7 @@ def _numbers(text: str) -> set[float]:
     for m in _NUMBER.finditer(text):
         if any(ch.isdigit() for ch in m.group(0)):
             out.add(float(m.group(0).replace(",", "")))
+    out.update(_NUMBER_WORDS[w] for w in _WORD.findall(text) if w in _NUMBER_WORDS)
     return out
 
 
@@ -60,18 +72,26 @@ def _identifiers(text: str) -> set[str]:
 
 
 def _contains(text: str, kind: str, value: str) -> bool:
-    text = norm(text)
+    text = _SPACED_HYPHEN.sub("-", norm(text))
     if kind == "num":
         return float(value.replace(",", "")) in _numbers(text)
     return value in _identifiers(text) or value in text
 
 
-def check_facts(claim: str, quote: str, ev: Evidence) -> FactResult:
+def check_facts(
+    claim: str, quote: str, ev: Evidence, question: str = "", page_text: str = ""
+) -> FactResult:
     claim_n = norm(claim)
     facts = _facts(claim_n)
+    row_context = [*(ev.cells or []), ev.group or ""] if ev.kind == "row" else []
     for _, kind, value in facts:
-        if not _contains(quote, kind, value):
-            return FactResult(False, f"{value} not in quote")
+        if _contains(quote, kind, value):
+            continue
+        if any(_contains(cell, kind, value) for cell in row_context):
+            continue
+        if _contains(question, kind, value) and _contains(page_text, kind, value):
+            continue
+        return FactResult(False, f"{value} not in quote")
     if ev.kind != "row" or not ev.header or not ev.cells:
         return FactResult(True)
 

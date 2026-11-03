@@ -70,3 +70,20 @@ def test_short_quote_needs_exact():
     ev = row()
     assert match_quote("17", ev) is not None
     assert match_quote("71", ev) is None
+
+
+def test_quote_with_ellipsis_matches_each_fragment():
+    ev = Evidence(
+        "m:p1:b0",
+        "text",
+        "m.pdf",
+        1,
+        "m:p1:b0",
+        "The datum is located on the firewall of this airplane. It is 100 inches ahead.",
+        [Box(0, 0, 1, 1)],
+    )
+    m = match_quote("The datum is located ... It is 100 inches ahead.", ev)
+    assert m is not None
+    assert (
+        match_quote("The datum is located ... It is 500 miles behind us.", ev) is None
+    )

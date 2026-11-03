@@ -57,11 +57,20 @@ class AnswerEvent:
     data: dict = field(default_factory=dict)
 
 
-def _figure_claim(raw: RawClaim, ev: Evidence) -> CheckedClaim:
-    facts = check_facts(raw.claim, ev.text, ev)
+def _figure_claim(
+    raw: RawClaim, ev: Evidence, question: str, page: str
+) -> CheckedClaim:
+    facts = check_facts(raw.claim, ev.text, ev, question, page)
     status, reason = ("figure", None) if facts.ok else ("removed", facts.reason)
     return CheckedClaim(
         raw.claim, raw.block, raw.quote, ev.page, ev.boxes, status, reason
+    )
+
+
+def _page_text(ctx: IngestContext, ev: Evidence) -> str:
+    where = (ev.manual, ev.page)
+    return "\n".join(
+        b.text for i, b in ctx.blocks.items() if ctx.block_page[i] == where
     )
 
 
@@ -110,7 +119,7 @@ def answer_stream(
             unknown += 1
             return
         if ev.kind == "figure":
-            c = _figure_claim(raw, ev)
+            c = _figure_claim(raw, ev, query, _page_text(ctx, ev))
             (kept if c.status == "figure" else removed).append(c)
             yield AnswerEvent(
                 "claim_settled" if c.status == "figure" else "claim_removed", c
@@ -135,7 +144,7 @@ def answer_stream(
         )
         timings.setdefault("first_claim_s", time.perf_counter() - start)
         yield AnswerEvent("claim_shown", c)
-        facts = check_facts(raw.claim, raw.quote, ev)
+        facts = check_facts(raw.claim, raw.quote, ev, query, _page_text(ctx, ev))
         if facts.ok:
             c.status = "verified"
             kept.append(c)

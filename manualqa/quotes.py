@@ -8,6 +8,7 @@ from it the line or cell boxes that cover it.
 
 from __future__ import annotations
 
+import re
 import unicodedata
 from dataclasses import dataclass
 
@@ -19,6 +20,7 @@ from manualqa.retrieve import Evidence, layout_row
 
 QUOTE_MIN = 90
 SHORT = 8  # normalised quotes this short must appear exactly
+_ELLIPSIS = re.compile(r"\.{3,}|…")
 _FOLD = str.maketrans(
     {"o": "0", "l": "1", "i": "1", "‘": "'", "’": "'", "“": '"', "”": '"', "­": ""}
 )
@@ -76,6 +78,20 @@ def _line_ranges(ev: Evidence) -> list[tuple[int, int, Box]]:
 
 
 def match_quote(quote: str, ev: Evidence) -> QuoteMatch | None:
+    parts = [p for p in _ELLIPSIS.split(quote) if p.strip(" ;,.")]
+    if len(parts) > 1:  # the model skipped text: every fragment must be in the block
+        found = [_match_one(p.strip(" ;,"), ev) for p in parts]
+        if any(m is None for m in found):
+            return None
+        return QuoteMatch(
+            score=min(m.score for m in found),
+            span=(min(m.span[0] for m in found), max(m.span[1] for m in found)),
+            boxes=[b for m in found for b in m.boxes],
+        )
+    return _match_one(quote, ev)
+
+
+def _match_one(quote: str, ev: Evidence) -> QuoteMatch | None:
     q, _ = _key(quote)
     t, where = _key(ev.text)
     found = _align(q, t)

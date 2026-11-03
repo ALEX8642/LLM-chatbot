@@ -68,3 +68,65 @@ def test_claim_without_facts_passes():
     ev = text_ev("Service the air cleaner element when the indicator shows red.")
     claim = "Service the air cleaner when its indicator shows red."
     assert check_facts(claim, "indicator shows red", ev).ok
+
+
+def test_context_from_question_on_cited_page_passes():
+    r = check_facts(
+        "The maximum baggage for the Cirrus SR20 is 130 pounds.",
+        "Maximum baggage for this model is 130 pounds",
+        text_ev("Maximum baggage for this model is 130 pounds"),
+        question="What is the SR20 maximum baggage?",
+        page_text="Cirrus SR20 data sheet. Maximum baggage for this model is 130 pounds",
+    )
+    assert r.ok
+
+
+def test_borrowed_subject_not_on_cited_page_fails():
+    r = check_facts(
+        "The new useful load for the Cessna 172S is 1,216.62 pounds.",
+        "NEW USEFUL LOAD 1,216.62",
+        text_ev("NEW USEFUL LOAD 1,216.62"),
+        question="What is the useful load of a Cessna 172S?",
+        page_text="Sample alteration. NEW USEFUL LOAD 1,216.62",
+    )
+    assert not r.ok and "172s" in r.reason
+
+
+def test_value_on_page_but_not_in_question_or_quote_fails():
+    r = check_facts(
+        "The limit is 30 psi.",
+        "the limit is stated below",
+        text_ev("the limit is stated below"),
+        question="What is the limit?",
+        page_text="the limit is stated below. Other table: 30 psi",
+    )
+    assert not r.ok and "30" in r.reason
+
+
+def test_fact_elsewhere_in_the_row_passes():
+    assert check_facts(
+        "The part number for the filter element (Item 17) is P14-8969.",
+        "P14-8969",
+        row(),
+    ).ok
+
+
+def test_cage_trap_still_caught_with_row_context():
+    r = check_facts("The part number is 18265.", "18265", row())
+    assert not r.ok and "FSCM" in r.reason
+
+
+def test_number_words_match_digits():
+    assert check_facts(
+        "Crank for no more than 15 seconds.",
+        "Do not crank engine in excess of fifteen seconds.",
+        text_ev("Do not crank engine in excess of fifteen seconds."),
+    ).ok
+
+
+def test_ocr_spaced_identifier_matches():
+    assert check_facts(
+        "Perform the PMCS in Table 2-4.",
+        "in accordance with TABLE 2 - 4",
+        text_ev("in accordance with TABLE 2 - 4"),
+    ).ok
