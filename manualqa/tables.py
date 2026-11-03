@@ -126,7 +126,8 @@ def _box(text: str | None) -> Box | None:
 
 class TableStore:
     def __init__(self, path: Path | str) -> None:
-        self.db = sqlite3.connect(str(path))
+        # the server reads from worker threads; writes happen once, at ingestion
+        self.db = sqlite3.connect(str(path), check_same_thread=False)
         self.db.executescript("""
             CREATE TABLE IF NOT EXISTS tables (
                 table_id TEXT PRIMARY KEY, manual TEXT, page INTEGER, block_id TEXT,

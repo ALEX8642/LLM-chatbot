@@ -54,6 +54,7 @@ class AnswerEvent:
     kind: Literal["retrieved", "claim_shown", "claim_settled", "claim_removed", "done"]
     claim: CheckedClaim | None = None
     answer: Answer | None = None
+    data: dict = field(default_factory=dict)
 
 
 def _figure_claim(raw: RawClaim, ev: Evidence) -> CheckedClaim:
@@ -86,7 +87,15 @@ def answer_stream(
     query = _standalone(question, history, gen) if history else question
     retrieval = retrieve(query, manual, ctx)
     timings = {"retrieval_s": time.perf_counter() - start}
-    yield AnswerEvent("retrieved")
+    yield AnswerEvent(
+        "retrieved",
+        data={
+            "standalone_question": query if history else None,
+            "pages": retrieval.ranked_pages,
+            "evidence": len(retrieval.evidence),
+            "table_hits": retrieval.table_hits,
+        },
+    )
 
     by_id = {e.id: e for e in retrieval.evidence}
     parser = ClaimParser()
