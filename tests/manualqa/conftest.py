@@ -36,3 +36,16 @@ def manual():
         return docs[name]
 
     return _open
+
+
+FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
+
+
+@pytest.fixture(scope="session")
+def raw_pages():
+    """Raw PaddleOCR parses of six spike pages, keyed by (manual, page)."""
+    from manualqa.blocks import load_pages
+
+    return {
+        (pp.manual, pp.page): pp for pp in load_pages(FIXTURES / "paddle-raw.jsonl")
+    }
