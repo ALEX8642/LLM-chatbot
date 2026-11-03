@@ -5,8 +5,8 @@
    rather than a new fact: anything else in the same table row, and anything the question
    itself mentions that is also on the cited page. A subject the page never mentions still
    fails, so a figure borrowed from another aircraft's example is removed.
-2. For a table row: a column name in the claim applies to the first fact after it. If that
-   fact sits in another column of the row, the claim fails. This catches right row, wrong
+2. For a table row: a column name in the claim applies to the facts up to the next column
+   name. If those facts sit only in other columns of the row, the claim fails. This catches right row, wrong
    column, e.g. "the part number is 18265" when 18265 is the row's CAGE code (FSCM).
 """
 
@@ -103,16 +103,22 @@ def check_facts(
         found = fuzz.partial_ratio_alignment(core, claim_n, score_cutoff=LABEL_MIN)
         if found is not None:
             labels.append((found.dest_end, col))
-    for end, col in labels:
-        after = [f for f in facts if f[0] >= end]
-        if not after:
-            continue
-        _, kind, value = after[0]
-        holders = [c for c, cell in enumerate(ev.cells) if _contains(cell, kind, value)]
-        if holders and col not in holders:
+    labels.sort()
+    for i, (end, col) in enumerate(labels):
+        stop = labels[i + 1][0] if i + 1 < len(labels) else len(claim_n)
+        held = []  # (fact value, the columns of this row that hold it)
+        for pos, kind, value in facts:
+            if end <= pos < stop:
+                cols = [
+                    c for c, cell in enumerate(ev.cells) if _contains(cell, kind, value)
+                ]
+                if cols:
+                    held.append((value, cols))
+        if held and not any(col in cols for _, cols in held):
+            value, cols = held[0]
             return FactResult(
                 False,
-                f"value {value} in column {ev.header[holders[0]]}, "
+                f"value {value} in column {ev.header[cols[0]]}, "
                 f"claim names {ev.header[col]}",
             )
     return FactResult(True)
