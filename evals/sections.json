@@ -1,0 +1,374 @@
+{
+ "FAA_Weight_and_Balance_Handbook.pdf": [
+  {
+   "id": "faa-fm",
+   "title": "Front matter",
+   "first": 1,
+   "last": 14
+  },
+  {
+   "id": "faa-ch1",
+   "title": "Weight and Balance Control",
+   "first": 15,
+   "last": 20
+  },
+  {
+   "id": "faa-ch2.1",
+   "title": "Weight and Balance Theory (part 1)",
+   "first": 21,
+   "last": 23
+  },
+  {
+   "id": "faa-ch2.2",
+   "title": "Weight and Balance Theory (part 2)",
+   "first": 24,
+   "last": 29
+  },
+  {
+   "id": "faa-ch2.3",
+   "title": "Weight and Balance Theory (part 3)",
+   "first": 30,
+   "last": 32
+  },
+  {
+   "id": "faa-ch3.1",
+   "title": "Weighing the Aircraft and Determining the Empty Weight CG (part 1)",
+   "first": 33,
+   "last": 35
+  },
+  {
+   "id": "faa-ch3.2",
+   "title": "Weighing the Aircraft and Determining the Empty Weight CG (part 2)",
+   "first": 36,
+   "last": 38
+  },
+  {
+   "id": "faa-ch3.3",
+   "title": "Weighing the Aircraft and Determining the Empty Weight CG (part 3)",
+   "first": 39,
+   "last": 42
+  },
+  {
+   "id": "faa-ch4",
+   "title": "Light Sport Aircraft Weight and Balance Control",
+   "first": 43,
+   "last": 48
+  },
+  {
+   "id": "faa-ch5",
+   "title": "Single-Engine Aircraft Weight and Balance Computations",
+   "first": 49,
+   "last": 54
+  },
+  {
+   "id": "faa-ch6",
+   "title": "Multiengine Aircraft Weight and Balance Computations",
+   "first": 55,
+   "last": 60
+  },
+  {
+   "id": "faa-ch7.1",
+   "title": "Center of Gravity Change After a Repair or Alteration (part 1)",
+   "first": 61,
+   "last": 64
+  },
+  {
+   "id": "faa-ch7.2",
+   "title": "Center of Gravity Change After a Repair or Alteration (part 2)",
+   "first": 65,
+   "last": 68
+  },
+  {
+   "id": "faa-ch8",
+   "title": "Weight and Balance Control—Helicopter",
+   "first": 69,
+   "last": 72
+  },
+  {
+   "id": "faa-ch9.1",
+   "title": "Weight and Balance Control—Commuter Category and Large Aircraft (part 1)",
+   "first": 73,
+   "last": 76
+  },
+  {
+   "id": "faa-ch9.2",
+   "title": "Weight and Balance Control—Commuter Category and Large Aircraft (part 2)",
+   "first": 77,
+   "last": 79
+  },
+  {
+   "id": "faa-ch9.3",
+   "title": "Weight and Balance Control—Commuter Category and Large Aircraft (part 3)",
+   "first": 80,
+   "last": 83
+  },
+  {
+   "id": "faa-ch9.4",
+   "title": "Weight and Balance Control—Commuter Category and Large Aircraft (part 4)",
+   "first": 84,
+   "last": 87
+  },
+  {
+   "id": "faa-ch9.5",
+   "title": "Weight and Balance Control—Commuter Category and Large Aircraft (part 5)",
+   "first": 88,
+   "last": 92
+  },
+  {
+   "id": "faa-ch10.1",
+   "title": "Use of Computer for Weight and Balance Computations (part 1)",
+   "first": 93,
+   "last": 95
+  },
+  {
+   "id": "faa-ch10.2",
+   "title": "Use of Computer for Weight and Balance Computations (part 2)",
+   "first": 96,
+   "last": 100
+  },
+  {
+   "id": "faa-app",
+   "title": "Appendices A and B",
+   "first": 101,
+   "last": 104
+  },
+  {
+   "id": "faa-gloss",
+   "title": "Glossary",
+   "first": 105,
+   "last": 110
+  },
+  {
+   "id": "faa-index",
+   "title": "Index",
+   "first": 111,
+   "last": 114
+  }
+ ],
+ "Army_5kW_Generator_Operator_Manual.pdf": [
+  {
+   "id": "op-fm",
+   "title": "Front matter",
+   "first": 1,
+   "last": 14
+  },
+  {
+   "id": "op-1-1",
+   "title": "Chapter 1 Section I",
+   "first": 15,
+   "last": 17
+  },
+  {
+   "id": "op-1-2.1",
+   "title": "Chapter 1 Section II (part 1)",
+   "first": 18,
+   "last": 20
+  },
+  {
+   "id": "op-1-2.2",
+   "title": "Chapter 1 Section II (part 2)",
+   "first": 21,
+   "last": 24
+  },
+  {
+   "id": "op-1-3",
+   "title": "Chapter 1 Section III",
+   "first": 25,
+   "last": 30
+  },
+  {
+   "id": "op-2-1.1",
+   "title": "Chapter 2 Section I (part 1)",
+   "first": 31,
+   "last": 33
+  },
+  {
+   "id": "op-2-1.2",
+   "title": "Chapter 2 Section I (part 2)",
+   "first": 34,
+   "last": 37
+  },
+  {
+   "id": "op-2-2.1",
+   "title": "Chapter 2 Section II (part 1)",
+   "first": 38,
+   "last": 45
+  },
+  {
+   "id": "op-2-3a",
+   "title": "Chapter 2 Section III (to para 2-9)",
+   "first": 46,
+   "last": 49
+  },
+  {
+   "id": "op-2-3b.1",
+   "title": "Chapter 2 Section III (para 2-10 on) (part 1)",
+   "first": 50,
+   "last": 52
+  },
+  {
+   "id": "op-2-3b.2",
+   "title": "Chapter 2 Section III (para 2-10 on) (part 2)",
+   "first": 53,
+   "last": 55
+  },
+  {
+   "id": "op-2-3b.3",
+   "title": "Chapter 2 Section III (para 2-10 on) (part 3)",
+   "first": 56,
+   "last": 58
+  },
+  {
+   "id": "op-2-3b.4",
+   "title": "Chapter 2 Section III (para 2-10 on) (part 4)",
+   "first": 59,
+   "last": 61
+  },
+  {
+   "id": "op-2-4",
+   "title": "Chapter 2 Section IV",
+   "first": 62,
+   "last": 67
+  },
+  {
+   "id": "op-3-12.1",
+   "title": "Chapter 3 Sections I-II (part 1)",
+   "first": 68,
+   "last": 70
+  },
+  {
+   "id": "op-3-12.2",
+   "title": "Chapter 3 Sections I-II (part 2)",
+   "first": 71,
+   "last": 73
+  },
+  {
+   "id": "op-3-12.3",
+   "title": "Chapter 3 Sections I-II (part 3)",
+   "first": 74,
+   "last": 76
+  },
+  {
+   "id": "op-3-3",
+   "title": "Chapter 3 Section III",
+   "first": 77,
+   "last": 82
+  },
+  {
+   "id": "op-app",
+   "title": "Appendices A-D",
+   "first": 83,
+   "last": 89
+  },
+  {
+   "id": "op-index",
+   "title": "Index",
+   "first": 90,
+   "last": 101
+  }
+ ],
+ "Army_5kW_Generator_Parts_Manual.pdf": [
+  {
+   "id": "parts-fm",
+   "title": "Front matter",
+   "first": 1,
+   "last": 4
+  },
+  {
+   "id": "parts-intro",
+   "title": "Section I",
+   "first": 5,
+   "last": 10
+  },
+  {
+   "id": "parts-g01",
+   "title": "Group 01",
+   "first": 11,
+   "last": 21
+  },
+  {
+   "id": "parts-g02",
+   "title": "Group 02",
+   "first": 22,
+   "last": 31
+  },
+  {
+   "id": "parts-g03",
+   "title": "Group 03",
+   "first": 32,
+   "last": 46
+  },
+  {
+   "id": "parts-g04",
+   "title": "Group 04",
+   "first": 47,
+   "last": 55
+  },
+  {
+   "id": "parts-g05",
+   "title": "Group 05",
+   "first": 56,
+   "last": 59
+  },
+  {
+   "id": "parts-g06",
+   "title": "Group 06",
+   "first": 60,
+   "last": 62
+  },
+  {
+   "id": "parts-g07",
+   "title": "Group 07",
+   "first": 63,
+   "last": 67
+  },
+  {
+   "id": "parts-g08",
+   "title": "Group 08",
+   "first": 68,
+   "last": 69
+  },
+  {
+   "id": "parts-g09",
+   "title": "Group 09",
+   "first": 70,
+   "last": 73
+  },
+  {
+   "id": "parts-g10",
+   "title": "Group 10",
+   "first": 74,
+   "last": 75
+  },
+  {
+   "id": "parts-g11",
+   "title": "Group 11",
+   "first": 76,
+   "last": 78
+  },
+  {
+   "id": "parts-g12",
+   "title": "Group 12",
+   "first": 79,
+   "last": 88
+  },
+  {
+   "id": "parts-g13",
+   "title": "Group 13",
+   "first": 89,
+   "last": 90
+  },
+  {
+   "id": "parts-g14",
+   "title": "Group 14",
+   "first": 91,
+   "last": 92
+  },
+  {
+   "id": "parts-index",
+   "title": "Section IV (index)",
+   "first": 93,
+   "last": 148
+  }
+ ]
+}

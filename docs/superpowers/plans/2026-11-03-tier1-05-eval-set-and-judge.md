@@ -25,7 +25,7 @@
 
 ## Review Focus
 
-1. **A gold page in a section of the other split** (an item whose pages straddle sections): the validator must reject it, not let the split leak. `test_item_across_sections_rejected` (Task 1).
+1. **A gold page in a section of the other split** (an item whose pages straddle sections): the splitter links every section an item touches, so they land in the same split. `test_linked_sections_share_a_split` (Task 3).
 2. **The same fact asked in dev and test** through different wording or a duplicated page: near-duplicate questions across splits are flagged. `test_near_duplicate_across_splits_flagged` (Task 3).
 3. **Judge output that is not valid JSON or skips a fact**: the item is marked `judge_error` and excluded with a count, never scored as wrong. `test_malformed_judge_output_is_judge_error` (Task 4).
 4. **Abstention on either side**: an answerable item that abstains scores 0 and is counted as abstained; an unanswerable item is correct only if it abstains. `test_abstention_scoring` (Task 4).
@@ -38,19 +38,19 @@
 **Files:** create `evals/sections.json`, `evals/items.py`, `tests/evals/test_items.py`; move `evals/qa.jsonl` → `evals/pool/legacy.jsonl` (keep `evals/qa.jsonl` as the dev file the splitter writes, so `run_eval.py --qa` keeps working).
 
 **Interfaces — produces:**
-- `evals/sections.json`: `{manual_file: [{"id": str, "title": str, "first": int, "last": int}]}`, contiguous and covering every page once. Sections are TOC units: FAA chapters, operator manual chapters split at their numbered sections (e.g. `op-3-3`), parts manual one section per figure group.
-- `Item` (dataclass): `id, manual, section, category ∈ {single_page, multi_page, table, figure, unanswerable}, question, gold_pages: list[int], reference_answer, key_facts: list[str], anchors: list[str], exact_answer: str | None, near_miss: bool, provenance: dict ({"written_by", "edited_by", "date"})`.
+- `evals/sections.json`: `{manual_file: [{"id": str, "title": str, "first": int, "last": int}]}`, contiguous and covering every page once. Sections are TOC units (FAA chapters, operator chapter sections, parts figure groups starting at their first figure page); FAA and operator units longer than 6 pages are cut at bookmark pages into pieces of ≥ 3 pages (the FAA outline is flat). Front matter, appendices, glossary and indexes are sections of their own.
+- `Item` (dataclass): `id, manual, sections: list[str], category ∈ {single_page, multi_page, table, figure, unanswerable}, question, gold_pages: list[int], reference_answer, key_facts: list[str], anchors: list[str], exact_answer: str | None, near_miss: bool, provenance: dict ({"written_by", "edited_by", "date"})`.
 - `load_items(path) -> list[Item]`, `dump_items(items, path)`, `section_of(sections, manual, page) -> str`.
 - `validate(items, sections, pages_text: dict[(manual, page), str]) -> list[str]` (problems, empty when valid).
 
 - [ ] **Step 1: Tests** in `tests/evals/test_items.py`:
   - `test_sections_cover_every_page_once`: for each manual in `manuals/SOURCES.md`, the sections' ranges are contiguous from 1 to its page count.
-  - `test_item_across_sections_rejected`: an item with gold pages in two sections → a problem naming both sections.
+  - `test_sections_match_gold_pages`: an item's `sections` must equal the sections of its gold pages (answerable) or name one on-topic section (unanswerable); a mismatch → a problem.
   - `test_anchor_must_be_on_a_gold_page`: anchor `"P14-8969"` on parts p59 → valid; on p58 → problem.
-  - `test_unanswerable_anchor_must_be_absent`: an unanswerable item's anchors (terms the question needs, e.g. `"torque"`) must not appear on any page of its manual; present → problem. Near-miss unanswerables must have a `section` (the on-topic section), answerable ones `gold_pages` non-empty and `key_facts` 1–4.
+  - `test_unanswerable_anchor_must_be_absent`: an unanswerable item's anchors (terms the question needs, e.g. `"torque"`) must not appear on any page of its manual; present → problem. Near-miss unanswerables must name one on-topic section, answerable ones `gold_pages` non-empty and `key_facts` 1–4.
   - `test_legacy_items_valid`: all 42 legacy items, with sections, key facts and anchors added, validate against the real composed text (skipped when `data/ingest/composed.jsonl` is absent).
 - [ ] **Step 2:** FAIL → implement → PASS (`pytest tests/evals/test_items.py -q`). Anchor matching uses `manualqa.textnorm.norm` on both sides (case, whitespace, letter spacing).
-- [ ] **Step 3:** Add `section`, `key_facts`, `anchors`, `exact_answer` (where the reference is a single value), `near_miss: false` and `provenance: {"written_by": "Claude", "edited_by": null, "date": "2026-11-01"}` to the 42 legacy items; `test_legacy_items_valid` passes.
+- [ ] **Step 3:** Add `sections`, `key_facts`, `anchors`, `exact_answer` (where the reference is a single value), `near_miss: false` and `provenance: {"written_by": "Claude", "edited_by": null, "date": "2026-11-01"}` to the 42 legacy items; `test_legacy_items_valid` passes.
 - [ ] **Step 4:** Commit `evals: sections, item schema and anchor validator`.
 
 ### Task 2: Write the item pool
@@ -73,9 +73,10 @@
   - `test_forced_sections_stay_dev`: sections of the legacy items are dev.
   - `test_targets_met`: on the real pool, dev ≥ 80 items and ≥ 20 unanswerable; test hand-written items 150–200 with ≥ 30 near-miss unanswerables; per category, the test share is within 15 points of the pool share.
   - `test_no_page_in_both_splits`: no gold page of a test item lies in a dev section (by construction; asserted).
+  - `test_linked_sections_share_a_split`: an item spanning sections A and B → A and B get the same split, and forcing A to dev takes B with it.
   - `test_near_duplicate_across_splits_flagged`: two questions differing only in word order across splits → flagged.
   - `test_split_is_deterministic`: same seed → same assignment.
-- [ ] **Step 2:** FAIL → implement → PASS. Algorithm: start with forced dev sections; add further sections to dev in seeded random order, taking a section only while it moves dev toward its targets (items, unanswerable, per-category shares) without exceeding 110 dev items; everything else is test. If test exceeds 200 hand-written items, drop seeded-random answerable items from the largest test category back to the pool's `reserve` (recorded in `split.json`), never unanswerables.
+- [ ] **Step 2:** FAIL → implement → PASS. Algorithm: link sections that share an item (union-find) into units; start with the units holding forced dev sections; add further units to dev in seeded random order, taking a unit only while it moves dev toward its targets (items, unanswerable, per-category shares) without exceeding 110 dev items; everything else is test. If test exceeds 200 hand-written items, drop seeded-random answerable items from the largest test category back to the pool's `reserve` (recorded in `split.json`), never unanswerables.
 - [ ] **Step 3:** Run `python -m evals.split --seed 20261103`; resolve every flagged near-duplicate by rewriting or dropping one of the pair; commit the split files `evals: section split (dev N, test M)`.
 
 ### Task 4: Grading: exact match, key-fact checklist, source support
