@@ -446,25 +446,35 @@ def score_item(
     s["latency_s"] = item["timings"].get("total_s")
 
     if judge and not item.get("error"):
-        c = judge.ask(
-            JUDGE_CORRECTNESS.format(
-                question=gold["question"],
-                reference=gold["reference_answer"],
-                answer=item["answer"],
+        try:
+            _judge_item(s, item, gold, judge)
+        except ValueError as e:  # a reply without JSON: unjudged, not wrong
+            s["judge_error"] = str(e)[:300]
+            s.setdefault("correctness", None)
+    return s
+
+
+def _judge_item(
+    s: Dict[str, Any], item: Dict[str, Any], gold: Dict[str, Any], judge: Judge
+) -> None:
+    c = judge.ask(
+        JUDGE_CORRECTNESS.format(
+            question=gold["question"],
+            reference=gold["reference_answer"],
+            answer=item["answer"],
+        )
+    )
+    s["abstained"] = bool(c.get("abstained"))
+    s["correctness"] = c.get("correctness")
+    s["correctness_reason"] = c.get("reason")
+    if item["answer"].strip() and not s["abstained"]:
+        f = judge.ask(
+            JUDGE_FAITHFULNESS.format(
+                context=item["context"] or "(no excerpts)", answer=item["answer"]
             )
         )
-        s["abstained"] = bool(c.get("abstained"))
-        s["correctness"] = c.get("correctness")
-        s["correctness_reason"] = c.get("reason")
-        if item["answer"].strip() and not s["abstained"]:
-            f = judge.ask(
-                JUDGE_FAITHFULNESS.format(
-                    context=item["context"] or "(no excerpts)", answer=item["answer"]
-                )
-            )
-            s["faithfulness"] = f.get("faithfulness")
-            s["unsupported_claims"] = f.get("unsupported_claims", [])
-    return s
+        s["faithfulness"] = f.get("faithfulness")
+        s["unsupported_claims"] = f.get("unsupported_claims", [])
 
 
 def mean(xs: List[float]) -> Optional[float]:
@@ -488,8 +498,13 @@ def summarize(scored: List[Dict[str, Any]]) -> Dict[str, Any]:
     out["citation_precision"] = mean([s["citation_precision"] for s in ans])
     if any("correctness" in s for s in scored):
         out["correctness"] = mean(
-            [CORRECTNESS_SCORE.get(s.get("correctness"), 0.0) for s in ans]
+            [
+                CORRECTNESS_SCORE.get(s.get("correctness"), 0.0)
+                for s in ans
+                if s.get("correctness") is not None
+            ]
         )
+        out["judge_errors"] = sum(1 for s in scored if s.get("judge_error"))
         faith = [
             FAITHFUL_SCORE[s["faithfulness"]]
             for s in scored
