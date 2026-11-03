@@ -78,6 +78,7 @@ class Evidence:
     cells: list[str] | None = None
     cell_boxes: list[Box | None] | None = None
     row: int | None = None
+    group: str | None = None
 
 
 @dataclass
@@ -115,11 +116,28 @@ class IngestContext:
         return self.root / "pages" / Path(manual).stem / f"p{page:03d}-gen.jpg"
 
 
+def layout_row(
+    header: list[str], cells: list[str], group: str | None
+) -> tuple[str, list[tuple[int, int, int]]]:
+    """Row text as "header: value; ..." and the (start, end, column) of each value."""
+    parts, spans, pos = [], [], 0
+    for col, (h, v) in enumerate(zip(header, cells)):
+        if not v.strip():
+            continue
+        prefix = f"{h}: " if h else ""
+        if parts:
+            pos += 2  # "; "
+        spans.append((pos + len(prefix), pos + len(prefix) + len(v), col))
+        parts.append(prefix + v)
+        pos += len(prefix) + len(v)
+    text = "; ".join(parts)
+    if group:
+        text += f" (group: {group})"
+    return text, spans
+
+
 def row_evidence(hit: RowHit) -> Evidence:
-    pairs = [(h, v) for h, v in zip(hit.header, hit.cells) if v.strip()]
-    text = "; ".join(f"{h}: {v}" if h else v for h, v in pairs)
-    if hit.group:
-        text += f" (group: {hit.group})"
+    text, _ = layout_row(hit.header, hit.cells, hit.group)
     return Evidence(
         id=f"{hit.block_id}:r{hit.row}",
         kind="row",
@@ -132,6 +150,7 @@ def row_evidence(hit: RowHit) -> Evidence:
         cells=hit.cells,
         cell_boxes=hit.cell_boxes,
         row=hit.row,
+        group=hit.group,
     )
 
 
