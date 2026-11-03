@@ -22,18 +22,10 @@ from manualqa.geometry import render_page
 from manualqa.ocr_detect import needs_ocr
 from manualqa.parsers.common import assign_lines
 from manualqa.parsers.textlayer import text_layer_lines
+from manualqa.table_geometry import place_cells
 from manualqa.textclean import clean_ocr_text
 
 TABLE_CELL_SEP = " | "
-
-
-def _place_cells(block: Block) -> None:
-    """Hook for table cell placement (manualqa.table_geometry)."""
-    try:
-        from manualqa.table_geometry import place_cells
-    except ImportError:  # until table geometry exists, cells keep the parser's boxes
-        return
-    place_cells(block, block.lines)
 
 
 def compose_page(raw: PageParse, page: pymupdf.Page) -> PageParse:
@@ -67,7 +59,7 @@ def compose_page(raw: PageParse, page: pymupdf.Page) -> PageParse:
     for i, b in enumerate(blocks):
         b.id = f"{stem}:p{raw.page}:b{i}"
         if b.kind == "table":
-            _place_cells(b)
+            place_cells(b, b.lines)
             rows: dict[int, list] = {}
             for c in sorted(b.cells, key=lambda c: (c.row, c.col)):
                 rows.setdefault(c.row, []).append(c.text)
