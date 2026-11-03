@@ -9,8 +9,30 @@ from pathlib import Path
 import pymupdf
 
 from manualqa.blocks import Block, Line, PageParse
-from manualqa.geometry import render_page
+from manualqa.geometry import PageFrame, render_page
 from manualqa.ocr_detect import OcrDecision
+
+
+def _text_blocks(page: pymupdf.Page, frame: PageFrame):
+    """(lines, PyMuPDF block bbox) for each text block with visible text."""
+    for b in page.get_text("dict")["blocks"]:
+        if b["type"] != 0:  # 0 = text, 1 = image
+            continue
+        lines = [
+            Line(
+                "".join(s["text"] for s in ln["spans"]),
+                frame.from_pdf_topleft(*ln["bbox"]),
+            )
+            for ln in b["lines"]
+        ]
+        lines = [ln for ln in lines if ln.text.strip()]
+        if lines:
+            yield lines, b["bbox"]
+
+
+def text_layer_lines(page: pymupdf.Page, frame: PageFrame) -> list[Line]:
+    """Every visible line of the PDF text layer, in PyMuPDF's reading order."""
+    return [ln for lines, _ in _text_blocks(page, frame) for ln in lines]
 
 
 class TextLayerParser:
@@ -27,26 +49,14 @@ class TextLayerParser:
                 page = doc[n - 1]
                 img, frame = render_page(page)
                 blocks = []
-                for b in page.get_text("dict")["blocks"]:
-                    if b["type"] != 0:  # 0 = text, 1 = image
-                        continue
-                    lines = [
-                        Line(
-                            "".join(s["text"] for s in ln["spans"]),
-                            frame.from_pdf_topleft(*ln["bbox"]),
-                        )
-                        for ln in b["lines"]
-                    ]
-                    lines = [ln for ln in lines if ln.text.strip()]
-                    if not lines:
-                        continue
+                for block_lines, bbox in _text_blocks(page, frame):
                     blocks.append(
                         Block(
                             id=f"{pdf.stem}:p{n}:b{len(blocks)}",
                             kind="text",
-                            text="\n".join(ln.text for ln in lines),
-                            box=frame.from_pdf_topleft(*b["bbox"]),
-                            lines=lines,
+                            text="\n".join(ln.text for ln in block_lines),
+                            box=frame.from_pdf_topleft(*bbox),
+                            lines=block_lines,
                         )
                     )
                 decision = ocr.get(n)
