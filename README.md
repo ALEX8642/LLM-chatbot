@@ -9,7 +9,7 @@ check every claim against the source while reading the answer**. In v2 each clai
 specific text line, table row or figure, highlighted on the page, and checked before it is shown.
 Every design choice is made by measurement, against an evaluation built before the rebuild started.
 
-> **Status (2026-11-02): this branch is a rebuild in progress, not a working app yet.** The shipped
+> **Status (2026-11-03): this branch is a rebuild in progress, not a working app yet.** The shipped
 > v1 app (Haystack 2.x, Ollama, Qdrant + OpenSearch, React UI) is preserved at tag
 > [`v1`](https://github.com/ALEX8642/LLM-chatbot/tree/v1); its README there describes how to run
 > it. Its code is still on this branch only because the v1 baseline is scored from it; v2 replaces it.
@@ -66,7 +66,10 @@ a minimum credible version first, planned as a
 | Eval harness, 42 dev questions, v1 baseline | done ([`evals/`](evals/)) |
 | Design (revision 4) | done |
 | Plan 1: coordinate spike (parsers, OCR detection, overlays) | done: PaddleOCR-VL chosen over Docling ([decision 001](docs/decisions/001-parser-and-coordinates.md)) |
-| Plans 2–8: ingestion, answer path, overlay UI, eval set and judge, component selection, pre-registered final run, presentation | not started |
+| Plan 2: ingestion (hybrid text layer + Paddle, tables, chunks, index) | done: 363 pages, 92% of table cells boxed ([decision 002](docs/decisions/002-ingestion.md)) |
+| Plan 3: answer path (checked claims, removal reasons, abstention) | code done; dev run pending |
+| Plan 4: overlay UI (server, replay, frontend) | in progress: server, replay and frontend done; end-to-end check and M1 package next |
+| Plans 5–8: eval set and judge, component selection, pre-registered final run, presentation | not started |
 
 ## Repository layout
 
