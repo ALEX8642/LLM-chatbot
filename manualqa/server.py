@@ -96,6 +96,7 @@ def create_app(
         files = {k[0] for k in recorded}
         catalogue = [m for m in catalogue if m["file"] in files]
     stems = {Path(m["file"]).stem for m in catalogue}
+    app.state.pages_root = pages_root
 
     @app.get("/api/manuals")
     def manuals_list() -> list[dict]:

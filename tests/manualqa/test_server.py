@@ -94,3 +94,44 @@ def test_follow_up_sends_history(client):
     retrieved = [d for k, d in events(resp) if k == "retrieved"][0]
     assert retrieved["standalone_question"]  # the rewritten question is reported
     assert gen.calls == 2
+
+
+def test_replay_serves_recorded_events_without_models(client, tmp_path):
+    c, _, rec = client
+    live = events(ask(c))
+    (log,) = list(rec.glob("*.jsonl"))
+    replay = TestClient(
+        create_app(
+            None,
+            None,
+            recordings=tmp_path / "unused",
+            manuals=ROOT / "manuals",
+            replay=log,
+            pages_dir=c.app.state.pages_root,
+        )
+    )
+    assert [m["file"] for m in replay.get("/api/manuals").json()] == [PARTS]
+    assert events(ask(replay)) == live
+    assert (
+        replay.get("/api/pages/Army_5kW_Generator_Parts_Manual/59").status_code == 200
+    )
+
+
+def test_replay_unknown_question(client, tmp_path):
+    c, _, rec = client
+    ask(c)
+    (log,) = list(rec.glob("*.jsonl"))
+    replay = TestClient(
+        create_app(
+            None,
+            None,
+            recordings=tmp_path / "unused",
+            manuals=ROOT / "manuals",
+            replay=log,
+        )
+    )
+    resp = replay.post(
+        "/api/ask", json={"question": "Something else?", "manual": PARTS, "history": []}
+    )
+    ((kind, data),) = events(resp)
+    assert kind == "done" and data["replay_miss"] is True
