@@ -547,7 +547,60 @@ def spread(per_repeat: List[Dict[str, Any]]) -> Dict[str, Any]:
     return out
 
 
+def cmd_score_keyfacts(args) -> None:
+    from evals.grade import cited_source, grade_item, length_bias, summarize_grades
+    from evals.items import load_items
+    from manualqa.blocks import load_pages
+    from evals.prompts import PROMPT_VERSION
+
+    raw = json.loads(Path(args.raw).read_text())
+    items = {i.id: i for i in load_items(Path(args.qa))}
+    blocks, pages = {}, {}
+    for pp in load_pages(Path(args.composed)):
+        pages[(pp.manual, pp.page)] = "\n".join(b.text for b in pp.blocks)
+        blocks.update({b.id: b.text for b in pp.blocks})
+    judge = Judge(
+        os.environ["LLM_BASE_URL"],
+        os.environ.get("LLM_API_KEY", ""),
+        os.environ["LLM_JUDGE_MODEL"],
+    )
+    repeats = []
+    for r, outs in enumerate(raw["repeats"], 1):
+        grades = []
+        for i, out in enumerate(outs, 1):
+            item = items[out["id"]]
+            source = cited_source(out, item.manual, blocks, pages)
+            grades.append(grade_item(item, {**out, "cited_source": source}, judge))
+            print(f"[repeat {r}] graded {i}/{len(outs)} {out['id']}", flush=True)
+        by_category = {}
+        for c in sorted({g["category"] for g in grades}):
+            by_category[c] = summarize_grades([g for g in grades if g["category"] == c])
+        repeats.append(
+            {
+                "summary": summarize_grades(grades),
+                "by_category": by_category,
+                "length_bias": length_bias(grades),
+                "items": grades,
+            }
+        )
+    result = {
+        "kind": "graded-keyfacts",
+        "created": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "raw_file": str(args.raw),
+        "config": raw["config"],
+        "judge": {"model": judge.model, "prompt_version": PROMPT_VERSION},
+        "repeats": repeats,
+    }
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.out).write_text(json.dumps(result, indent=2))
+    print(json.dumps([r["summary"] for r in repeats], indent=2))
+    print(f"wrote {args.out}")
+
+
 def cmd_score(args) -> None:
+    if args.grader == "keyfacts":
+        cmd_score_keyfacts(args)
+        return
     raw = json.loads(Path(args.raw).read_text())
     qa = {q["id"]: q for q in load_qa(Path(args.qa))}
     if raw["qa_sha256"] != sha256_file(Path(args.qa)):
@@ -642,6 +695,13 @@ def main() -> None:
     s.add_argument(
         "--no-judge", action="store_true", help="retrieval and citation metrics only"
     )
+    s.add_argument(
+        "--grader",
+        choices=["legacy", "keyfacts"],
+        default="legacy",
+        help="legacy: holistic grade (history); keyfacts: checklist and source support",
+    )
+    s.add_argument("--composed", default="data/ingest/composed.jsonl", help="keyfacts")
     s.add_argument("--out", required=True)
     s.set_defaults(func=cmd_score)
 
