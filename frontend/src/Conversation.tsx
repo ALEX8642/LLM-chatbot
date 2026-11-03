@@ -48,7 +48,7 @@ export default function Conversation({ manual, selected, onSelect, onPage, onRem
         {turns.map((t, i) => (
           <li key={i}>
             <p className="font-medium">{t.question}</p>
-            {t.standalone && <p className="text-xs text-slate-500">Searched for: {t.standalone}</p>}
+            {t.standalone && t.standalone !== t.question && <p className="text-xs text-slate-500">Searched for: {t.standalone}</p>}
             <div className="mt-2">
               <ClaimList claims={t.claims} removed={t.removed} selected={selected} onSelect={onSelect} />
               {!t.done && !t.error && <p className="text-sm text-slate-400">Checking the manual…</p>}

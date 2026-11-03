@@ -75,3 +75,4 @@ spike-out/
 
 # ingestion outputs (raw parses, composed pages, index, renders)
 data/
+frontend/e2e/out/
