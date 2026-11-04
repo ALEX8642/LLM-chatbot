@@ -1,0 +1,140 @@
+<title>Gold Answer Check</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a technical manual's inspection sheet; the record on the left, the source page on the right. */
+:root{--bg:#f3f4f1;--panel:#fff;--fg:#20261f;--muted:#5d665b;--line:#cdd2c8;--accent:#3d5a3a;--on-accent:#fff;--mark:#d98e04;--mark-fill:rgba(240,176,32,.28);--good:#2c7a43;--bad:#b23a2a;--edit:#8a5a00;--sheet:#fff;
+--sans:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171a16;--panel:#20241f;--fg:#e6e9e2;--muted:#a0a89c;--line:#3a4037;--accent:#8fb48a;--on-accent:#14170f;--mark:#f0b020;--mark-fill:rgba(240,176,32,.3);--good:#6cc48a;--bad:#ec8877;--edit:#e0b25a;--sheet:#fff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171a16;--panel:#20241f;--fg:#e6e9e2;--muted:#a0a89c;--line:#3a4037;--accent:#8fb48a;--on-accent:#14170f;--mark:#f0b020;--mark-fill:rgba(240,176,32,.3);--good:#6cc48a;--bad:#ec8877;--edit:#e0b25a;--sheet:#fff;color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--sans);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px;box-sizing:border-box}
+#app{display:grid;grid-template-columns:minmax(320px,5fr) 7fr;gap:16px;height:100%;max-width:1500px;margin:auto}
+@media (max-width:820px){#app{grid-template-columns:1fr;height:auto}}
+.sheet{display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow-y:auto;padding-right:4px}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.top strong{font-variant-numeric:tabular-nums}
+.bar{flex:1 1 120px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.tag{border:1px solid var(--line);padding:0 7px;border-radius:3px;letter-spacing:.02em}
+.tag.nm{border-color:var(--edit);color:var(--edit)}
+h1{font-size:19px;line-height:1.35;font-weight:600;margin:0;text-wrap:balance}
+.lab{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.block p{margin:0}.block ul{margin:0;padding-left:18px}
+.anch{font:13px/1.5 var(--mono);color:var(--muted);overflow-wrap:anywhere}
+textarea{width:100%;box-sizing:border-box;font:14px/1.45 var(--sans);color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:6px 8px;min-height:64px}
+.act{display:flex;gap:8px;flex-wrap:wrap}
+button{font:500 14px var(--sans);color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:7px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+kbd{font:12px var(--mono);opacity:.75;margin-left:5px}
+.state{font-size:13px;font-weight:600}.state.correct{color:var(--good)}.state.wrong{color:var(--bad)}.state.edited{color:var(--edit)}
+.err{color:var(--bad);font-size:13px}
+.pagepane{min-width:0;min-height:0;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:8px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;align-items:center;font-size:13px;color:var(--muted)}
+.tabs button{padding:2px 9px;font-size:13px}.tabs button[aria-pressed=true]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.page{position:relative;background:var(--sheet);line-height:0}.page img{display:block;width:100%}
+.page b{position:absolute;background:var(--mark-fill);outline:2px solid var(--mark);border-radius:2px;pointer-events:none}
+.sum{max-width:760px;margin:auto;grid-column:1/-1;display:flex;flex-direction:column;gap:12px;overflow:auto}
+.sum li{margin-bottom:4px}.sum button.link{border:0;background:none;padding:0;color:var(--accent);text-decoration:underline;font-weight:400}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .15s}}
+</style>
+<div id="app"><p>Loading the check sheet…</p></div>
+<script>
+const ITEMS = /*ITEMS*/[];
+const app = document.getElementById("app");
+const el = (t, a = {}, ...kids) => { const e = document.createElement(t);
+  for (const [k, v] of Object.entries(a)) k.startsWith("on") ? e.addEventListener(k.slice(2), v) : k === "class" ? e.className = v : e.setAttribute(k, v);
+  e.append(...kids.filter(k => k !== null && k !== undefined)); return e; };
+let db = null, checks = {}, at = 0, mode = "view", pageAt = 0, marks = true, saveError = "", loaded = false, summary = false;
+try { const s = localStorage.getItem("gold-at"); if (s) at = Math.min(+s || 0, ITEMS.length - 1); } catch (e) {}
+const remember = () => { try { localStorage.setItem("gold-at", String(at)); } catch (e) {} };
+const done = () => ITEMS.filter(i => checks[i.id]).length;
+const firstOpen = () => { const n = ITEMS.findIndex(i => !checks[i.id]); return n < 0 ? 0 : n; };
+function go(n) { at = Math.max(0, Math.min(ITEMS.length - 1, n)); mode = "view"; pageAt = 0; saveError = ""; summary = false; remember(); render(); }
+async function save(item, doc) {
+  const record = { ...doc, at: new Date().toISOString() };
+  const previous = checks[item.id]; checks[item.id] = record; saveError = "";
+  try { if (!db) throw new Error("not connected"); await db.doc("checks/" + item.id).set(record); }
+  catch (e) { if (previous) checks[item.id] = previous; else delete checks[item.id];
+    saveError = "This check was not saved (" + (e.message || e.code || "error") + "). Try again."; mode = "view"; render(); return false; }
+  return true;
+}
+async function verdict(kind, extra = {}) {
+  const item = ITEMS[at];
+  if (!await save(item, { verdict: kind, ...extra })) return;
+  if (done() === ITEMS.length && at === ITEMS.length - 1) { summary = true; mode = "view"; render(); return; }
+  go(at + 1);
+}
+function editor(item) {
+  const c = checks[item.id] || {};
+  const q = el("textarea", { id: "ed-q", "aria-label": "question" }); q.value = c.question ?? item.question;
+  const r = el("textarea", { id: "ed-r", "aria-label": "reference answer" }); r.value = c.reference_answer ?? item.reference_answer;
+  const f = el("textarea", { id: "ed-f", "aria-label": "key facts, one per line" }); f.value = (c.key_facts ?? item.key_facts).join("\n");
+  const go2 = () => verdict("edited", { question: q.value.trim(), reference_answer: r.value.trim(), key_facts: f.value.split("\n").map(s => s.trim()).filter(Boolean) });
+  setTimeout(() => r.focus());
+  return el("div", { class: "block", style: "display:flex;flex-direction:column;gap:8px" },
+    el("div", {}, el("div", { class: "lab" }, "Question"), q), el("div", {}, el("div", { class: "lab" }, "Reference answer"), r),
+    item.key_facts.length ? el("div", {}, el("div", { class: "lab" }, "Key facts, one per line"), f) : null,
+    el("div", { class: "act" }, el("button", { class: "primary", onclick: go2 }, "Save correction"), el("button", { onclick: () => { mode = "view"; render(); } }, "Cancel", el("kbd", {}, "Esc"))));
+}
+function wrongBox(item) {
+  const r = el("textarea", { id: "ed-why", "aria-label": "what is wrong", placeholder: "What is wrong with this question or answer?" }); r.value = checks[item.id]?.reason || "";
+  setTimeout(() => r.focus());
+  return el("div", { class: "block", style: "display:flex;flex-direction:column;gap:8px" }, r,
+    el("div", { class: "act" }, el("button", { class: "primary", onclick: () => verdict("wrong", { reason: r.value.trim() }) }, "Mark wrong"), el("button", { onclick: () => { mode = "view"; render(); } }, "Cancel", el("kbd", {}, "Esc"))));
+}
+function pagePane(item) {
+  if (!item.pages.length) return el("div", { class: "pagepane" }, "No page for this item.");
+  const p = item.pages[Math.min(pageAt, item.pages.length - 1)];
+  const page = el("div", { class: "page" }, el("img", { src: p.src, alt: "manual page " + p.page }));
+  if (marks) for (const b of p.boxes) page.append(el("b", { style: `left:${b[0]*100}%;top:${b[1]*100}%;width:${(b[2]-b[0])*100}%;height:${(b[3]-b[1])*100}%` }));
+  return el("div", { class: "pagepane" },
+    el("div", { class: "tabs" }, ...item.pages.map((x, i) => el("button", { "aria-pressed": String(i === pageAt), onclick: () => { pageAt = i; render(); } }, "p. " + x.page)),
+      p.boxes.length ? el("button", { "aria-pressed": String(marks), onclick: () => { marks = !marks; render(); } }, "Marks", el("kbd", {}, "m")) : null,
+      item.category === "unanswerable" ? el("span", {}, "pages from the section this question is about") : el("span", {}, item.short_manual)), page);
+}
+function renderSummary() {
+  const list = (kind, title) => { const xs = ITEMS.filter(i => checks[i.id]?.verdict === kind); return xs.length ? el("div", {}, el("div", { class: "lab" }, title + " (" + xs.length + ")"), el("ul", {}, ...xs.map(i => el("li", {}, el("button", { class: "link", onclick: () => go(ITEMS.indexOf(i)) }, i.question), checks[i.id].reason ? " " + checks[i.id].reason : "")))) : null; };
+  app.replaceChildren(el("div", { class: "sum" }, el("h1", {}, done() + " of " + ITEMS.length + " checked"),
+    el("p", {}, "Your checks are saved. Tell Claude the session is finished, and it will read them back."),
+    list("wrong", "Marked wrong"), list("edited", "Corrected"),
+    el("div", { class: "act" }, el("button", { onclick: () => go(firstOpen()) }, "Back to the items"))));
+}
+function render() {
+  if (summary) return renderSummary();
+  const item = ITEMS[at], c = checks[item.id], un = item.category === "unanswerable";
+  const shown = c?.verdict === "edited" ? { ...item, ...c } : item;
+  const state = c ? el("span", { class: "state " + c.verdict }, { correct: "Confirmed", wrong: "Marked wrong", edited: "Corrected" }[c.verdict]) : null;
+  const sheet = el("div", { class: "sheet" },
+    el("div", { class: "top" }, el("strong", {}, (at + 1) + " / " + ITEMS.length), el("div", { class: "bar", role: "progressbar", "aria-valuenow": String(done()), "aria-valuemax": String(ITEMS.length), "aria-label": "items checked" }, el("i", { style: `width:${done() / ITEMS.length * 100}%` })), el("span", { style: "font-size:13px;color:var(--muted)" }, done() + " checked"), state),
+    !db && loaded ? el("p", { class: "err" }, "Not connected to storage, so checks cannot be saved. Reload this page.") : null,
+    saveError ? el("p", { class: "err" }, saveError) : null,
+    el("div", { class: "tags" }, el("span", { class: "tag" }, item.category.replace("_", " ")), item.near_miss ? el("span", { class: "tag nm" }, "should be unanswerable") : null, el("span", { class: "tag" }, item.short_manual), el("span", { class: "tag" }, item.id)),
+    el("h1", {}, shown.question),
+    mode === "edit" ? editor(item) : mode === "wrong" ? wrongBox(item) : el("div", { style: "display:flex;flex-direction:column;gap:12px" },
+      el("div", { class: "block" }, el("div", { class: "lab" }, un ? "Claimed: the manual does not answer this" : "Reference answer"), el("p", {}, shown.reference_answer)),
+      shown.key_facts?.length ? el("div", { class: "block" }, el("div", { class: "lab" }, "Key facts"), el("ul", {}, ...shown.key_facts.map(f => el("li", {}, f)))) : null,
+      el("div", { class: "block" }, el("div", { class: "lab" }, un ? "Terms searched, absent from the whole parsed manual" : "Marked on the page"), el("div", { class: "anch" }, item.anchors.join("  ·  "))),
+      c?.reason ? el("div", { class: "block" }, el("div", { class: "lab" }, "Your note"), el("p", {}, c.reason)) : null,
+      el("div", { class: "act" }, el("button", { class: "primary", onclick: () => verdict("correct") }, un ? "Yes, not in the manual" : "Correct", el("kbd", {}, "y")), el("button", { onclick: () => { mode = "edit"; render(); } }, "Correct it", el("kbd", {}, "e")), el("button", { onclick: () => { mode = "wrong"; render(); } }, "Wrong", el("kbd", {}, "n"))),
+      el("div", { class: "act" }, el("button", { onclick: () => go(at - 1) }, "Previous", el("kbd", {}, "←")), el("button", { onclick: () => go(at + 1) }, "Next", el("kbd", {}, "→")), done() ? el("button", { onclick: () => { summary = true; render(); } }, "Summary") : null)));
+  app.replaceChildren(sheet, pagePane(item));
+}
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "TEXTAREA") { if (e.key === "Escape") { mode = "view"; render(); } return; }
+  if (e.ctrlKey || e.metaKey || e.altKey || summary) return;
+  const k = e.key;
+  if (k === "y") verdict("correct"); else if (k === "e") { e.preventDefault(); mode = "edit"; render(); } else if (k === "n") { e.preventDefault(); mode = "wrong"; render(); }
+  else if (k === "ArrowRight") go(at + 1); else if (k === "ArrowLeft") go(at - 1); else if (k === "m") { marks = !marks; render(); }
+  else if (k >= "1" && k <= "9") { const i = +k - 1; if (i < ITEMS[at].pages.length) { pageAt = i; render(); } }
+});
+render();
+const timer = setTimeout(() => { loaded = true; render(); }, 10000);
+claude.use("db").then(d => { db = d; if (!d) { clearTimeout(timer); loaded = true; render(); return; }
+  d.collection("checks").get().then(snap => { clearTimeout(timer); loaded = true;
+    for (const s of snap.docs) checks[s.id] = s.data();
+    if (!ITEMS[at] || checks[ITEMS[at].id]) at = firstOpen();
+    if (done() === ITEMS.length) summary = true;
+    render(); }).catch(() => { clearTimeout(timer); loaded = true; db = null; render(); }); });
+</script>
