@@ -572,6 +572,29 @@ def spread(per_repeat: List[Dict[str, Any]]) -> Dict[str, Any]:
     return out
 
 
+class CachingJudge(Judge):
+    """Repeats of one answer get one judge call; the judge is fixed at temperature 0."""
+
+    RETRY_WAITS_S = (10, 30, 60, 120, 300)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.replies: Dict[str, Dict[str, Any]] = {}
+
+    def ask(self, prompt: str) -> Dict[str, Any]:
+        if prompt not in self.replies:
+            self.replies[prompt] = self._ask_with_retries(prompt)
+        return self.replies[prompt]
+
+    def _ask_with_retries(self, prompt: str) -> Dict[str, Any]:
+        for wait in self.RETRY_WAITS_S:
+            try:
+                return super().ask(prompt)
+            except requests.RequestException:  # a network drop must not lose the run
+                time.sleep(wait)
+        raise ValueError("judge unreachable after retries")
+
+
 def cmd_score_keyfacts(args) -> None:
     from evals.grade import cited_source, grade_item, length_bias, summarize_grades
     from evals.items import load_items
@@ -584,13 +607,13 @@ def cmd_score_keyfacts(args) -> None:
     for pp in load_pages(Path(args.composed)):
         pages[(pp.manual, pp.page)] = "\n".join(b.text for b in pp.blocks)
         blocks.update({b.id: b.text for b in pp.blocks})
-    judge = Judge(
+    judge = CachingJudge(
         os.environ["LLM_BASE_URL"],
         os.environ.get("LLM_API_KEY", ""),
         os.environ["LLM_JUDGE_MODEL"],
     )
     repeats = []
-    for r, outs in enumerate(raw["repeats"], 1):
+    for r, outs in enumerate(raw["repeats"][: args.max_repeats], 1):
         grades = []
         for i, out in enumerate(outs, 1):
             item = items[out["id"]]
@@ -727,6 +750,7 @@ def main() -> None:
         help="legacy: holistic grade (history); keyfacts: checklist and source support",
     )
     s.add_argument("--composed", default="data/ingest/composed.jsonl", help="keyfacts")
+    s.add_argument("--max-repeats", type=int, help="keyfacts: grade only the first N")
     s.add_argument("--out", required=True)
     s.set_defaults(func=cmd_score)
 

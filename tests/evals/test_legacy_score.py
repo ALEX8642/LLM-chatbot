@@ -47,3 +47,36 @@ def test_judge_error_items_left_out_of_correctness():
     out = summarize([ok, bad])
     assert out["correctness"] == 1.0  # the unjudged item is not counted as wrong
     assert out["judge_errors"] == 2
+
+
+def test_caching_judge_asks_once_per_prompt(monkeypatch):
+    from evals.run_eval import CachingJudge, Judge
+
+    calls = []
+    monkeypatch.setattr(Judge, "ask", lambda self, p: calls.append(p) or {"ok": p})
+    judge = CachingJudge("u", "", "m")
+    assert judge.ask("a") == judge.ask("a") == {"ok": "a"}
+    judge.ask("b")
+    assert calls == ["a", "b"]
+
+
+def test_network_failures_become_a_judge_error_not_a_crash(monkeypatch):
+    from types import SimpleNamespace
+
+    import pytest
+
+    from evals.run_eval import CachingJudge, Judge
+
+    class Down(Exception):
+        pass
+
+    def down(self, prompt):
+        raise Down
+
+    monkeypatch.setattr(
+        "evals.run_eval.requests", SimpleNamespace(RequestException=Down)
+    )
+    monkeypatch.setattr(Judge, "ask", down)
+    monkeypatch.setattr("evals.run_eval.time.sleep", lambda s: None)
+    with pytest.raises(ValueError, match="unreachable"):
+        CachingJudge("u", "", "m").ask("a")
