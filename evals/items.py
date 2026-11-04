@@ -34,6 +34,9 @@ class Item:
     exact_answer: str | None = None
     near_miss: bool = False
     provenance: dict = field(default_factory=dict)
+    # Pages a person needs to confirm the answer (the heading of a table that continues on the
+    # gold page). Not evidence: retrieval and citations are never scored against them.
+    context_pages: list[int] = field(default_factory=list)
 
 
 def load_items(path: Path) -> list[Item]:
@@ -131,6 +134,11 @@ def validate(items: list[Item], sections: dict, text: dict) -> list[str]:
             problems.append(
                 f"{where} sections {it.sections} != gold-page sections {expect}"
             )
+        for p in it.context_pages:
+            if p in it.gold_pages:
+                problems.append(f"{where} context page {p} is also a gold page")
+            elif section_of(sections, it.manual, p) not in it.sections:
+                problems.append(f"{where} context page {p} is outside its sections")
         gold = [_squash(text.get((it.manual, p), "")) for p in it.gold_pages]
         for a in it.anchors:
             if not any(_squash(a) in t for t in gold):

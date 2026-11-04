@@ -22,6 +22,21 @@ Written by Claude from the composed text and page renders, section by section
 `legacy.jsonl` holds the 42 original dev items, with key facts and anchors added. The rest are
 provenance `written_by: Claude`, not yet checked by a person; the gold-answer session covers a sample.
 
+## Gold-answer check (2026-11-04)
+
+Alexander reviewed the 60 sampled test items beside their pages and reported **no wrong answer**; he
+notes he is not a subject expert, so an error could have been missed. He reported this in a message, and the
+session page stored no per-item answers (`evals/sessions/gold_checks.jsonl` records that). The items
+chosen, the marks on the pages and the reference answers were all pre-filled by Claude.
+
+His flags found a defect in how items were written: on a continuation page the heading saying which
+assembly or aircraft a table belongs to is on an earlier page, so the shown page cannot prove the answer.
+A scan then found 28 such items, now carrying `context_pages` (for people checking; never scored). The scan
+is a heuristic, and items were reviewed by hand against it, so a few may remain.
+
+Gold error rate, counting 2 flagged items as defects: 2 of 60 (3.3%, Wilson 95% interval 0.9-11.4%). No
+item's answer was changed.
+
 ## Counts
 
 | Manual | single_page | multi_page | table | figure | unanswerable | Total |

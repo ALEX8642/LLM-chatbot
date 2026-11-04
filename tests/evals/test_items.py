@@ -119,3 +119,14 @@ def test_legacy_items_valid():
     items = load_items(ROOT / "evals" / "pool" / "legacy.jsonl")
     assert len(items) == 42
     assert validate(items, SECTIONS, pages_text(COMPOSED)) == []
+
+
+def test_context_page_must_share_a_section():
+    assert validate([item(context_pages=[56])], SECTIONS, TEXT) == []  # same group
+    problems = validate([item(context_pages=[20])], SECTIONS, TEXT)
+    assert any("context page" in p for p in problems)
+
+
+def test_context_page_cannot_also_be_a_gold_page():
+    problems = validate([item(context_pages=[59])], SECTIONS, TEXT)
+    assert any("context page" in p for p in problems)
