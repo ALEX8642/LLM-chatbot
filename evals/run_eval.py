@@ -384,6 +384,7 @@ class Judge:
         self.headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
         self.model = model
         self.seed = seed
+        self.max_tokens = 600
 
     def ask(self, prompt: str) -> Dict[str, Any]:
         body = {
@@ -391,7 +392,7 @@ class Judge:
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0,
             "seed": self.seed,
-            "max_tokens": 600,
+            "max_tokens": self.max_tokens,
         }
         for attempt in range(3):
             r = requests.post(self.url, json=body, headers=self.headers, timeout=180)
