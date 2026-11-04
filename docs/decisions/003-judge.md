@@ -45,6 +45,10 @@ No candidate shows a length bias (slopes near 0.01 per 100 characters, intervals
   decided between the two that remained. Real grading will be harder than this.
 - **Negatives are easy too.** A wrong page is a much plainer failure than a right page that lacks one fact.
 
+**Parser correction, 2026-11-04.** The JSON failure counts above predate a parser fix (`e240ed2`): models that
+add text after their JSON were counted as failures. So gemma3's exclusion may have been that bug. It would not
+change the winner, since gemma3's source kappa (0.73) is below phi4's (1.00). The selection was not rerun.
+
 ## Cons
 
 - phi4 is the weaker of the two on abstention (0.83 against 0.92). This matters for v1, which does not

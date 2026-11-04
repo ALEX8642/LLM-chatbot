@@ -69,7 +69,7 @@ a minimum credible version first, planned as a
 | Plan 2: ingestion (hybrid text layer + Paddle, tables, chunks, index) | done: 363 pages, 92% of table cells boxed ([decision 002](docs/decisions/002-ingestion.md)) |
 | Plan 3: answer path (checked claims, removal reasons, abstention) | done: exploratory dev runs in [`evals/results/NOTES-v2-dev.md`](evals/results/NOTES-v2-dev.md) |
 | Plan 4: overlay UI (server, replay, frontend) | done: [M1 package](docs/m1/README.md), review pending |
-| Plan 5: eval set and judge | in progress: 344 items split dev 172 / test 172, grader done; judge choice, v1 re-grade and gold-answer session next |
+| Plan 5: eval set and judge | in progress: 344 items split dev 172 / test 172, judge chosen ([decision 003](docs/decisions/003-judge.md)), v1 re-graded on dev; gold-answer session and test freeze next |
 | Plans 6–8: component selection, pre-registered final run, presentation | not started |
 
 ## Repository layout

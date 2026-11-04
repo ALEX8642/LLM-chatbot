@@ -71,3 +71,49 @@ Six of the ten false abstentions came back (faa-07, op-08, parts-01, parts-02, p
   flattened row shown to the judge loses the column heading. Probably a judge error; not checked by a person.
 
 One judge reply had no JSON (faa-14, the faithfulness call), so its faithfulness is not counted.
+
+## Dev set of 172, independent judge (2026-11-04)
+
+The first numbers from the independent judges and the key-fact grader, on the full dev set. `Correct` needs
+every key fact. `Primary` also needs the judge to find them in the cited source. These are stricter than the
+tables above, so do not compare across them. Dev only: the test set has not been run.
+Files: `raw/{v1,v1-t0,v2}-dev172.json`, `{v1,v1-t0,v2}-dev172-{phi4,mistral}.json`.
+
+| phi4:14b | v1 (3 repeats) | v1 at temp 0 (3 repeats) | v2 (1 repeat) |
+|---|---|---|---|
+| **Primary, all 172** | 0.51 | 0.53 | **0.68** |
+| Correct, all 172 | 0.57 | 0.59 | 0.71 |
+| Primary, original 42 | 0.40 | 0.40 | 0.76 |
+| **Primary, 130 new items** | 0.54 | 0.57 | **0.65** |
+| Primary, table (56) | 0.33 | 0.39 | 0.55 |
+| Primary, single page (62) | 0.58 | 0.61 | 0.79 |
+| Primary, figure (10) | 0.22 | 0.22 | 0.67 |
+| Primary, multi-page (11) | 0.27 | 0.36 | 0.45 |
+| Unanswerable correct (33) | 0.82 | 0.74 | 0.76 |
+
+The second judge, `mistral-small3.2:24b`, on one repeat: primary 0.53, 0.55 and 0.68. The judges agree
+on correctness on 98-99% of items, and on primary on 92% (v1) and 96% (v2).
+
+**How to read it:**
+
+- **The 130 new items are the fairer estimate.** The checker was fixed by looking at the original 42, so 0.76
+  there is inflated. v1 also does unusually badly on those 42, so the gap there (0.36) overstates the gain:
+  on new items it is 0.11 against v1 and 0.09 against v1 at temperature 0. No confidence intervals yet; plan 7
+  has the analysis code. They are also not held out: they shaped no fix so far, but they are dev.
+- **v2 is no better than v1 at unanswerables** (0.76 against 0.82), and v1 at temperature 0 is close to v2.
+  v2 answers 8 of 33. Some are true but off-question (the service ceiling definition, the calibration
+  interval), the relevance gap again. One, faa-ch1-10, says in words that the text does not state it, but
+  the system recorded a claim, so it is graded as an answer.
+- **False abstentions remain: 20 of 139 answerable items** (14%). The largest removal reason is "quote not in
+  cited block" (18), then context absent from the cited page (`SR20`, 6; `8MR3005CA`, 4).
+- **Temperature 0 helps v1 slightly and is a fairer baseline.** 164 of 172 answers repeat exactly.
+
+**Limits:** v2 has one repeat, v1 three. Claude wrote the items, and no person has checked them or the judge yet.
+v2 latency is p50 8.4 s against v1's 2.8 s; its p95 of 61 s has not been explained, and may be other load on
+the laptop or the gateway. v2's length bias (0.07 per 100 characters, interval above 0) probably reflects short
+abstention text rather than judge preference, but that is unverified, and it should be retested with abstentions
+excluded.
+
+The judge errors first seen here came from phi4 adding text after its JSON, a parser bug fixed in `e240ed2`.
+`228217b` raised the token limit on a wrong diagnosis; it changed no error counts, and was kept because it
+matches judge selection. About 1 item per run still fails, because the judge split a key fact in two.
