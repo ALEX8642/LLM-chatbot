@@ -33,6 +33,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any, Callable, Dict, List, Optional
 
 import requests
@@ -98,7 +99,23 @@ def percentile(values: List[float], q: float) -> Optional[float]:
 #   timings         {"total_s": ..., "llm_s": ...}
 
 
-def make_v1_adapter(app_dir: Path, strict_mode: bool) -> Callable[..., Dict[str, Any]]:
+def force_temperature(api: Any, temperature: float) -> None:
+    """Adds a temperature to every request v1 sends, without changing v1's code."""
+    post = api.requests.post
+
+    def post_with_temperature(url, json=None, **kwargs):
+        options = {**(json or {}).get("options", {}), "temperature": temperature}
+        return post(url, json={**(json or {}), "options": options}, **kwargs)
+
+    api.requests = SimpleNamespace(
+        **{k: getattr(api.requests, k) for k in dir(api.requests) if k[0] != "_"}
+    )
+    api.requests.post = post_with_temperature
+
+
+def make_v1_adapter(
+    app_dir: Path, strict_mode: bool, temperature: Optional[float] = None
+) -> Callable[..., Dict[str, Any]]:
     """Run v1's api.py unchanged, recording what happens inside it.
 
     v1 builds its pipeline in the FastAPI lifespan and answers through
@@ -110,6 +127,9 @@ def make_v1_adapter(app_dir: Path, strict_mode: bool) -> Callable[..., Dict[str,
 
     sys.path.insert(0, str(app_dir))
     import api  # noqa: E402  (v1 module from app_dir)
+
+    if temperature is not None:
+        force_temperature(api, temperature)
 
     manuals_json = app_dir / "frontend" / "public" / "manuals" / "manuals.json"
     id_by_file = {
@@ -174,6 +194,7 @@ def make_v1_adapter(app_dir: Path, strict_mode: bool) -> Callable[..., Dict[str,
     run.config = {  # type: ignore[attr-defined]
         "system": "v1",
         "strict_mode": strict_mode,
+        "temperature": temperature,
         "llm_backend": "ollama",
         "llm_model": api.OLLAMA_MODEL,
         "retrieve_top_k": api.RETRIEVE_TOP_K,
@@ -251,6 +272,9 @@ def make_v2_adapter(
 
 ADAPTERS = {
     "v1": lambda a: make_v1_adapter(Path(a.app_dir).resolve(), strict_mode=False),
+    "v1-t0": lambda a: make_v1_adapter(
+        Path(a.app_dir).resolve(), strict_mode=False, temperature=0
+    ),
     "v1-strict": lambda a: make_v1_adapter(Path(a.app_dir).resolve(), strict_mode=True),
     "v2": lambda a: make_v2_adapter(Path(a.ingest), a.embedder, a.reranker),
 }
