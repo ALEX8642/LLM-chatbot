@@ -34,8 +34,10 @@ assembly or aircraft a table belongs to is on an earlier page, so the shown page
 A scan then found 28 such items, now carrying `context_pages` (for people checking; never scored). The scan
 is a heuristic, and items were reviewed by hand against it, so a few may remain.
 
-Gold error rate, counting 2 flagged items as defects: 2 of 60 (3.3%, Wilson 95% interval 0.9-11.4%). No
-item's answer was changed.
+**Answer errors: 0 of 60** (Wilson 95% interval 0-6.0%), from a reviewer who is not a subject expert.
+**Items whose shown page could not prove the answer: at least 4 of 60** by the scan (2.6-15.9%). Alexander
+reports "quite a few", without a count, so the true number may be higher; the rule treats operator tables whose
+rows name themselves as not needing context, and he may not agree. No item's answer was changed.
 
 ## Counts
 
