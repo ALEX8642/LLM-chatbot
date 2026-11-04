@@ -13,7 +13,7 @@ Written by Claude from the composed text and page renders, section by section
   manual does not contain. Their anchors are terms an answer would need, checked absent from the whole
   manual. Absence of a phrase does not prove absence of the fact, so each is also reasoned in its
   reference answer, and the gold-answer session samples them.
-- **Rows the parser garbled** (parts p55, p88) are avoided, and so is the fuel/oil chart on operator p56,
+- **Rows the parser garbled** (on parts p55, p88) are avoided, though clean rows on those pages are used, and so is the fuel/oil chart on operator p56,
   where a reference answer could not be pinned from the text.
 - **Facts repeated across sections** are asked once: the altitude derating, and Chapter 10's reruns of
   Chapter 3 and 7 examples, so one fact cannot sit in both dev and test.
@@ -38,6 +38,13 @@ is a heuristic, and items were reviewed by hand against it, so a few may remain.
 **Items whose shown page could not prove the answer: at least 4 of 60** by the scan (2.6-15.9%). Alexander
 reports "quite a few", without a count, so the true number may be higher; the rule treats operator tables whose
 rows name themselves as not needing context, and he may not agree. No item's answer was changed.
+
+## Changes after review (2026-11-04)
+
+The M2 review checked 30 items against the pages: 28 right, one wrong (faa-ch9-29, called unanswerable, is in
+Figure 9-50), one ambiguous (op-2-1-08). Three test items shared a fact with a dev item and moved to
+`evals/dropped.jsonl`. Exact answers that could fail right answers or pass wrong ones were removed, so those
+items go to the key-fact checklist. The gold-answer check above covered the earlier wording of op-2-3-05.
 
 ## Counts
 

@@ -1,7 +1,7 @@
 {
  "seed": 20261103,
  "dev": 172,
- "test": 172,
+ "test": 169,
  "dev_categories": {
   "single_page": 62,
   "unanswerable": 33,
@@ -10,10 +10,10 @@
   "multi_page": 11
  },
  "test_categories": {
-  "single_page": 57,
-  "unanswerable": 37,
-  "table": 69,
-  "figure": 4,
+  "single_page": 56,
+  "unanswerable": 36,
+  "table": 67,
+  "figure": 5,
   "multi_page": 5
  },
  "sections": {

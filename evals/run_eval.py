@@ -617,7 +617,13 @@ class CachingJudge(Judge):
 
 
 def cmd_score_keyfacts(args) -> None:
-    from evals.grade import cited_source, grade_item, length_bias, summarize_grades
+    from evals.grade import (
+        cited_source,
+        grade_item,
+        length_bias,
+        page_source,
+        summarize_grades,
+    )
     from evals.items import load_items
     from manualqa.blocks import load_pages
     from evals.prompts import PROMPT_VERSION
@@ -645,7 +651,16 @@ def cmd_score_keyfacts(args) -> None:
                 grades.append(reuse[(r, out["id"])])
                 continue
             source = cited_source(out, item.manual, blocks, pages)
-            grades.append(grade_item(item, {**out, "cited_source": source}, judge))
+            pages_only = (
+                page_source(out, item.manual, pages) if out.get("claims") else None
+            )
+            grades.append(
+                grade_item(
+                    item,
+                    {**out, "cited_source": source, "page_source": pages_only},
+                    judge,
+                )
+            )
             print(f"[repeat {r}] graded {i}/{len(outs)} {out['id']}", flush=True)
         by_category = {}
         for c in sorted({g["category"] for g in grades}):

@@ -62,6 +62,14 @@ def out(answer="It is so.", **kw):
         ("13.8", "3.8", False),
         ("88-20243", "88-2024", False),
         ("about 12 months or so", "12 months", True),
+        ("**88-21063**", "88-21063", True),
+        ("`P14-8969`", "P14-8969", True),
+        ("It is at 27.4% MAC", "27.4", True),
+        ("about 76.0-pound", "76", True),
+        ("P15121-37", "37", False),
+        ("88-21063-1", "88-21063", False),
+        ("88-20260-34", "88-20260", False),
+        ("8.0%", "8", True),
     ],
 )
 def test_exact_match_normalisation(answer, exact, want):
@@ -90,23 +98,52 @@ def test_primary_needs_source_support():
 
 def test_abstention_scoring():
     no_facts = [{"fact": "A", "present": False}, {"fact": "B", "present": False}]
-    g = grade_item(item(), out(abstained=True), FakeJudge(no_facts))
+    g = grade_item(item(), out(), FakeJudge(no_facts, abstained=True))
     assert g["correct"] is False and g["abstained"] is True and g["primary"] is False
 
     un = item(category="unanswerable", gold_pages=[], key_facts=[], near_miss=True)
-    judge = FakeJudge()
-    g = grade_item(un, out(abstained=True), judge)
+    g = grade_item(un, out(), FakeJudge(abstained=True))
     assert g["correct"] is True and g["primary"] is True
-    g = grade_item(un, out(abstained=False), judge)
+    g = grade_item(un, out(), FakeJudge(abstained=False))
     assert g["correct"] is False and g["primary"] is False
-    assert judge.calls == []  # the run recorded abstention, nothing to ask
 
 
-def test_abstention_asked_when_the_system_does_not_record_it():
+def test_judge_decides_abstention_for_every_system_and_recorded_is_kept():
     un = item(category="unanswerable", gold_pages=[], key_facts=[], near_miss=True)
     judge = FakeJudge(abstained=True)
-    assert grade_item(un, out(), judge)["correct"] is True
-    assert judge.calls == ["abstained"]
+    g = grade_item(un, out("It does not state this.", abstained=False), judge)
+    assert g["abstained"] is True and g["correct"] is True
+    assert g["recorded_abstained"] is False and judge.calls == ["abstained"]
+    g = grade_item(un, out("It does not state this."), FakeJudge(abstained=True))
+    assert g["recorded_abstained"] is None
+
+    no_facts = [{"fact": "A", "present": True}, {"fact": "B", "present": True}]
+    g = grade_item(item(), out(abstained=True), FakeJudge(no_facts, abstained=False))
+    assert (
+        g["abstained"] is False and g["correct"] is True
+    )  # recorded does not override
+
+
+def test_a_failed_exact_match_asks_the_judge_about_abstention():
+    it = item(exact_answer="P14-8969", key_facts=["P14-8969."])
+    judge = FakeJudge(abstained=True)
+    g = grade_item(it, out("The manual does not say."), judge)
+    assert g["abstained"] is True and judge.calls == ["abstained"]
+
+
+def test_v2_page_level_source_is_a_separate_sensitivity():
+    yes = [{"fact": "A", "present": True}, {"fact": "B", "present": True}]
+    judge = FakeJudge(yes, supported=True)
+    g = grade_item(item(), out(page_source="pages"), judge)
+    assert g["supported_in_pages"] is True and judge.calls == [
+        "facts",
+        "source",
+        "source",
+    ]
+    g = grade_item(item(), out(), FakeJudge(yes, supported=True))
+    assert g["supported_in_pages"] is True  # v1 cites pages, so the same answer
+    s = summarize_grades([g])
+    assert s["primary_pages"] == 1.0
 
 
 def test_malformed_judge_output_is_judge_error():
@@ -151,6 +188,9 @@ def test_cited_source_uses_blocks_for_claims_and_pages_otherwise():
     v1 = {"cited_pages": [3]}
     assert cited_source(v1, "m.pdf", blocks, pages) == "page three"
     assert cited_source({"cited_pages": []}, "m.pdf", blocks, pages) == ""
+    pages[("m.pdf", 4)] = "page four"
+    twice = {"cited_pages": [3, 3, 4, 3]}
+    assert cited_source(twice, "m.pdf", blocks, pages) == "page three\npage four"
 
 
 def test_length_bias_finds_a_planted_slope():

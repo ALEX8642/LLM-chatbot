@@ -13,7 +13,8 @@ from evals.prompts import ABSTAINED, KEY_FACTS, SOURCE_SUPPORT
 _DASHES = dict.fromkeys(map(ord, "‐‑‒–—−"), "-")
 _UNITS = {"lbs": "lb", "pound": "lb", "pounds": "lb"}
 _THOUSANDS = re.compile(r"(?<=\d),(?=\d{3}(?!\d))")
-_DECIMAL = re.compile(r"^\d*\.\d+$")
+_TRAILING_ZEROS = re.compile(r"(?<![\d.])(\d*\.\d*?)0+(?!\d)")
+_MARKUP = re.compile(r"[*`%]")
 BOOTSTRAP = 1000
 
 
@@ -21,25 +22,25 @@ def normalise(text: str) -> str:
     """Case, dashes, plus-minus, thousands separators, units, and numbers like 3.80."""
     text = unicodedata.normalize("NFKC", text).translate(_DASHES).casefold()
     text = text.replace("+/-", " ± ").replace("±", " ± ")
-    text = _THOUSANDS.sub("", text)
+    text = _MARKUP.sub(" ", _THOUSANDS.sub("", text))
+    text = _TRAILING_ZEROS.sub(lambda m: m.group(1).rstrip("."), text)
     tokens = []
     for raw in text.split():
         token = raw.strip(".,;:()[]\"'")
-        if _DECIMAL.match(token):
-            token = token.rstrip("0").rstrip(".")
         if token:
             tokens.append(_UNITS.get(token, token))
     return " ".join(tokens)
 
 
-def _tokens(text: str) -> list[str]:
-    return normalise(text).replace("-", " ").split()
-
-
 def exact_match(answer: str, exact: str) -> bool:
-    """The normalised value occurs in the answer as a whole token sequence."""
-    a, e = _tokens(answer), _tokens(exact)
-    return any(a[i : i + len(e)] == e for i in range(len(a) - len(e) + 1))
+    """The value occurs as a whole: a space or hyphen may separate its parts, but it may not
+    be part of a longer code ("37" is not in "P15121-37", nor "88-21063" in "88-21063-1").
+    """
+    parts = re.split(r"[ -]+", normalise(exact))
+    body = r"[ -]+".join(re.escape(p) for p in parts)
+    return (
+        re.search(rf"(?<![\w.-]){body}(?![\w]|-\d|\.\d)", normalise(answer)) is not None
+    )
 
 
 def cited_source(out: dict, manual: str, blocks: dict, pages: dict) -> str:
@@ -47,16 +48,20 @@ def cited_source(out: dict, manual: str, blocks: dict, pages: dict) -> str:
     if out.get("claims"):
         roots = dict.fromkeys(re.sub(r":r\d+$", "", c["block"]) for c in out["claims"])
         return "\n".join(blocks[r] for r in roots if r in blocks)
-    return "\n".join(pages.get((manual, p), "") for p in out.get("cited_pages", []))
+    return page_source(out, manual, pages)
+
+
+def page_source(out: dict, manual: str, pages: dict) -> str:
+    """The text of the cited pages, each once: v1's citation, and v2's as a sensitivity."""
+    cited = dict.fromkeys(out.get("cited_pages", []))
+    return "\n".join(pages.get((manual, p), "") for p in cited)
 
 
 def _facts_list(item: Item) -> str:
     return "\n".join(f"- {f}" for f in item.key_facts)
 
 
-def _recorded_abstention(item: Item, out: dict, judge) -> bool:
-    if "abstained" in out:
-        return bool(out["abstained"])
+def _judged_abstention(item: Item, out: dict, judge) -> bool:
     reply = judge.ask(ABSTAINED.format(question=item.question, answer=out["answer"]))
     return bool(reply["abstained"])
 
@@ -73,7 +78,7 @@ def _judged_correct(item: Item, out: dict, judge) -> tuple[bool, bool, list[dict
         raise ValueError(
             f"judge returned {facts!r} for {len(item.key_facts)} key facts"
         )
-    abstained = bool(out.get("abstained", reply.get("abstained")))
+    abstained = bool(reply.get("abstained"))
     correct = not abstained and all(bool(f.get("present")) for f in facts)
     return correct, abstained, facts
 
@@ -86,6 +91,8 @@ def grade_item(item: Item, out: dict, judge) -> dict:
         "answer_chars": len(out.get("answer", "")),
         "correct": None,
         "abstained": None,
+        "recorded_abstained": out.get("abstained"),
+        "supported_in_pages": None,
         "facts": [],
         "supported_in_source": None,
         "primary": None,
@@ -93,13 +100,14 @@ def grade_item(item: Item, out: dict, judge) -> dict:
     }
     try:
         if item.category == "unanswerable":
-            g["abstained"] = _recorded_abstention(item, out, judge)
+            g["abstained"] = _judged_abstention(item, out, judge)
             g["correct"] = g["primary"] = g["abstained"]
             return g
         if item.exact_answer:
             g["correct"] = exact_match(out["answer"], item.exact_answer)
-            g["abstained"] = bool(out.get("abstained", False))
-            g["correct"] = g["correct"] and not g["abstained"]
+            g["abstained"] = (
+                False if g["correct"] else _judged_abstention(item, out, judge)
+            )
         else:
             g["correct"], g["abstained"], g["facts"] = _judged_correct(item, out, judge)
         if not g["correct"]:
@@ -110,6 +118,15 @@ def grade_item(item: Item, out: dict, judge) -> dict:
         )
         g["supported_in_source"] = bool(reply["supported"])
         g["primary"] = g["supported_in_source"]
+        g["supported_in_pages"] = g["supported_in_source"]
+        if out.get("page_source"):
+            g["supported_in_pages"] = bool(
+                judge.ask(
+                    SOURCE_SUPPORT.format(
+                        facts=_facts_list(item), source=out["page_source"]
+                    )
+                )["supported"]
+            )
     except (ValueError, KeyError) as e:  # unjudged, never scored as wrong
         g.update(correct=None, primary=None, judge_error=str(e)[:300])
     return g
@@ -126,6 +143,22 @@ def summarize_grades(grades: list[dict]) -> dict:
         "judge_errors": len(grades) - len(done),
         "correct": rate("correct"),
         "primary": rate("primary"),
+        "primary_pages": (
+            round(
+                sum(
+                    (
+                        bool(g["primary"] or g["supported_in_pages"])
+                        if g["correct"]
+                        else bool(g["primary"])
+                    )
+                    for g in done
+                )
+                / len(done),
+                4,
+            )
+            if done
+            else None
+        ),
         "abstained": rate("abstained"),
     }
 
