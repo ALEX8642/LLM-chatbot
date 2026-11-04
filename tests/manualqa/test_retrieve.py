@@ -41,3 +41,22 @@ def test_evidence_ids_unique(ctx):
     result = retrieve("What is item 17 in figure 15?", PARTS, ctx)
     ids = [e.id for e in result.evidence]
     assert len(ids) == len(set(ids))
+
+
+def test_figure_evidence_has_the_figures_box_not_its_line_boxes():
+    from types import SimpleNamespace
+
+    from manualqa.blocks import Block, Line
+    from manualqa.geometry import Box
+    from manualqa.retrieve import _block_evidence
+
+    whole, line = Box(0.1, 0.1, 0.9, 0.5), Box(0.2, 0.2, 0.3, 0.25)
+    lines = [Line("4.2 kW", line), Line("JP4", line)]
+    fig = Block("m:p1:b0", "figure", "4.2 kW JP4", whole, lines)
+    text = Block("m:p1:b1", "text", "4.2 kW JP4", whole, lines)
+    ctx = SimpleNamespace(
+        blocks={fig.id: fig, text.id: text},
+        block_page={fig.id: ("m.pdf", 1), text.id: ("m.pdf", 1)},
+    )
+    assert _block_evidence(ctx, fig.id).boxes == [whole]
+    assert _block_evidence(ctx, text.id).boxes == [line, line]

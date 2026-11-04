@@ -159,8 +159,11 @@ def _block_evidence(ctx: IngestContext, block_id: str) -> Evidence | None:
     if b is None or not b.text.strip() or b.kind == "table":
         return None
     manual, page = ctx.block_page[block_id]
-    kind = "figure" if b.kind == "figure" else "text"
-    return Evidence(b.id, kind, manual, page, b.id, b.text, [ln.box for ln in b.lines])
+    if b.kind == "figure":  # a figure claim highlights the figure, not its OCR lines
+        return Evidence(b.id, "figure", manual, page, b.id, b.text, [b.box])
+    return Evidence(
+        b.id, "text", manual, page, b.id, b.text, [ln.box for ln in b.lines]
+    )
 
 
 def _identifier(tok: str) -> bool:
