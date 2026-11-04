@@ -90,3 +90,47 @@ def test_pick_follows_the_rule():
     assert pick([a, b, c])["model"] == "b"  # c fails on JSON; a and b tie, b has source
     d = {**b, "model": "d", "kappa_source": 0.5, "seconds_per_row": 2}
     assert pick([a, d])["model"] == "d"  # tied twice, faster wins
+
+
+class AlwaysSupported(Echo):
+    def ask(self, prompt):
+        if "SOURCE CHECK" in prompt:
+            return {"supported": True}
+        return super().ask(prompt)
+
+
+class ReadsTheSource(Echo):
+    def ask(self, prompt):
+        if "SOURCE CHECK" in prompt:
+            return {"supported": "right page" in prompt}
+        return super().ask(prompt)
+
+
+def _source_run(judge_cls):
+    items = {"a": item("a"), "b": item("b")}
+    rows = [
+        row("a", [True], False, True, "answer-a"),
+        row("b", [True], False, True, "answer-b"),
+    ]
+    truth = {f"answer-{r['item']}": r["labels"] for r in rows}
+    return evaluate(
+        judge_cls(truth),
+        rows,
+        items,
+        lambda r, i: "right page",
+        wrong_source_of=lambda r, i: "wrong page",
+    )
+
+
+def test_wrong_sources_expose_a_judge_that_always_says_supported():
+    assert _source_run(AlwaysSupported)["kappa_source"] == 0.0
+    assert _source_run(ReadsTheSource)["kappa_source"] == 1.0
+
+
+def test_wrong_page_lacks_the_items_anchors():
+    from evals.judge_select import wrong_page
+
+    it = item("a")
+    it.anchors = ["P14-8969"]
+    pages = {("m.pdf", 1): "has P14-8969", ("m.pdf", 2): "other", ("n.pdf", 3): "x"}
+    assert wrong_page(it, pages) == "other"

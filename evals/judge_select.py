@@ -10,11 +10,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import random
 import time
 from pathlib import Path
 
 from evals.grade import cited_source, length_bias
-from evals.items import load_items
+from evals.items import _squash, load_items
 from evals.prompts import ABSTAINED, KEY_FACTS, SOURCE_SUPPORT
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,7 +32,9 @@ def cohen_kappa(a: list, b: list) -> float | None:
     return 1.0 if chance == 1 else round((observed - chance) / (1 - chance), 4)
 
 
-def evaluate(judge, rows: list[dict], items: dict, source_of) -> dict:
+def evaluate(
+    judge, rows: list[dict], items: dict, source_of, wrong_source_of=None
+) -> dict:
     facts_l, facts_j, correct_l, correct_j = [], [], [], []
     source_l, source_j, abst_l, abst_j, lengths = [], [], [], [], []
     failures = 0
@@ -57,11 +60,17 @@ def evaluate(judge, rows: list[dict], items: dict, source_of) -> dict:
                 raise ValueError("wrong number of facts")
             present = [bool(f.get("present")) for f in got]
             abstained = bool(reply.get("abstained"))
-            supported = None
+            supported = wrong = None
             if labels["supported"] is not None:
                 supported = judge.ask(
                     SOURCE_SUPPORT.format(facts=facts_text, source=source_of(r, item))
                 )["supported"]
+                if wrong_source_of and labels["supported"]:
+                    wrong = judge.ask(
+                        SOURCE_SUPPORT.format(
+                            facts=facts_text, source=wrong_source_of(r, item)
+                        )
+                    )["supported"]
         except (ValueError, KeyError):
             failures += 1
             continue
@@ -75,6 +84,9 @@ def evaluate(judge, rows: list[dict], items: dict, source_of) -> dict:
         if supported is not None:
             source_l.append(labels["supported"])
             source_j.append(bool(supported))
+        if wrong is not None:
+            source_l.append(False)
+            source_j.append(bool(wrong))
     return {
         "model": judge.model,
         "n": len(rows),
@@ -92,6 +104,18 @@ def evaluate(judge, rows: list[dict], items: dict, source_of) -> dict:
         "seconds_per_row": round((time.time() - start) / len(rows), 1),
         "length_bias": length_bias(lengths),
     }
+
+
+def wrong_page(item, pages: dict, min_chars: int = 0) -> str:
+    """A page of the same manual holding none of the item's anchors, chosen repeatably."""
+    candidates = sorted(
+        p
+        for (m, p), text in pages.items()
+        if m == item.manual
+        and len(text) >= min_chars
+        and not any(_squash(a) in _squash(text) for a in item.anchors)
+    )
+    return pages[(item.manual, random.Random(item.id).choice(candidates))]
 
 
 def pick(results: list[dict]) -> dict | None:
@@ -134,7 +158,15 @@ def main(argv: list[str] | None = None) -> int:
     for model in args.models.split(","):
         judge = Judge(args.base_url, "", model)
         judge.max_tokens = 1500
-        results.append(evaluate(judge, rows, items, source_of))
+        results.append(
+            evaluate(
+                judge,
+                rows,
+                items,
+                source_of,
+                lambda r, i: wrong_page(i, pages, min_chars=200),
+            )
+        )
         print(json.dumps(results[-1]), flush=True)
         args.out.write_text(json.dumps(results, indent=1))
     winner = pick(results)
