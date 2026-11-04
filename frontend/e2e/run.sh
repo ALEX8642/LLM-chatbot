@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Replay end-to-end check: writes a recording with the real answer path over the fixture
 # ingest, serves it in replay mode (no models), serves the built frontend, drives it.
 # Usage: frontend/e2e/run.sh [screenshot dir]   (needs uv, node on PATH, Playwright)
@@ -7,6 +7,9 @@ ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 SHOTS=$(mkdir -p "${1:-$ROOT/frontend/e2e/out}" && cd "${1:-$ROOT/frontend/e2e/out}" && pwd)
 WORK=$(mktemp -d)
 PY="uv run -q --isolated --no-project --python 3.12 --with pytest --with pymupdf==1.26.4 --with pillow --with rapidfuzz --with qdrant-client --with fastapi --with httpx --with uvicorn"
+for port in 8000 4173; do
+  if (exec 3<>"/dev/tcp/127.0.0.1/$port") 2>/dev/null; then echo "port $port is in use"; exit 1; fi
+done
 cd "$ROOT"
 MANUALQA_E2E_OUT=$WORK $PY -- python -m pytest -p no:cacheprovider -q -W ignore::DeprecationWarning \
   tests/manualqa/test_e2e_recording.py >/dev/null
