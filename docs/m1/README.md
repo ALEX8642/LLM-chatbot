@@ -19,9 +19,16 @@ screenshots are those answers replayed through the built frontend, with the firs
 | 09 | Sample loading problem | Three verified claims across pages 50 and 54 |
 | 10 | SR20 crosswind (not in the manual) | Abstains and lists the pages it looked at |
 
+## What "verified" means today
+
+A green check means the quote fuzzily matches the cited block, and every number and identifier in the claim
+appears in the quote or its context. **It does not mean the claim says what the source says.** Claim meaning is
+never compared with the quote: that is the entailment layer, deferred to tier 2 in the spec. On dev, 146 of 269
+verified claims have no number or identifier, so for them the only test is the quote match.
+
 ## For the review
 
-**Does the promise look true?** On these 10, yes, by eye. These questions were chosen to show the
+**Does the promise look true?** On these 10, yes, by eye, from the first claim of each answer (the review checked the other text and table claims by box against line text). These questions were chosen to show the
 behaviours, and were part of the set the checker was tuned on, so this shows the feature works, not how
 often. The numbers are in `evals/results/NOTES-v2-dev.md`.
 
@@ -37,7 +44,26 @@ in the notes: most in run 1 were wrong removals, now mostly fixed.
 - Identical claims from two near-identical figures show as a repeated line (04, 05).
 - Highlights are per line, so a box can include a neighbouring word (06: "Allow").
 - Claims can be true yet not answer the question (unans-03 in the notes); nothing checks relevance.
-- Time to the finished answer is about 8-16 s here (v1 about 2.4 s).
+- Time to the finished answer is about 8-16 s here (v1 about 2.4 s); on the 172 dev items p50 is 8.4 s and p95 is 61 s, unexplained.
 
 To replay: `frontend/e2e/run.sh` for the scripted check; for this recording, serve it with
 `python -m manualqa.server --replay docs/m1/live-answers.jsonl`, which also needs the page renders.
+
+## Review result (2026-11-04)
+
+An independent review found the promise holds on these answers, and that "verified" is much weaker than it looks.
+Claude reproduced these with constructed inputs of the same shape; "dev" counts are the reviewer's, and were not re-derived.
+
+| Severity | Finding | Example that wrongly passes |
+|---|---|---|
+| High | Claim meaning is never compared to the quote | "You may crank the engine for as long as needed", quote "Do not crank engine in excess" |
+| High | Shifted table headers invert the wrong-column check (47+ rows on 6 pages, reviewer's count) | "The part number is 81349" (the CAGE code) passes; the true part number is removed |
+| High | Facts are checked against the model's quote, which only fuzzily matches the source (0 on dev) | Claim and quote 88-20244, source 88-20243 |
+| High | Column labels are easy to miss | "The quantity used is 30554"; "30554 is the part number" |
+| Medium | Units, signs, number words in claims | "172 psi" on "25 psi (172 kPa)"; "-15" on "+15"; "thirty seconds" on "fifteen" |
+| Medium | Ellipsis fragments are not ordered or anchored (3 on dev, benign) | "Do ... operate" drops "not" |
+| Medium | Boxes can go on the wrong line or row with no warning | p22 blank lines misalign; unans-03; p48 table |
+| Low | Figure claims show the same green check as verified ones; the spec wants a neutral mark | `ClaimList.tsx` |
+
+None of these were fixed by this review. Most wrong-pass examples are constructed, so they show what the checker
+would let through, not how often it happens.
