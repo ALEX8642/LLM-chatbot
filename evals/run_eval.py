@@ -580,6 +580,7 @@ class CachingJudge(Judge):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.replies: Dict[str, Dict[str, Any]] = {}
+        self.max_tokens = 1500  # as in judge selection; 600 cuts off long JSON replies
 
     def ask(self, prompt: str) -> Dict[str, Any]:
         if prompt not in self.replies:

@@ -80,3 +80,9 @@ def test_network_failures_become_a_judge_error_not_a_crash(monkeypatch):
     monkeypatch.setattr("evals.run_eval.time.sleep", lambda s: None)
     with pytest.raises(ValueError, match="unreachable"):
         CachingJudge("u", "", "m").ask("a")
+
+
+def test_grading_uses_the_token_limit_the_judge_was_selected_with():
+    from evals.run_eval import CachingJudge
+
+    assert CachingJudge("u", "", "m").max_tokens == 1500
