@@ -1,3 +1,5 @@
+import pytest
+
 from evals.run_eval import score_item, summarize
 
 
@@ -86,3 +88,45 @@ def test_grading_uses_the_token_limit_the_judge_was_selected_with():
     from evals.run_eval import CachingJudge
 
     assert CachingJudge("u", "", "m").max_tokens == 1500
+
+
+@pytest.mark.parametrize(
+    "reply,want",
+    [
+        ('{"supported": true}', {"supported": True}),
+        (
+            '```json\n{"supported": true}\n```\n\nBecause {x} and {y} hold.',
+            {"supported": True},
+        ),
+        ('Sure: {"a": {"b": 1}} and also {"c": 2}', {"a": {"b": 1}}),
+    ],
+)
+def test_first_json_object_is_read_and_later_text_ignored(reply, want):
+    from evals.run_eval import first_json_object
+
+    assert first_json_object(reply) == want
+
+
+def test_no_json_object_gives_none():
+    from evals.run_eval import first_json_object
+
+    assert first_json_object("no object here") is None
+    assert first_json_object("{broken") is None
+
+
+def test_reuse_keeps_good_grades_and_retries_errors():
+    from evals.run_eval import reusable_grades
+
+    previous = {
+        "repeats": [
+            {
+                "items": [
+                    {"id": "a", "correct": True, "judge_error": None},
+                    {"id": "b", "correct": None, "judge_error": "no JSON"},
+                ]
+            }
+        ]
+    }
+    assert reusable_grades(previous) == {
+        (1, "a"): {"id": "a", "correct": True, "judge_error": None}
+    }

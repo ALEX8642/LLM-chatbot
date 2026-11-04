@@ -402,6 +402,30 @@ Then rate:
 Reply with JSON only: {{"unsupported_claims": ["..."], "faithfulness": "faithful"|"partial"|"unfaithful"}}"""
 
 
+def first_json_object(text: str) -> Optional[Dict[str, Any]]:
+    """The first complete JSON object in a reply; models often keep talking after it."""
+    decoder = json.JSONDecoder()
+    for start, ch in enumerate(text):
+        if ch == "{":
+            try:
+                value, _ = decoder.raw_decode(text[start:])
+            except json.JSONDecodeError:
+                continue
+            if isinstance(value, dict):
+                return value
+    return None
+
+
+def reusable_grades(previous: Dict[str, Any]) -> Dict[Any, Dict[str, Any]]:
+    """(repeat, id) -> grade, for grades of an earlier run with no judge error."""
+    return {
+        (r, g["id"]): g
+        for r, repeat in enumerate(previous["repeats"], 1)
+        for g in repeat["items"]
+        if not g["judge_error"]
+    }
+
+
 class Judge:
     def __init__(self, base_url: str, api_key: str, model: str, seed: int = 0):
         self.url = base_url.rstrip("/") + "/chat/completions"
@@ -422,12 +446,9 @@ class Judge:
             r = requests.post(self.url, json=body, headers=self.headers, timeout=180)
             r.raise_for_status()
             text = r.json()["choices"][0]["message"]["content"] or ""
-            m = re.search(r"\{.*\}", text, re.S)
-            if m:
-                try:
-                    return json.loads(m.group(0))
-                except json.JSONDecodeError:
-                    pass
+            parsed = first_json_object(text)
+            if parsed is not None:
+                return parsed
             time.sleep(2 * (attempt + 1))
         raise ValueError(f"judge returned no JSON: {text[:200]!r}")
 
@@ -613,11 +634,17 @@ def cmd_score_keyfacts(args) -> None:
         os.environ.get("LLM_API_KEY", ""),
         os.environ["LLM_JUDGE_MODEL"],
     )
+    reuse = (
+        reusable_grades(json.loads(Path(args.reuse).read_text())) if args.reuse else {}
+    )
     repeats = []
     for r, outs in enumerate(raw["repeats"][: args.max_repeats], 1):
         grades = []
         for i, out in enumerate(outs, 1):
             item = items[out["id"]]
+            if (r, out["id"]) in reuse:
+                grades.append(reuse[(r, out["id"])])
+                continue
             source = cited_source(out, item.manual, blocks, pages)
             grades.append(grade_item(item, {**out, "cited_source": source}, judge))
             print(f"[repeat {r}] graded {i}/{len(outs)} {out['id']}", flush=True)
@@ -752,6 +779,7 @@ def main() -> None:
     )
     s.add_argument("--composed", default="data/ingest/composed.jsonl", help="keyfacts")
     s.add_argument("--max-repeats", type=int, help="keyfacts: grade only the first N")
+    s.add_argument("--reuse", help="keyfacts: keep good grades from this earlier file")
     s.add_argument("--out", required=True)
     s.set_defaults(func=cmd_score)
 
