@@ -224,14 +224,11 @@ def make_v2_adapter(
     from manualqa.generate import Generator
     from manualqa.index import make_embedder
     from manualqa.prompts import PROMPT_VERSION
-    from manualqa.retrieve import CrossEncoderReranker, IngestContext
+    from manualqa.retrieve import IngestContext, make_reranker
 
     if ctx is None:
-        kind, _, model = reranker.partition(":")
-        if kind != "st":
-            raise ValueError(f"unknown reranker {reranker!r}")
         ctx = IngestContext.load(
-            Path(ingest_dir), make_embedder(embedder), CrossEncoderReranker(model)
+            Path(ingest_dir), make_embedder(embedder), make_reranker(reranker, 2)
         )
     gen = gen or Generator.from_env()
     checker = LLMChecker(gen) if meaning_check else None
