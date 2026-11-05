@@ -23,6 +23,7 @@ from manualqa.ocr_detect import needs_ocr
 from manualqa.parsers.common import assign_lines
 from manualqa.parsers.textlayer import text_layer_lines
 from manualqa.table_geometry import place_cells
+from manualqa.table_grid import rebuild_from_grid
 from manualqa.textclean import clean_ocr_text
 
 TABLE_CELL_SEP = " | "
@@ -59,7 +60,8 @@ def compose_page(raw: PageParse, page: pymupdf.Page) -> PageParse:
     for i, b in enumerate(blocks):
         b.id = f"{stem}:p{raw.page}:b{i}"
         if b.kind == "table":
-            place_cells(b, b.lines)
+            if source != "text_layer" or not rebuild_from_grid(b, b.lines):
+                place_cells(b, b.lines)
             rows: dict[int, list] = {}
             for c in sorted(b.cells, key=lambda c: (c.row, c.col)):
                 rows.setdefault(c.row, []).append(c.text)
