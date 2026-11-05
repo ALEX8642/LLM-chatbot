@@ -1,0 +1,105 @@
+{
+ "items": 139,
+ "chosen": [
+  "st:Qwen/Qwen3-Embedding-0.6B",
+  "st:BAAI/bge-reranker-v2-m3"
+ ],
+ "failed": {},
+ "costs": {
+  "st:Qwen/Qwen3-Embedding-0.6B": {
+   "index_s": 49.58437330900051,
+   "query_s": 0.3637015341798537
+  },
+  "st:BAAI/bge-m3": {
+   "index_s": 21.86451314399983,
+   "query_s": 0.34359718198561007
+  },
+  "st:Qwen/Qwen3-Embedding-4B": {
+   "index_s": 77.97582445199987,
+   "query_s": 0.5206191053453203
+  }
+ },
+ "results": [
+  {
+   "embedder": "st:BAAI/bge-m3",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-0.6B",
+   "hit": 0.920863309352518,
+   "rr": 0.7203323055841041,
+   "all": 0.8776978417266187,
+   "candidate_hit": 1.0,
+   "rerank_s": 2.485787525323745
+  },
+  {
+   "embedder": "st:BAAI/bge-m3",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-4B",
+   "hit": 0.9496402877697842,
+   "rr": 0.8133778691332648,
+   "all": 0.920863309352518,
+   "candidate_hit": 1.0,
+   "rerank_s": 5.641966066323738
+  },
+  {
+   "embedder": "st:BAAI/bge-m3",
+   "reranker": "st:BAAI/bge-reranker-v2-m3",
+   "hit": 0.9640287769784173,
+   "rr": 0.8226618705035971,
+   "all": 0.920863309352518,
+   "candidate_hit": 1.0,
+   "rerank_s": 3.68261868224461
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-0.6B",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-0.6B",
+   "hit": 0.920863309352518,
+   "rr": 0.7183453237410071,
+   "all": 0.8848920863309353,
+   "candidate_hit": 0.9928057553956835,
+   "rerank_s": 2.9177234978417297
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-0.6B",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-4B",
+   "hit": 0.9568345323741008,
+   "rr": 0.8121788283658787,
+   "all": 0.9280575539568345,
+   "candidate_hit": 0.9928057553956835,
+   "rerank_s": 5.288204566863308
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-0.6B",
+   "reranker": "st:BAAI/bge-reranker-v2-m3",
+   "hit": 0.9568345323741008,
+   "rr": 0.8190647482014388,
+   "all": 0.9136690647482014,
+   "candidate_hit": 0.9928057553956835,
+   "rerank_s": 1.9227280829784197
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-4B",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-0.6B",
+   "hit": 0.920863309352518,
+   "rr": 0.7217026378896882,
+   "all": 0.8848920863309353,
+   "candidate_hit": 1.0,
+   "rerank_s": 3.1732011225899277
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-4B",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-4B",
+   "hit": 0.9640287769784173,
+   "rr": 0.8165039397053786,
+   "all": 0.935251798561151,
+   "candidate_hit": 1.0,
+   "rerank_s": 5.46771848526618
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-4B",
+   "reranker": "st:BAAI/bge-reranker-v2-m3",
+   "hit": 0.9568345323741008,
+   "rr": 0.8190647482014388,
+   "all": 0.9136690647482014,
+   "candidate_hit": 1.0,
+   "rerank_s": 2.395878140352514
+  }
+ ]
+}
