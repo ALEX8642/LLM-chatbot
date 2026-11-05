@@ -61,7 +61,13 @@ class QwenReranker:
         "Given a web search query, retrieve relevant passages that answer the query"
     )
 
-    def __init__(self, model: str, device: str | None = None, batch_size: int = 8):
+    def __init__(
+        self,
+        model: str,
+        device: str | None = None,
+        batch_size: int = 8,
+        half: bool = True,
+    ):
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -69,7 +75,9 @@ class QwenReranker:
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.tokenizer = AutoTokenizer.from_pretrained(model, padding_side="left")
         self.model = (
-            AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.float16)
+            AutoModelForCausalLM.from_pretrained(
+                model, torch_dtype=torch.float16 if half else torch.float32
+            )
             .to(self.device)
             .eval()
         )
@@ -97,23 +105,27 @@ class QwenReranker:
         )
 
     def score(self, query: str, texts: list[str]) -> list[float]:
-        out: list[float] = []
-        for start in range(0, len(texts), self.batch_size):
-            inputs = self._encode(query, texts[start : start + self.batch_size])
+        # similar lengths together: a batch is padded to its longest text
+        order = sorted(range(len(texts)), key=lambda i: len(texts[i]))
+        out = [0.0] * len(texts)
+        for start in range(0, len(order), self.batch_size):
+            part = order[start : start + self.batch_size]
+            inputs = self._encode(query, [texts[i] for i in part])
             with self.torch.no_grad():
                 logits = self.model(**inputs).logits[:, -1, :]
             pair = logits[:, [self.no, self.yes]].float().softmax(-1)[:, 1]
-            out += [float(x) for x in pair]
+            for i, score in zip(part, pair):
+                out[i] = float(score)
         return out
 
 
-def make_reranker(spec: str, batch_size: int = 8) -> Reranker:
+def make_reranker(spec: str, batch_size: int = 8, half: bool = True) -> Reranker:
     """``st:<model>`` for a cross-encoder, ``qwen:<model>`` for Qwen3-Reranker."""
     kind, _, model = spec.partition(":")
     if kind == "st":
         return CrossEncoderReranker(model)
     if kind == "qwen":
-        return QwenReranker(model, batch_size=batch_size)
+        return QwenReranker(model, batch_size=batch_size, half=half)
     raise ValueError(f"unknown reranker {spec!r}")
 
 

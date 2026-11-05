@@ -20,16 +20,18 @@ from pathlib import Path
 from evals.items import load_items
 
 K_CHUNKS, POOL, MIN_GAIN = 8, 50, 0.015
-LARGE = 4.0  # models this size run at half precision and in small batches, to fit 16 GB
+LARGE = 4.0  # models this size run in small batches
 EMBEDDERS = {
     "st:Qwen/Qwen3-Embedding-0.6B": 0.6,
     "st:BAAI/bge-m3": 1.0,
     "st:Qwen/Qwen3-Embedding-4B": 4.0,
+    "st:Qwen/Qwen3-Embedding-8B": 8.0,  # 32 GB only, with --half-from 8
 }
 RERANKERS = {
     "st:BAAI/bge-reranker-v2-m3": 0.6,
     "qwen:Qwen/Qwen3-Reranker-0.6B": 0.6,
     "qwen:Qwen/Qwen3-Reranker-4B": 4.0,
+    "qwen:Qwen/Qwen3-Reranker-8B": 8.0,  # 32 GB only, with --half-from 8
 }
 
 
@@ -84,6 +86,13 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--qa", type=Path, default=Path("evals/qa.jsonl"))
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--rerankers", nargs="*", help="only these; default all")
+    ap.add_argument("--embedders", nargs="*", help="only these; default all")
+    ap.add_argument(
+        "--half-from",
+        type=float,
+        default=LARGE,
+        help="models this size or larger run at half precision (16 GB needs 4, 32 GB 8)",
+    )
     args = ap.parse_args(argv)
     args.out.mkdir(parents=True, exist_ok=True)
     items = [i for i in load_items(args.qa) if i.category != "unanswerable"]
@@ -93,10 +102,14 @@ def main(argv: list[str] | None = None) -> int:
     costs: dict[str, dict] = {}
     failed: dict[str, str] = {}
     for spec, size in EMBEDDERS.items():
+        if args.embedders and spec not in args.embedders:
+            continue
         where = args.out / spec.replace("/", "_").replace(":", "_")
         try:
             embedder = make_embedder(
-                spec, half=size >= LARGE, batch_size=2 if size >= LARGE else 16
+                spec,
+                half=size >= args.half_from,
+                batch_size=2 if size >= LARGE else 16,
             )
             start = time.perf_counter()
             build_index(chunks, where, embedder)
@@ -127,7 +140,11 @@ def main(argv: list[str] | None = None) -> int:
         if args.rerankers and spec not in args.rerankers:
             continue
         try:
-            reranker = make_reranker(spec, batch_size=2 if size >= LARGE else 8)
+            reranker = make_reranker(
+                spec,
+                batch_size=2 if size >= LARGE else 8,
+                half=size >= args.half_from,
+            )
             for emb, pool in pools.items():
                 rows = []
                 start = time.perf_counter()
@@ -170,6 +187,7 @@ def main(argv: list[str] | None = None) -> int:
     chosen = choose(results)
     report = {
         "items": len(items),
+        "half_from": args.half_from,
         "chosen": chosen,
         "failed": failed,
         "costs": costs,

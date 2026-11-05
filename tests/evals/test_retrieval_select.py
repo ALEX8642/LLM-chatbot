@@ -15,7 +15,7 @@ def test_a_real_gain_does():
 
 
 def test_all_candidates_have_a_size():
-    assert len(EMBEDDERS) == 3 and len(RERANKERS) == 3
+    assert len(EMBEDDERS) == 4 and len(RERANKERS) == 4
 
 
 def test_page_metrics():

@@ -128,3 +128,24 @@ def test_qwen_reranker_keeps_the_end_of_its_prompt_when_a_document_is_cut():
     ids = r._encode("q", ["x" * 99999])["input_ids"][0]
     assert ids[-2:] == [2, 2] and ids[:3] == [1, 1, 1]
     assert len(ids) == QwenReranker.MAX_LENGTH
+
+
+def test_qwen_reranker_scores_stay_with_their_texts_when_batched_by_length():
+    import pytest
+
+    torch = pytest.importorskip("torch")
+
+    from manualqa.retrieve import QwenReranker
+
+    class Model:
+        def __call__(self, input_ids=None, **kw):
+            # the "yes" logit is the document's length, so longer scores higher
+            logits = torch.zeros(len(input_ids), 1, 2)
+            logits[:, 0, 1] = input_ids.sum(dim=1).float()
+            return type("O", (), {"logits": logits})()
+
+    r = QwenReranker.__new__(QwenReranker)
+    r.torch, r.model, r.batch_size, r.no, r.yes = torch, Model(), 2, 0, 1
+    r._encode = lambda q, texts: {"input_ids": torch.tensor([[len(t)] for t in texts])}
+    got = r.score("q", ["aaa", "a", "aaaaa", "aa"])
+    assert sorted(range(4), key=lambda i: got[i]) == [1, 3, 0, 2]
