@@ -161,3 +161,59 @@ mistral 3 of 70 and 2 of 94. So phi4 may be biased against v1 on this, which is 
 session should test it. The checker was fixed on the original 42, so the 130 new items are the fairer figure, and the gap
 there is 0.11-0.17 by judge and baseline. There are no confidence intervals yet. v2's length bias (0.06 per 100 characters,
 interval above 0) is still unexplained. Item wording is Claude's, checked by a sample of 60 and a review of 30.
+
+## Checks and evidence rebuilt (2026-11-05): `raw/v2-dev172.json`, `v2-dev172-{phi4,mistral}.json`
+
+172 dev items, one repeat, judges phi4 and mistral. All tuning is on dev; the test set is unrun. The rows are
+cumulative. v1 on the same items is 0.50-0.54.
+
+| Stage | Primary (phi4 / mistral) | Answerable declined | Unanswerable answered | Claims kept / removed | p95 s |
+|---|---|---|---|---|---|
+| Before | 0.71 / 0.70 | 20 | 8 | 282 / 46 | 61 |
+| Table grid rebuild (`b051ae6`) | not judged | 19 | 9 | 274 / 48 | 15 |
+| Facts against the source; captions bring tables; quotes relocate; headings carried (`e1875a8`) | 0.77 / 0.79 | 10 | 6 | 298 / 27 | 17 |
+| Every table row stored (`81dc92e`) | 0.79 / 0.80 | 7 | 7 | 312 / 15 | 17 |
+| Meaning check, block only (`e5563f9`) | 0.78 / 0.78 | 9 | 7 | 302 / 25 | 18 |
+| Meaning check, block then page (`3d2b431`) | 0.79 / 0.80 | 7 | 7 | 309 / 18 | 18 |
+
+A run takes one temperature-0 sample, so a change of one or two items is not evidence, and later rows mix check
+changes with whatever the changed evidence did to the model's output.
+
+**What raised the score.** Label-and-value tables never reached the model: the table store kept only rows with
+two or more numeric cells, and a table's caption could rank without its rows. The model read those values from the
+page image, cited the caption, and the quote failed. Most of the gain is this, not stricter checking.
+
+**Replay check on the checks themselves.** Re-running the 322 recorded claims of the grid run through the new
+fact checks, with no model calls: none wrongly removed, 12 restored, 8 fewer declines. (Commit `e1875a8`'s message
+says 13; that count predates a last tightening.)
+
+**Table audit.** Text-layer cells whose box does not hold their text: 276 originally, 59 of 20,668 now. Of 947
+printed parts rows, none has codes missing from its item's row, though that scan was also loosened while tightening
+it. Boxes on OCR pages are unchanged in kind: 26% of cells have none.
+
+**Meaning check.** Choice: the generator, asked yes or no (0.27 s a claim), over two NLI models, on 109 labelled
+claims (`evals/claims/`, 70 real and read by Claude, 39 false ones written by Claude to keep the facts and change the
+meaning).
+
+| Checker | False claims caught | True claims flagged |
+|---|---|---|
+| Generator, block then page (in use) | 38 of 39 | not rerun in two stages on this set; block alone 1 of 70 |
+| Generator, block only | 39 of 39 | 1 of 70 |
+| DeBERTa-v3-base (MoritzLaurer) | 23 of 39 | 1 of 70 |
+| nli-deberta-v3-small | 12 of 39 | 1 of 70 |
+
+The false claims are constructed and were written by the same author as the labels, so these rates show what the
+check can see, not how often the generator makes such errors. On real dev claims it removes 3 of 312: all three look
+true or merely garbled, so **on dev it catches no real error and costs no score.** The block-only version did catch
+one real overclaim ("exhaust smoke is caused by improper fuel" when the manual says to check for it), which the page
+look lets through along with the true claims it was added to save. It stays as a guard against claims saying the
+opposite, and its value is unproven on real output. Figure claims are not checked.
+
+**Remaining false declines (7):** faa-03, faa-04 and faa-ch2-07 name the SR20 and cite p26, which describes the data
+sheet without naming it; faa-ch9-08 and faa-14 read values from figures; op-02 names a model not in the cited row;
+parts-g01-01 misses retrieval. Unanswerable answers rose by one with the wider evidence, and that number remains
+unsettled between the judges (0.85 / 0.91).
+
+**Unexplained.** One attempt at the last run slowed from 10 s to minutes an item from about item 90 with the GPU
+pegged at 40 W and its memory full; judging then began beside it. A rerun of the same code was normal, p95 18 s. The
+cause is not known. p95 fell from 61 s to about 18 s over these runs, also unexplained.

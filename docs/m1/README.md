@@ -19,12 +19,14 @@ screenshots are those answers replayed through the built frontend, with the firs
 | 09 | Sample loading problem | Three verified claims across pages 50 and 54 |
 | 10 | SR20 crosswind (not in the manual) | Abstains and lists the pages it looked at |
 
-## What "verified" means today
+## What "verified" means
 
-A green check means the quote fuzzily matches the cited block, and every number and identifier in the claim
-appears in the quote or its context. **It does not mean the claim says what the source says.** Claim meaning is
-never compared with the quote: that is the entailment layer, deferred to tier 2 in the spec. On dev, 146 of 269
-verified claims have no number or identifier, so for them the only test is the quote match.
+*As recorded in this M1 replay:* a green check meant the quote fuzzily matched the cited block and every number and
+identifier appeared in the quote or its context. Meaning was not compared. On dev then, 146 of 269 verified claims
+had no number or identifier, so for them the only test was the quote match.
+
+*Since 2026-11-05 (not in this recording):* numbers and identifiers are checked against the source text the quote
+matched, and a generator check asks whether the block, then the page, says what the claim says. See "Fixed since".
 
 ## For the review
 
@@ -64,6 +66,15 @@ Claude reproduced these with constructed inputs of the same shape; "dev" counts 
 | Medium | Ellipsis fragments are not ordered or anchored (3 on dev, benign) | "Do ... operate" drops "not" |
 | Medium | Boxes can go on the wrong line or row with no warning | p22 blank lines misalign; unans-03; p48 table |
 | Low | Figure claims show the same green check as verified ones; the spec wants a neutral mark | `ClaimList.tsx` |
+
+### Fixed since (2026-11-05)
+
+Each of the above now has a regression test except where noted. Column labels are matched after the value and as
+abbreviations; facts use the matched source; units, signs, number words, ellipsis order and skipped negations are
+checked; numbered item lists are rebuilt from the text layer's grid; blank lines no longer shift boxes; figure claims
+show a neutral mark. Claim meaning is checked by the generator, which on real dev claims has so far caught no real
+error (`evals/results/NOTES-v2-dev.md`). **Still open:** boxes on OCR pages, and tables whose structure comes from the
+parser; figure claims are still not checked against the image; "Verified" remains a strong word for these checks.
 
 None of these were fixed by this review. Most wrong-pass examples are constructed, so they show what the checker
 would let through, not how often it happens.
