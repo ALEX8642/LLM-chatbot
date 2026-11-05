@@ -9,6 +9,7 @@ repeated on every parts row must highlight its own row).
 
 from __future__ import annotations
 
+import re
 import statistics
 
 from rapidfuzz import fuzz
@@ -19,7 +20,9 @@ from manualqa.textnorm import norm
 
 ROW_GAP = 0.6  # new visual row when a centre is this many line heights below the row
 MATCH_MIN = 85  # partial_ratio for a line to belong to a cell
-SHORT = 4  # texts this short must equal the cell exactly ("5" is not in "68505")
+SHORT = 4  # lines this short must be a whole word of the cell ("5" is not in "68505")
+MIN_COVER = 0.6  # share of a line a fuzzy match must explain
+_DIGITS = re.compile(r"\d+")
 MAX_SPAN = 5  # visual rows one HTML row may cover (wrapped cells, group labels)
 
 
@@ -38,12 +41,77 @@ def _visual_rows(lines: list[Line]) -> list[list[Line]]:
     return [sorted(r, key=lambda ln: ln.box.x0) for r in rows]
 
 
+def _squash(text: str) -> str:
+    return re.sub(r"\s+", "", text)
+
+
+def _words(text: str) -> list[str]:
+    return [w.strip(".,;:()") for w in text.split()]
+
+
 def _match(line: str, cell: str) -> float:
+    """How well a line fits a cell's unused text. Short lines must be whole words of the
+    cell ("208" in "208 volts", not "5" in "68505"); longer ones may be fuzzy only if every
+    digit agrees, since one digit is the difference between neighbouring rows."""
     if not line or not cell:
         return 0.0
-    if len(line) <= SHORT or len(cell) <= SHORT:
-        return 100.0 if line == cell else 0.0
-    return fuzz.partial_ratio(line, cell)
+    bare = _squash(line)
+    if len(bare) <= SHORT:
+        return 100.0 if bare.strip(".,;:()") in _words(cell) else 0.0
+    if bare in _squash(cell):
+        return 100.0
+    score = fuzz.partial_ratio_alignment(bare, _squash(cell))
+    if score is None or score.score < MATCH_MIN:
+        return 0.0
+    # the two aligned stretches: a line may run on into the next cell ("... RECE 1")
+    in_line = bare[score.src_start : score.src_end]
+    in_cell = _squash(cell)[score.dest_start : score.dest_end]
+    if len(in_line) < MIN_COVER * len(bare):  # a fragment of the line proves nothing
+        return 0.0
+    return score.score if _DIGITS.findall(in_line) == _DIGITS.findall(in_cell) else 0.0
+
+
+def _consume(cell: str, line: str) -> str:
+    """The cell's text left after a line has taken its part."""
+    words = cell.split()
+    bare = _squash(line).strip(".,;:()")
+    for i, w in enumerate(words):
+        if w.strip(".,;:()") == bare:
+            return " ".join(words[:i] + words[i + 1 :])
+    squashed = _squash(cell)
+    at = squashed.find(_squash(line))
+    if at >= 0:
+        return squashed[:at] + " " + squashed[at + len(_squash(line)) :]
+    aligned = fuzz.partial_ratio_alignment(_squash(line), squashed)
+    return (
+        squashed[: aligned.dest_start] + " " + squashed[aligned.dest_end :]
+        if aligned
+        else cell
+    ).strip()
+
+
+def _take(line: str, left: list[str], order: int) -> int | None:
+    """The unused cell a line belongs to, nearest its position among ties; None if none."""
+    scored = [
+        (_match(line, text), -abs(i - order), i) for i, text in enumerate(left) if text
+    ]
+    scored = [s for s in scored if s[0] >= MATCH_MIN]
+    return max(scored)[2] if scored else None
+
+
+def _span_score(texts: list[str], vrows: list[list[str]]) -> float:
+    """+1 per line that takes unused text of this row, -1 per line that finds none."""
+    left = list(texts)
+    total = 0
+    for vrow in vrows:
+        for pos, t in enumerate(vrow):
+            i = _take(t, left, pos)
+            if i is None:
+                total -= 1
+            else:
+                left[i] = _consume(left[i], t)
+                total += 1
+    return total
 
 
 def _union(boxes: list[Box]) -> Box:
@@ -69,18 +137,6 @@ def place_cells(block: Block, lines: list[Line]) -> None:
     cell_text = [[norm(c.text) for c in row] for row in html_rows]
     line_text = [[norm(ln.text) for ln in vrow] for vrow in visual]
 
-    # score[i][j]: +1 per line of visual row j that fits a cell of HTML row i, -1 otherwise
-    score = [
-        [
-            sum(
-                1 if max((_match(t, c) for c in cells), default=0) >= MATCH_MIN else -1
-                for t in vtexts
-            )
-            for vtexts in line_text
-        ]
-        for cells in cell_text
-    ]
-
     n, m = len(html_rows), len(visual)
     best = [[0.0] * (m + 1) for _ in range(n + 1)]
     choice: dict[tuple[int, int], tuple[str, int]] = {}
@@ -90,11 +146,14 @@ def place_cells(block: Block, lines: list[Line]) -> None:
                 (best[i + 1][j], ("skip_html", 0)),
                 (best[i][j + 1], ("skip_vis", 0)),
             ]
-            total = 0.0
+            before = 0.0
             for k in range(1, MAX_SPAN + 1):
-                if j + k > m or score[i][j + k - 1] <= 0:
+                if j + k > m:
                     break
-                total += score[i][j + k - 1]
+                total = _span_score(cell_text[i], line_text[j : j + k])
+                if total <= before:  # this visual row adds nothing to the row: stop
+                    break
+                before = total
                 options.append((total + best[i + 1][j + k], ("span", k)))
             best[i][j], choice[(i, j)] = max(options, key=lambda o: o[0])
 
@@ -111,24 +170,18 @@ def place_cells(block: Block, lines: list[Line]) -> None:
 
 
 def _fill_row(cells: list[Cell], texts: list[str], vrows: list[list[Line]]) -> None:
-    lines = sorted((ln for vrow in vrows for ln in vrow), key=lambda ln: ln.box.x0)
-    filled = [c for c, t in zip(cells, texts) if t]
-    rank = {id(c): r for r, c in enumerate(filled)}
+    filled = [(c, t) for c, t in zip(cells, texts) if t]
+    left = [t for _, t in filled]
     owned: dict[int, list[Box]] = {}
-    for pos, ln in enumerate(lines):
-        t = norm(ln.text)
-        scored = [
-            (_match(t, ct), -abs(rank[id(c)] - pos), c)
-            for c, ct in zip(cells, texts)
-            if ct
-        ]
-        scored = [s for s in scored if s[0] >= MATCH_MIN]
-        if scored:
-            _, _, cell = max(scored, key=lambda s: (s[0], s[1]))
-            owned.setdefault(id(cell), []).append(ln.box)
-    for c in cells:
-        if id(c) in owned:
-            c.box = _union(owned[id(c)])
+    for vrow in vrows:
+        for pos, ln in enumerate(sorted(vrow, key=lambda ln: ln.box.x0)):
+            t = norm(ln.text)
+            i = _take(t, left, pos)
+            if i is not None:
+                left[i] = _consume(left[i], t)
+                owned.setdefault(i, []).append(ln.box)
+    for i, boxes in owned.items():
+        filled[i][0].box = _union(boxes)
 
 
 def row_boxes(block: Block) -> dict[int, Box]:

@@ -39,4 +39,5 @@ def _plain(maths: str) -> str:
 def clean_ocr_text(text: str) -> str:
     """LaTeX spans to Unicode; whitespace collapsed. Text without maths is unchanged
     apart from whitespace."""
+    text = text.replace("\\n", " ")  # table HTML can carry a literal backslash-n
     return " ".join(_MATH.sub(lambda m: _plain(m.group(1)), text).split())

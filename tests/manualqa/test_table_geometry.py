@@ -94,3 +94,93 @@ def test_parts_p59_rows(raw_pages, manual):
     assert abs(part.box.center[1] - cage.box.center[1]) < 0.005
     layer = next(ln for ln in t.lines if ln.text.strip() == "P14-8969")
     assert part.box.iou(layer.box) > 0.9
+
+
+def test_short_token_of_a_split_cell_is_placed():
+    b = table([["208 VOLTS", "L1"], ["120 VOLTS", "L3"]])
+    place_cells(
+        b,
+        [
+            line("208", 0, 0),
+            line("VOLTS", 1, 0),
+            line("L1", 2, 0),
+            line("120", 0, 1),
+            line("VOLTS", 1, 1),
+            line("L3", 2, 1),
+        ],
+    )
+    assert box_of(b, 0, 0).y0 == pytest.approx(0.1)
+    assert box_of(b, 1, 0).y0 == pytest.approx(0.13)
+    assert box_of(b, 1, 0).x1 > 0.4  # both words
+
+
+def test_one_character_inside_a_longer_number_still_does_not_match():
+    b = table([["68505", "x"]])
+    place_cells(b, [line("5", 0, 0), line("x", 1, 0)])
+    assert box_of(b, 0, 0) is None
+
+
+def test_a_row_cannot_take_a_neighbour_with_the_same_words():
+    # row 1's text also fits the lines of row 0, which row 0 has already used
+    b = table([["L3-L1 3 PHASE", "208 VOLTS"], ["L3-L1 1PHASE", "240 VOLTS"]])
+    place_cells(
+        b,
+        [
+            line("L3-L1 3 PHASE", 0, 0),
+            line("208 VOLTS", 1, 0),
+            line("L3-L1 1PHASE", 0, 1),
+            line("240 VOLTS", 1, 1),
+        ],
+    )
+    assert box_of(b, 1, 1).y1 - box_of(b, 1, 1).y0 == pytest.approx(H)
+    assert box_of(b, 1, 1).y0 == pytest.approx(0.13)
+
+
+def test_a_different_digit_is_not_a_fuzzy_match():
+    b = table([["L3-L1 1PHASE"]])
+    place_cells(b, [line("L3-L1 3 PHASE", 0, 0)])
+    assert box_of(b, 0, 0) is None
+
+
+def test_a_line_is_used_once_in_a_row():
+    b = table([["WASHER", "WASHER"]])
+    place_cells(b, [line("WASHER", 0, 0), line("WASHER", 1, 0)])
+    assert box_of(b, 0, 0).x0 == pytest.approx(0.1)
+    assert box_of(b, 0, 1).x0 == pytest.approx(0.3)
+
+
+def test_operator_p48_every_row_lands_on_its_own_line(manual):
+    """Table 2-5, checked by hand against the page: the table the gold check flagged."""
+    from pathlib import Path
+
+    from manualqa.blocks import load_pages
+
+    fixture = Path(__file__).parents[1] / "fixtures" / "paddle-raw-p48.jsonl"
+    (raw,) = load_pages(fixture)
+    composed = compose_page(raw, manual(raw.manual)[47])
+    t = next(b for b in composed.blocks if b.kind == "table")
+    cell = {c.text: c for c in t.cells if c.col == 0 or "PHASE" in c.text}
+    # y-centres read from the page render, as a fraction of page height
+    for text, y in [
+        ("L1-L2 3 PHASE", 0.605),
+        ("L2-L3 3 PHASE", 0.621),
+        ("L3-L1 3 PHASE", 0.637),
+        ("L3-LO 3 PHASE", 0.653),
+        ("L3-LO 1PHASE", 0.675),
+        ("L3-L1 1PHASE", 0.701),
+        ("L3-LO 1 PHASE", 0.717),
+        ("L1-LO 1 PHASE", 0.748),
+    ]:
+        assert cell[text].box is not None, text
+        assert cell[text].box.center[1] == pytest.approx(y, abs=0.006), text
+    volts = {(c.row): c for c in t.cells if "VOLTS" in c.text}
+    assert volts[4].text == "120 VOLTS"
+    assert volts[4].box.center[1] == pytest.approx(0.653, abs=0.006)
+    assert volts[6].text == "240 VOLTS"
+    assert volts[6].box.center[1] == pytest.approx(0.701, abs=0.006)
+
+
+def test_a_line_merging_two_cells_still_fits_the_description():
+    b = table([["CONNECTOR BODY, RECE", "1"]])
+    place_cells(b, [line(". . . CONNECTOR BODY, RECE 1", 0, 0)])
+    assert box_of(b, 0, 0) is not None

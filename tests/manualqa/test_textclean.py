@@ -19,3 +19,7 @@ from manualqa.textclean import clean_ocr_text
 )
 def test_clean_ocr_text(raw, clean):
     assert clean_ocr_text(raw) == clean
+
+
+def test_literal_backslash_n_from_table_html_becomes_a_space():
+    assert clean_ocr_text("...WASHER\\nUOC: ENY") == "...WASHER UOC: ENY"
