@@ -30,6 +30,7 @@ from manualqa.table_geometry import row_boxes
 from manualqa.textnorm import norm
 
 GROUP_MIN_CHARS = 20
+MAX_HEADER_ROWS = 4
 HEADER_MATCH_MIN = 80
 _COLUMN_NUMBER = re.compile(r"^\(\d+\)")
 _FIGURE = re.compile(r"\bFIG(?:URE)?\.?\s*(\d+[A-Z]?)", re.I)
@@ -97,6 +98,8 @@ def derive_table(block: Block) -> TableInfo:
             if _is_data_row(list(rows[r].values())):
                 break
             header_rows.append(r)
+        if len(header_rows) > MAX_HEADER_ROWS or len(header_rows) == len(order):
+            header_rows = []  # a label-and-value table has no column names
     groups: dict[int, str] = {}
     for r in order:
         texts = list(rows[r].values())
@@ -175,7 +178,7 @@ class TableStore:
                     if above and _figure(above[-1]) != _figure(group):
                         group = above[-1]
                 cells = [grid[r].get(col, "") for col in range(width)]
-                if i < info.header_rows or not _is_data_row(cells):
+                if i < info.header_rows or not any(c.strip() for c in cells):
                     continue
                 figure = _figure(group)
                 cur = self.db.execute(

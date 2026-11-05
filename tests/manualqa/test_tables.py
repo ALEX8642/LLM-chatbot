@@ -85,3 +85,39 @@ def test_lookup_by_block_returns_all_rows_in_order(store, parts_pages):
     hits = store.lookup_table(block_id=table.id, limit=1000)
     assert [h.row for h in hits] == sorted(h.row for h in hits)
     assert len(hits) >= 18 and all(h.page == 59 for h in hits)
+
+
+def _label_value_block():
+    box = Box(0, 0, 1, 1)
+    rows = [
+        ("Minimum Crew", "One (1) Pilot"),
+        ("Lubricating System Capacity", "3.2 qts. (3.0 liters)"),
+        ("Type of Fuel", "DF-1, DF-2"),
+    ]
+    cells = [
+        Cell(r, c, text, box)
+        for r, row in enumerate(rows)
+        for c, text in enumerate(row)
+    ]
+    return Block("m:p1:b0", "table", "", box, cells=cells)
+
+
+def test_a_label_and_value_table_has_no_header():
+    assert derive_table(_label_value_block()).header_rows == 0
+
+
+def test_rows_with_one_number_or_none_are_stored(tmp_path):
+    store = TableStore(tmp_path / "t.sqlite")
+    pp = PageParse("m", 1, "p", 100, 100, 72, False, None, [_label_value_block()], 0.0)
+    store.add_page(pp)
+    hits = store.lookup_table(block_id="m:p1:b0", limit=10)
+    assert [h.cells[0] for h in hits] == [
+        "Minimum Crew",
+        "Lubricating System Capacity",
+        "Type of Fuel",
+    ]
+    assert (
+        store.lookup_table(query="Lubricating", manual="m")[0]
+        .cells[1]
+        .startswith("3.2")
+    )
