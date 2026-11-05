@@ -26,8 +26,8 @@ BGE-M3 with the same reranker finds a gold page for all 139 items, two more than
 just inside the margin, so the rule keeps the smaller embedder. Close enough to retest with the 5090's results.
 
 **End to end on the 172 dev items, against the old reranker:** primary 0.79 / 0.80 to 0.84 / 0.87 (phi4 / mistral),
-false declines 7 to 3, unanswerable questions answered 7 to 3. p50 10 s to 13 s, p95 18 s to 42 s, the last not yet
-explained. See `evals/results/NOTES-v2-dev.md`.
+false declines 7 to 3, unanswerable questions answered 7 to 3. p50 10 s to 13 s, p95 18 s to 42 s; the slowest items spend 31-57 s in retrieval, on
+the parts manual. See `evals/results/NOTES-v2-dev.md`.
 
 Licences: Apache-2.0, except BGE-M3 (MIT).
 

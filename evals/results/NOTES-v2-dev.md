@@ -221,5 +221,5 @@ cause is not known. p95 fell from 61 s to about 18 s over these runs, also unexp
 
 **Reranker.** Both judges agree on 10 items improving and 3 getting worse (faa-ch3-05, faa-12, unans-05). Multi-page
 rose from 0.45 / 0.55 to 0.64 / 0.73 and table from 0.73 / 0.75 to 0.80 / 0.86, on 11 and 56 items. p50 rose from 10 s
-to 13 s; p95 from 18 s to 42 s, which is not yet explained and matters for use. Dev has now tuned this system
+to 13 s; p95 from 18 s to 42 s. The slowest eight items are parts-manual questions spending 31-57 s in retrieval, which points to the reranker on long table chunks in batches of 2; not yet confirmed. Dev has now tuned this system
 repeatedly, so expect the test score to be lower.
