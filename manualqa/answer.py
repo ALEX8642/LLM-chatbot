@@ -25,6 +25,7 @@ from manualqa.retrieve import (
     Evidence,
     IngestContext,
     RetrievalResult,
+    lead_in,
     page_evidence,
     retrieve,
 )
@@ -176,7 +177,8 @@ def answer_stream(
         facts = check_facts(raw.claim, match.source, ev, query, _page_text(ctx, ev))
         if facts.ok and checker is not None:
             start_check = time.perf_counter()
-            score = checker.supported(raw.claim, premise_for(ev, match.span))
+            premise = premise_for(ev, match.span, lead_in(ctx, ev))
+            score = checker.supported(raw.claim, premise)
             timings["meaning_s"] = timings.get("meaning_s", 0.0) + (
                 time.perf_counter() - start_check
             )

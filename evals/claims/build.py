@@ -23,7 +23,7 @@ from types import SimpleNamespace
 from manualqa.blocks import load_pages
 from manualqa.claimcheck import premise_for
 from manualqa.quotes import match_quote
-from manualqa.retrieve import _block_evidence, row_evidence, titles_by_page
+from manualqa.retrieve import _block_evidence, lead_in, row_evidence, titles_by_page
 from manualqa.tables import TableStore
 
 SAMPLE_SEED, SAMPLE = 5, 70
@@ -80,8 +80,14 @@ def main(raw: str, composed: str, tables: str) -> None:
     pages = load_pages(Path(composed))
     blocks = {b.id: b for p in pages for b in p.blocks}
     where = {b.id: (p.manual, p.page) for p in pages for b in p.blocks}
-    ctx = SimpleNamespace(blocks=blocks, block_page=where, under=titles_by_page(pages))
     store, rows = TableStore(tables), {}
+    ctx = SimpleNamespace(
+        blocks=blocks,
+        block_page=where,
+        under=titles_by_page(pages),
+        tables=store,
+        page_blocks={(p.manual, p.page): [b.id for b in p.blocks] for p in pages},
+    )
 
     def evidence(eid: str):
         m = re.match(r"(.*):r(\d+)$", eid)
@@ -112,7 +118,7 @@ def main(raw: str, composed: str, tables: str) -> None:
         match = ev and match_quote(c["quote"], ev)
         if not match:
             continue
-        premise = premise_for(ev, match.span)
+        premise = premise_for(ev, match.span, lead_in(ctx, ev))
         _emit(item, c["claim"], premise, True, "real")
         if i in UNSUPPORTED:
             _emit(item, UNSUPPORTED[i], premise, False, "constructed")

@@ -41,3 +41,32 @@ def test_a_long_block_is_cut_around_the_quote():
     text = "a" * 5000 + "QUOTE" + "b" * 5000
     out = premise_for(ev(text), (5000, 5005))
     assert "QUOTE" in out and len(out) == PREMISE_CHARS
+
+
+def test_premise_holds_what_comes_before():
+    out = premise_for(ev("Step 1. Check filter", "Table 3-1"), lead_in="Black smoke.")
+    assert out == "(Table 3-1)\nBlack smoke.\nStep 1. Check filter"
+
+
+def test_a_row_is_judged_with_the_rows_above_it(ctx):
+    from manualqa.retrieve import lead_in, row_evidence
+
+    hits = ctx.tables.lookup_table(query="P14-8969", limit=1)
+    text = lead_in(ctx, row_evidence(hits[0]))
+    assert text and "P14-8969" not in text
+
+
+def test_a_block_is_judged_with_the_text_before_it():
+    from types import SimpleNamespace
+
+    from manualqa.blocks import Block
+    from manualqa.retrieve import lead_in
+
+    box = Box(0, 0, 1, 1)
+    stem = Block("a", "text", "To self-test the panel:", box)
+    step = Block("b", "text", "Place switch to RUN.", box)
+    page = SimpleNamespace(
+        blocks={"a": stem, "b": step}, page_blocks={("m", 1): ["a", "b"]}
+    )
+    e = Evidence("b", "text", "m", 1, "b", step.text, [box])
+    assert lead_in(page, e) == "To self-test the panel:"

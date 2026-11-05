@@ -12,18 +12,23 @@ from manualqa.retrieve import Evidence
 PREMISE_CHARS = 2000  # a long block is cut, keeping the claim's quote in view
 
 
-def premise_for(ev: Evidence, match_span: tuple[int, int] | None = None) -> str:
-    """What the claim is judged against: its whole block or row, and the headings above it.
+def premise_for(
+    ev: Evidence, match_span: tuple[int, int] | None = None, lead_in: str = ""
+) -> str:
+    """What the claim is judged against: its block or row, what comes just before it, and the
+    headings above it.
 
-    Not the quote alone: a claim's subject is often in the sentence before ("Step 1. Check
-    for dirty air cleaner element" under the malfunction it treats).
+    Not the quote alone: a claim's subject is often stated first ("Step 1. Check for dirty air
+    cleaner element" under the malfunction it treats).
     """
     text = ev.text
     if len(text) > PREMISE_CHARS:
         middle = sum(match_span) // 2 if match_span else 0
         start = max(0, middle - PREMISE_CHARS // 2)
         text = text[start : start + PREMISE_CHARS]
-    return f"({ev.under})\n{text}" if ev.under else text
+    return "\n".join(
+        p for p in (f"({ev.under})" if ev.under else "", lead_in, text) if p
+    )
 
 
 class LLMChecker:

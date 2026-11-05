@@ -20,6 +20,8 @@ from manualqa.tables import RowHit, TableStore
 
 MAX_IMAGES = 3
 TITLE_CHARS = 120
+LEAD_IN_ROWS = 3
+LEAD_IN_CHARS = 500
 _ITEM = re.compile(r"\bitem\s+(?:no\.?\s*)?(\d+[A-Z]?)\b", re.I)
 _FIGURE = re.compile(r"\bfig(?:ure)?\.?\s*(\d+[A-Z]?)\b", re.I)
 
@@ -222,6 +224,24 @@ def _table_rows(ctx: IngestContext, block_id: str) -> list[Evidence]:
         row_evidence(hit, under)
         for hit in ctx.tables.lookup_table(block_id=block_id, limit=1000)
     ]
+
+
+def lead_in(ctx: IngestContext, ev: Evidence) -> str:
+    """What comes just before this evidence: a procedure's stem, the rows above a table row."""
+    if ev.kind == "row":
+        rows = ctx.tables.lookup_table(block_id=ev.block_id, limit=1000)
+        above = [h for h in rows if ev.row is not None and h.row < ev.row]
+        return "\n".join(
+            " | ".join(c for c in h.cells if c.strip()) for h in above[-LEAD_IN_ROWS:]
+        )
+    on_page = ctx.page_blocks.get((ev.manual, ev.page), [])
+    if ev.block_id not in on_page:
+        return ""
+    for block_id in reversed(on_page[: on_page.index(ev.block_id)]):
+        block = ctx.blocks[block_id]
+        if block.kind in ("text", "heading") and block.text.strip():
+            return block.text[-LEAD_IN_CHARS:]
+    return ""
 
 
 def page_evidence(ctx: IngestContext, manual: str, page: int) -> list[Evidence]:
