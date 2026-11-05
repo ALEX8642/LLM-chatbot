@@ -1,6 +1,6 @@
 """Prompts for the key-fact judge. Bump PROMPT_VERSION when any of them changes."""
 
-PROMPT_VERSION = 1
+PROMPT_VERSION = 2  # 2: an off-topic answer is not an abstention (ABSTAINED only)
 
 KEY_FACTS = """KEY FACTS CHECK. You grade an answer from a technical-manual assistant.
 
@@ -45,8 +45,9 @@ Assistant answer:
 {answer}
 >>>
 
-"abstained" is true if the assistant does not commit to an answer: it declines, or says the
-manual does not contain the information, even if it then suggests where else to look. It is
-false if it gives a substantive answer, even a wrong or hedged one.
+"abstained" is true only if the assistant says it cannot answer, or says the manual does not
+contain the information, even if it then suggests where else to look or adds related facts.
+It is false if it states facts without saying the information is missing, even if those facts
+are off-topic and do not answer the question, and false for a wrong or hedged answer.
 
 Reply with JSON only: {{"abstained": true|false}}"""

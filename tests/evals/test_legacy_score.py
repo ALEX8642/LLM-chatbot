@@ -121,12 +121,22 @@ def test_reuse_keeps_good_grades_and_retries_errors():
         "repeats": [
             {
                 "items": [
-                    {"id": "a", "correct": True, "judge_error": None},
-                    {"id": "b", "correct": None, "judge_error": "no JSON"},
+                    {
+                        "id": "a",
+                        "category": "table",
+                        "correct": True,
+                        "judge_error": None,
+                    },
+                    {
+                        "id": "b",
+                        "category": "table",
+                        "correct": None,
+                        "judge_error": "x",
+                    },
+                    {"id": "c", "category": "unanswerable", "judge_error": None},
                 ]
             }
         ]
     }
-    assert reusable_grades(previous) == {
-        (1, "a"): {"id": "a", "correct": True, "judge_error": None}
-    }
+    assert set(reusable_grades(previous)) == {(1, "a"), (1, "c")}
+    assert set(reusable_grades(previous, "unanswerable")) == {(1, "a")}

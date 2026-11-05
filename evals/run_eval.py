@@ -415,13 +415,15 @@ def first_json_object(text: str) -> Optional[Dict[str, Any]]:
     return None
 
 
-def reusable_grades(previous: Dict[str, Any]) -> Dict[Any, Dict[str, Any]]:
+def reusable_grades(
+    previous: Dict[str, Any], regrade_category: Optional[str] = None
+) -> Dict[Any, Dict[str, Any]]:
     """(repeat, id) -> grade, for grades of an earlier run with no judge error."""
     return {
         (r, g["id"]): g
         for r, repeat in enumerate(previous["repeats"], 1)
         for g in repeat["items"]
-        if not g["judge_error"]
+        if not g["judge_error"] and g["category"] != regrade_category
     }
 
 
@@ -640,7 +642,9 @@ def cmd_score_keyfacts(args) -> None:
         os.environ["LLM_JUDGE_MODEL"],
     )
     reuse = (
-        reusable_grades(json.loads(Path(args.reuse).read_text())) if args.reuse else {}
+        reusable_grades(json.loads(Path(args.reuse).read_text()), args.regrade_category)
+        if args.reuse
+        else {}
     )
     repeats = []
     for r, outs in enumerate(raw["repeats"][: args.max_repeats], 1):
@@ -794,6 +798,9 @@ def main() -> None:
     s.add_argument("--composed", default="data/ingest/composed.jsonl", help="keyfacts")
     s.add_argument("--max-repeats", type=int, help="keyfacts: grade only the first N")
     s.add_argument("--reuse", help="keyfacts: keep good grades from this earlier file")
+    s.add_argument(
+        "--regrade-category", help="keyfacts: with --reuse, redo this category"
+    )
     s.add_argument("--out", required=True)
     s.set_defaults(func=cmd_score)
 
