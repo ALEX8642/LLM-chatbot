@@ -19,6 +19,7 @@ from manualqa.index import Embedder, search, tokens
 from manualqa.tables import RowHit, TableStore
 
 MAX_IMAGES = 3
+TITLE_CHARS = 120
 _ITEM = re.compile(r"\bitem\s+(?:no\.?\s*)?(\d+[A-Z]?)\b", re.I)
 _FIGURE = re.compile(r"\bfig(?:ure)?\.?\s*(\d+[A-Z]?)\b", re.I)
 
@@ -79,6 +80,7 @@ class Evidence:
     cell_boxes: list[Box | None] | None = None
     row: int | None = None
     group: str | None = None
+    under: str = ""  # the headings and captions the page sits under
 
 
 @dataclass
@@ -99,21 +101,58 @@ class IngestContext:
     tables: TableStore
     embedder: Embedder
     reranker: Reranker
+    page_blocks: dict[tuple[str, int], list[str]] = field(default_factory=dict)
+    under: dict[tuple[str, int], str] = field(default_factory=dict)
 
     @classmethod
     def load(cls, path: Path, embedder: Embedder, reranker: Reranker) -> IngestContext:
         path = Path(path)
-        blocks, where = {}, {}
-        for pp in load_pages(path / "composed.jsonl"):
+        blocks, where, on_page = {}, {}, {}
+        pages = load_pages(path / "composed.jsonl")
+        for pp in pages:
+            on_page[(pp.manual, pp.page)] = [b.id for b in pp.blocks]
             for b in pp.blocks:
                 blocks[b.id] = b
                 where[b.id] = (pp.manual, pp.page)
         return cls(
-            path, blocks, where, TableStore(path / "tables.sqlite"), embedder, reranker
+            path,
+            blocks,
+            where,
+            TableStore(path / "tables.sqlite"),
+            embedder,
+            reranker,
+            on_page,
+            titles_by_page(pages),
         )
 
     def page_image(self, manual: str, page: int) -> Path:
         return self.root / "pages" / Path(manual).stem / f"p{page:03d}-gen.jpg"
+
+
+def titles_by_page(pages: list) -> dict[tuple[str, int], str]:
+    """What each page sits under: the heading and caption running into it, and its own.
+
+    A table that continues over pages prints what it is about only on its first page.
+    """
+    out: dict[tuple[str, int], str] = {}
+    running: dict[str, dict[str, str]] = {}
+    for pp in sorted(pages, key=lambda p: (p.manual, p.page)):
+        last = running.setdefault(pp.manual, {})
+        own = {"heading": [], "caption": []}
+        for b in pp.blocks:
+            if b.kind in own and b.text.strip():
+                own[b.kind].append(" ".join(b.text.split())[:TITLE_CHARS])
+        titles = [
+            *([last["heading"]] if "heading" in last else []),
+            *own["heading"],
+            *([last["caption"]] if "caption" in last else []),
+            *own["caption"],
+        ]
+        out[(pp.manual, pp.page)] = "; ".join(dict.fromkeys(titles))
+        for kind, texts in own.items():
+            if texts:
+                last[kind] = texts[-1]
+    return out
 
 
 def layout_row(
@@ -136,7 +175,7 @@ def layout_row(
     return text, spans
 
 
-def row_evidence(hit: RowHit) -> Evidence:
+def row_evidence(hit: RowHit, under: str = "") -> Evidence:
     text, _ = layout_row(hit.header, hit.cells, hit.group)
     return Evidence(
         id=f"{hit.block_id}:r{hit.row}",
@@ -151,6 +190,7 @@ def row_evidence(hit: RowHit) -> Evidence:
         cell_boxes=hit.cell_boxes,
         row=hit.row,
         group=hit.group,
+        under=under,
     )
 
 
@@ -159,11 +199,42 @@ def _block_evidence(ctx: IngestContext, block_id: str) -> Evidence | None:
     if b is None or not b.text.strip() or b.kind == "table":
         return None
     manual, page = ctx.block_page[block_id]
+    under = ctx.under.get((manual, page), "")
     if b.kind == "figure":  # a figure claim highlights the figure, not its OCR lines
-        return Evidence(b.id, "figure", manual, page, b.id, b.text, [b.box])
+        return Evidence(
+            b.id, "figure", manual, page, b.id, b.text, [b.box], under=under
+        )
     return Evidence(
-        b.id, "text", manual, page, b.id, b.text, [ln.box for ln in b.lines]
+        b.id,
+        "text",
+        manual,
+        page,
+        b.id,
+        b.text,
+        [ln.box for ln in b.lines],
+        under=under,
     )
+
+
+def _table_rows(ctx: IngestContext, block_id: str) -> list[Evidence]:
+    under = ctx.under.get(ctx.block_page[block_id], "")
+    return [
+        row_evidence(hit, under)
+        for hit in ctx.tables.lookup_table(block_id=block_id, limit=1000)
+    ]
+
+
+def page_evidence(ctx: IngestContext, manual: str, page: int) -> list[Evidence]:
+    """Everything quotable on a page, for a quote the model attributed to the wrong block."""
+    out: list[Evidence] = []
+    for block_id in ctx.page_blocks.get((manual, page), []):
+        if ctx.blocks[block_id].kind == "table":
+            out += _table_rows(ctx, block_id)
+        else:
+            ev = _block_evidence(ctx, block_id)
+            if ev and ev.kind == "text":
+                out.append(ev)
+    return out
 
 
 def _identifier(tok: str) -> bool:
@@ -210,19 +281,25 @@ def retrieve(
     evidence: dict[str, Evidence] = {}
     hits = _lookups(question, manual, ctx)
     for hit in hits:
-        ev = row_evidence(hit)
+        ev = row_evidence(hit, ctx.under.get((hit.manual, hit.page), ""))
         evidence.setdefault(ev.id, ev)
     for chunk in ranked:
         for block_id in chunk.block_ids:
             block = ctx.blocks.get(block_id)
             if block is not None and block.kind == "table":
-                for hit in ctx.tables.lookup_table(block_id=block_id, limit=1000):
-                    ev = row_evidence(hit)
+                for ev in _table_rows(ctx, block_id):
                     evidence.setdefault(ev.id, ev)
-            else:
-                ev = _block_evidence(ctx, block_id)
-                if ev:
-                    evidence.setdefault(ev.id, ev)
+                continue
+            ev = _block_evidence(ctx, block_id)
+            if ev:
+                evidence.setdefault(ev.id, ev)
+            if block is not None and block.kind == "caption":
+                # a table's caption can rank without its rows, which then reach the
+                # model only as a page image with nothing to quote
+                for other in ctx.page_blocks.get(ctx.block_page[block_id], []):
+                    if ctx.blocks[other].kind == "table":
+                        for ev in _table_rows(ctx, other):
+                            evidence.setdefault(ev.id, ev)
 
     ranked_pages = list(dict.fromkeys(p for c in ranked for p in c.pages))
     image_pages = list(dict.fromkeys([h.page for h in hits] + ranked_pages))

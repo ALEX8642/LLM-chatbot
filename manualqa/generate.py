@@ -79,7 +79,10 @@ def build_messages(
     evidence: list[Evidence],
     page_images: list[Path],
 ) -> list[dict]:
-    lines = [f"[{e.id}] (page {e.page}) {e.text}" for e in evidence]
+    lines = [
+        f"[{e.id}] (page {e.page}{f', under: {e.under}' if e.under else ''}) {e.text}"
+        for e in evidence
+    ]
     text = "Evidence:\n" + "\n\n".join(lines) + f"\n\nQuestion: {question}"
     content = [{"type": "text", "text": text}] + [_image_part(p) for p in page_images]
     return [

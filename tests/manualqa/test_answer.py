@@ -1,7 +1,7 @@
 import json
 
-from manualqa.answer import answer, answer_stream
-from manualqa.retrieve import retrieve
+from manualqa.answer import _relocate, answer, answer_stream
+from manualqa.retrieve import _block_evidence, retrieve
 
 PARTS = "Army_5kW_Generator_Parts_Manual.pdf"
 Q = "What is the part number of the air cleaner filter element, item 17 in figure 15?"
@@ -115,3 +115,23 @@ def test_history_triggers_one_rewrite(ctx):
     ]
     answer("And its filter element?", PARTS, ctx, gen, history=history)
     assert gen.calls == 2  # rewrite + answer
+
+
+def _nearby_block(ctx):
+    other = next(
+        i
+        for i, b in ctx.blocks.items()
+        if ctx.block_page[i] == (PARTS, 59) and b.kind == "other" and b.text.strip()
+    )
+    return _block_evidence(ctx, other)
+
+
+def test_a_quote_from_a_table_cited_to_a_nearby_block_moves_to_the_row(ctx):
+    moved = _relocate("P14-8969 . .  FILTER ELEMENT", _nearby_block(ctx), ctx)
+    assert moved is not None
+    ev, match = moved
+    assert ev.id == row_id(ctx) and match.boxes
+
+
+def test_a_short_quote_is_not_moved(ctx):
+    assert _relocate("P14-8969", _nearby_block(ctx), ctx) is None

@@ -57,6 +57,40 @@ def test_figure_evidence_has_the_figures_box_not_its_line_boxes():
     ctx = SimpleNamespace(
         blocks={fig.id: fig, text.id: text},
         block_page={fig.id: ("m.pdf", 1), text.id: ("m.pdf", 1)},
+        under={},
     )
     assert _block_evidence(ctx, fig.id).boxes == [whole]
     assert _block_evidence(ctx, text.id).boxes == [line, line]
+
+
+def test_titles_carry_over_to_a_continuation_page():
+    from manualqa.blocks import Block, PageParse
+    from manualqa.geometry import Box
+    from manualqa.retrieve import titles_by_page
+
+    box = Box(0, 0, 1, 1)
+
+    def page(n, *blocks):
+        return PageParse(
+            "m",
+            n,
+            "p",
+            100,
+            100,
+            72,
+            False,
+            None,
+            [Block(f"b{i}", kind, text, box) for i, (kind, text) in enumerate(blocks)],
+            0.0,
+        )
+
+    pages = [
+        page(1, ("heading", "I - Model SR20"), ("caption", "Figure 1.")),
+        page(2, ("table", "rows")),
+        page(3, ("heading", "II - Model SR22")),
+        page(4),
+    ]
+    t = titles_by_page(pages)
+    assert t[("m", 2)] == "I - Model SR20; Figure 1."
+    assert t[("m", 3)] == "I - Model SR20; II - Model SR22; Figure 1."
+    assert t[("m", 4)] == "II - Model SR22; Figure 1."

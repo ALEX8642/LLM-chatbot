@@ -1,11 +1,12 @@
 """Prompts. Changing them changes every result, so they are versioned."""
 
-PROMPT_VERSION = 1
+PROMPT_VERSION = 2
 
 SYSTEM = """You answer questions about a technical manual using only the evidence given.
 
-Each piece of evidence starts with an id in square brackets, then its page. Table rows are
-written as "column: value; ...". Page images of the most relevant pages may follow.
+Each piece of evidence starts with an id in square brackets, then its page and the headings
+it sits under, which say what it is about. Table rows are written as "column: value; ...".
+Quote from the evidence text, not from those headings. Page images of the most relevant pages may follow.
 
 Answer with claims, one JSON object per line, and nothing else:
 {"claim": "<one statement that answers part of the question>", "block": "<evidence id>", "quote": "<text copied exactly from that evidence>"}

@@ -1,12 +1,15 @@
-"""Deterministic fact checks on a claim against its quote and evidence.
+"""Deterministic fact checks on a claim against the source text its quote matched.
 
-1. Every number and identifier in the claim must appear in the quote (numbers compare by
-   value: "3,050" = "3050", "0.55" = ".55", "fifteen" = "15"). Two things count as context
-   rather than a new fact: anything else in the same table row, and anything the question
+1. Every number and identifier in the claim must appear in that source text (numbers compare
+   by value: "3,050" = "3050", "0.55" = ".55", "fifteen" = "15"). Two things count as context
+   rather than a new fact: anything else in the same table row, a name in the headings the
+   page sits under, and anything the question
    itself mentions that is also on the cited page. A subject the page never mentions still
    fails, so a figure borrowed from another aircraft's example is removed.
-2. For a table row: a column name in the claim applies to the facts up to the next column
-   name. If those facts sit only in other columns of the row, the claim fails. This catches right row, wrong
+2. The same number must not have another unit or the opposite sign: "172 psi" fails on
+   "172 kPa", and "-15" on "+15". A number printed with no unit takes the claim's.
+3. For a table row: a column name in the claim applies to the facts nearest it. If those
+   facts sit only in other columns of the row, the claim fails. This catches right row, wrong
    column, e.g. "the part number is 18265" when 18265 is the row's CAGE code (FSCM).
 """
 
@@ -27,20 +30,75 @@ _IDENT = re.compile(
 )
 _NUMBER = re.compile(r"(?<![\w.])(?:\d{1,3}(?:,\d{3})+|\d+)?(?:\.\d+)?(?![\w])")
 _COLUMN_NUMBER = re.compile(r"^\(\d+\)\s*")
-_SPACED_HYPHEN = re.compile(r"(?<=\d)\s+-\s+(?=\d)")
+_SPACED_HYPHEN = re.compile(r"(?<=\d)\s*-\s+(?=\d)")
 _WORDS = (
     "zero one two three four five six seven eight nine ten eleven twelve thirteen "
     "fourteen fifteen sixteen seventeen eighteen nineteen twenty"
 ).split()
 _NUMBER_WORDS = {w: float(i) for i, w in enumerate(_WORDS)}
-_NUMBER_WORDS.update({"thirty": 30.0, "forty": 40.0, "fifty": 50.0, "sixty": 60.0})
-_WORD = re.compile(r"[a-z]+")
+_TENS = {"twenty": 20.0, "thirty": 30.0, "forty": 40.0, "fifty": 50.0, "sixty": 60.0}
+_TENS.update({"seventy": 70.0, "eighty": 80.0, "ninety": 90.0})
+_NUMBER_WORDS.update(_TENS)
+_WORD = re.compile(r"[a-z]+(?:-[a-z]+)?")
+_NOT_FACTS = {"zero", "one"}  # "one of the steps" is rarely a figure
+_OCR_ZERO = re.compile(r"(?<=\d)o(?![a-z])|(?<![a-z0-9])o(?=\d)")
+_UNITS = {
+    "psi": ("psi",),
+    "kpa": ("kpa", "kilopascal", "kilopascals"),
+    "v": ("v", "volt", "volts", "vac", "vdc"),
+    "a": ("a", "amp", "amps", "ampere", "amperes"),
+    "hz": ("hz", "hertz"),
+    "kw": ("kw", "kilowatt", "kilowatts"),
+    "w": ("w", "watt", "watts"),
+    "lb": ("lb", "lbs", "pound", "pounds"),
+    "kg": ("kg", "kilogram", "kilograms"),
+    "in": ("in", "inch", "inches"),
+    "cm": ("cm", "centimeter", "centimeters"),
+    "mm": ("mm", "millimeter", "millimeters"),
+    "ft": ("ft", "foot", "feet"),
+    "gal": ("gal", "gallon", "gallons"),
+    "l": ("l", "liter", "liters", "litre", "litres"),
+    "qt": ("qt", "quart", "quarts"),
+    "rpm": ("rpm",),
+    "s": ("s", "sec", "second", "seconds"),
+    "min": ("min", "minute", "minutes"),
+    "hr": ("hr", "hrs", "hour", "hours"),
+}
+_UNIT = {name: unit for unit, names in _UNITS.items() for name in names}
+_JOINED_UNIT = re.compile(
+    r"(?<![a-z0-9-])(\d[\d,.]*)-?("
+    + "|".join(sorted(({n for n in _UNIT if len(n) > 1} | {"v", "degree", "degrees"})))
+    + r")\b"
+)
+# OCR ran a measure into the next word: "800lblg". A code such as "2104c" is not a number.
+_NUMBER_ON_WORD = re.compile(
+    r"(?<![\w.,])(\d[\d,]*(?:\.\d+)?)(?="
+    + "|".join(sorted(n for n in _UNIT if len(n) > 1))
+    + r")[a-z]+\b"
+)
+_AFTER_NUMBER = re.compile(r"\s*([a-z]+)")
+_MINUS_WORD = re.compile(r"(?:minus|negative)\s+$")
+# How a table's column heading can be written in a claim, beyond the heading itself.
+_LABEL_NAMES = {
+    "qty": ("quantity", "qty"),
+    "fscm": ("fscm", "cage"),
+    "part number": ("part number", "part no", "p/n", "part #"),
+}
 
 
 @dataclass
 class FactResult:
     ok: bool
     reason: str | None = None
+
+
+def _word_value(word: str) -> float | None:
+    if word in _NUMBER_WORDS:
+        return _NUMBER_WORDS[word]
+    tens, _, ones = word.partition("-")
+    if tens in _TENS and _NUMBER_WORDS.get(ones, 10) < 10:
+        return _TENS[tens] + _NUMBER_WORDS[ones]
+    return None
 
 
 def _facts(text: str) -> list[tuple[int, str, str]]:
@@ -55,16 +113,35 @@ def _facts(text: str) -> list[tuple[int, str, str]]:
         if any(s <= m.start() < e for s, e in taken):
             continue
         found.append((m.start(), "num", m.group(0)))
+    for m in _WORD.finditer(text):
+        value = _word_value(m.group(0))
+        if value is not None and m.group(0) not in _NOT_FACTS:
+            found.append((m.start(), "num", f"{value:g}"))
     return sorted(found)
 
 
-def _numbers(text: str) -> set[float]:
-    out = set()
+def _clean(text: str) -> str:
+    text = _OCR_ZERO.sub("0", _SPACED_HYPHEN.sub("-", norm(text)))
+    return _JOINED_UNIT.sub(r"\1 \2", text)
+
+
+def _occurrences(text: str) -> list[tuple[float, int, int]]:
+    """(value, start, end) of each number and number word."""
+    out = []
     for m in _NUMBER.finditer(text):
         if any(ch.isdigit() for ch in m.group(0)):
-            out.add(float(m.group(0).replace(",", "")))
-    out.update(_NUMBER_WORDS[w] for w in _WORD.findall(text) if w in _NUMBER_WORDS)
+            out.append((float(m.group(0).replace(",", "")), m.start(), m.end()))
+    for m in _NUMBER_ON_WORD.finditer(text):
+        out.append((float(m.group(1).replace(",", "")), m.start(), m.end()))
+    for m in _WORD.finditer(text):
+        value = _word_value(m.group(0))
+        if value is not None:
+            out.append((value, m.start(), m.end()))
     return out
+
+
+def _numbers(text: str) -> set[float]:
+    return {value for value, _, _ in _occurrences(text)}
 
 
 def _identifiers(text: str) -> set[str]:
@@ -72,50 +149,106 @@ def _identifiers(text: str) -> set[str]:
 
 
 def _contains(text: str, kind: str, value: str) -> bool:
-    text = _SPACED_HYPHEN.sub("-", norm(text))
+    text = _clean(text)
     if kind == "num":
         return float(value.replace(",", "")) in _numbers(text)
     return value in _identifiers(text) or value in text
 
 
-def check_facts(
-    claim: str, quote: str, ev: Evidence, question: str = "", page_text: str = ""
-) -> FactResult:
-    claim_n = norm(claim)
-    facts = _facts(claim_n)
-    row_context = [*(ev.cells or []), ev.group or ""] if ev.kind == "row" else []
-    for _, kind, value in facts:
-        if _contains(quote, kind, value):
-            continue
-        if any(_contains(cell, kind, value) for cell in row_context):
-            continue
-        if _contains(question, kind, value) and _contains(page_text, kind, value):
-            continue
-        return FactResult(False, f"{value} not in quote")
-    if ev.kind != "row" or not ev.header or not ev.cells:
-        return FactResult(True)
+def _unit_at(text: str, end: int) -> str | None:
+    m = _AFTER_NUMBER.match(text, end)
+    return _UNIT.get(m.group(1)) if m else None
 
-    labels = []
-    for col, label in enumerate(ev.header):
+
+def _sign_at(text: str, start: int) -> str | None:
+    before = text[:start]
+    if _MINUS_WORD.search(before):
+        return "-"
+    sign = before[-1:]
+    # after a digit or letter it is a range or an identifier, not a sign
+    if sign in ("-", "+", "−") and not before[-2:-1].strip(" (:"):
+        return "-" if sign != "+" else "+"
+    return None
+
+
+def _conflict(claim: str, start: int, end: int, value: float, sources) -> str | None:
+    """Why this number in the claim cannot be the source's, if it says another unit or sign."""
+    here = [
+        (text, s, e) for text in sources for v, s, e in _occurrences(text) if v == value
+    ]
+    unit = _unit_at(claim, end)
+    if unit and here:
+        units = {_unit_at(text, e) for text, _, e in here}
+        if None not in units and unit not in units:
+            return f"{claim[start:end]} {unit}: source has {sorted(units)[0]}"
+    sign = _sign_at(claim, start)
+    if sign and here:
+        signs = {_sign_at(text, s) for text, s, _ in here}
+        if None not in signs and sign not in signs:
+            return f"{sign}{claim[start:end]}: source has the opposite sign"
+    return None
+
+
+def _label_spans(claim: str, header: list[str]) -> list[tuple[int, int, int]]:
+    """(start, end, column) of each column heading the claim mentions."""
+    out = []
+    for col, label in enumerate(header):
         core = norm(_COLUMN_NUMBER.sub("", label))
         if len(core) < 3:
             continue
-        found = fuzz.partial_ratio_alignment(core, claim_n, score_cutoff=LABEL_MIN)
-        if found is not None:
-            labels.append((found.dest_end, col))
-    labels.sort()
-    for i, (end, col) in enumerate(labels):
-        stop = labels[i + 1][0] if i + 1 < len(labels) else len(claim_n)
-        held = []  # (fact value, the columns of this row that hold it)
-        for pos, kind, value in facts:
-            if end <= pos < stop:
-                cols = [
-                    c for c, cell in enumerate(ev.cells) if _contains(cell, kind, value)
-                ]
-                if cols:
-                    held.append((value, cols))
-        if held and not any(col in cols for _, cols in held):
-            value, cols = held[0]
+        names = next((n for k, n in _LABEL_NAMES.items() if k in core), (core,))
+        for name in names:
+            found = fuzz.partial_ratio_alignment(name, claim, score_cutoff=LABEL_MIN)
+            if found is not None:
+                out.append((found.dest_start, found.dest_end, col))
+                break
+    return sorted(out)
+
+
+def check_facts(
+    claim: str, source: str, ev: Evidence, question: str = "", page_text: str = ""
+) -> FactResult:
+    claim_n = _clean(claim)
+    facts = _facts(claim_n)
+    row_context = [*ev.cells, ev.group or ""] if ev.kind == "row" and ev.cells else []
+    # names a heading can lend a claim; a bare number there ("Table 3-1") is no evidence
+    titles = [*(ev.header or []), ev.under] if ev.under or ev.header else []
+    for _, kind, value in facts:
+        if _contains(source, kind, value):
+            continue
+        if any(_contains(cell, kind, value) for cell in row_context):
+            continue
+        if kind == "id" and any(_contains(t, kind, value) for t in titles):
+            continue
+        if _contains(question, kind, value) and _contains(page_text, kind, value):
+            continue
+        return FactResult(False, f"{value} not in source")
+    sources = [_clean(t) for t in (source, *row_context)]
+    for value, start, end in _occurrences(claim_n):
+        reason = _conflict(claim_n, start, end, value, sources)
+        if reason:
+            return FactResult(False, reason)
+    if ev.kind != "row" or not ev.header or not ev.cells:
+        return FactResult(True)
+
+    labels = _label_spans(claim_n, ev.header)
+    if not labels:
+        return FactResult(True)
+    held: dict[int, list[tuple[str, list[int]]]] = {}  # label index -> facts nearest it
+    for pos, kind, value in facts:
+        if any(s <= pos < e for s, e, _ in labels):
+            continue
+        cols = [c for c, cell in enumerate(ev.cells) if _contains(cell, kind, value)]
+        if cols:
+            nearest = min(
+                range(len(labels)),
+                key=lambda i: min(abs(pos - labels[i][0]), abs(pos - labels[i][1])),
+            )
+            held.setdefault(nearest, []).append((value, cols))
+    for i, facts_here in held.items():
+        col = labels[i][2]
+        if not any(col in cols for _, cols in facts_here):
+            value, cols = facts_here[0]
             return FactResult(
                 False,
                 f"value {value} in column {ev.header[cols[0]]}, "

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from bisect import bisect_left
 from dataclasses import dataclass
 
 from rapidfuzz import fuzz
@@ -21,6 +22,8 @@ from manualqa.retrieve import Evidence, layout_row
 QUOTE_MIN = 90
 SHORT = 8  # normalised quotes this short must appear exactly
 _ELLIPSIS = re.compile(r"\.{3,}|…")
+# Words a quote may not skip: without them the sentence means the opposite.
+_NEGATION = re.compile(r"\b(?:not|never|no|unless|except|without|cannot)\b|n't", re.I)
 _FOLD = str.maketrans(
     {"o": "0", "l": "1", "i": "1", "‘": "'", "’": "'", "“": '"', "”": '"', "­": ""}
 )
@@ -31,6 +34,9 @@ class QuoteMatch:
     score: float
     span: tuple[int, int]
     boxes: list[Box]
+    source: str = (
+        ""  # the evidence text matched, which is what a claim is checked against
+    )
 
 
 def _key(text: str) -> tuple[str, list[int]]:
@@ -70,37 +76,75 @@ def _align(quote: str, text: str) -> tuple[float, int, int] | None:
 
 
 def _line_ranges(ev: Evidence) -> list[tuple[int, int, Box]]:
-    ranges, pos = [], 0
-    for line, box in zip(ev.text.split("\n"), ev.boxes):
-        ranges.append((pos, pos + len(line), box))
+    ranges, pos, boxes = [], 0, iter(ev.boxes)
+    for line in ev.text.split("\n"):
+        box = next(boxes, None) if line.strip() else None
+        if box is not None:
+            ranges.append((pos, pos + len(line), box))
         pos += len(line) + 1
     return ranges
 
 
+def _whole_words(text: str, start: int, end: int) -> str:
+    while start > 0 and not text[start - 1].isspace():
+        start -= 1
+    while end < len(text) and not text[end].isspace():
+        end += 1
+    return text[start:end]
+
+
 def match_quote(quote: str, ev: Evidence) -> QuoteMatch | None:
     parts = [p for p in _ELLIPSIS.split(quote) if p.strip(" ;,.")]
-    if len(parts) > 1:  # the model skipped text: every fragment must be in the block
-        found = [_match_one(p.strip(" ;,"), ev) for p in parts]
-        if any(m is None for m in found):
+    if len(parts) <= 1:
+        return _match_one(quote, ev)
+    # the model skipped text: the fragments must come in order, skipping no negation
+    found: list[QuoteMatch] = []
+    for part in parts:
+        after = found[-1].span[1] if found else 0
+        m = _match_one(part.strip(" ;,"), ev, after)
+        if m is None or (found and _NEGATION.search(ev.text[after : m.span[0]])):
             return None
-        return QuoteMatch(
-            score=min(m.score for m in found),
-            span=(min(m.span[0] for m in found), max(m.span[1] for m in found)),
-            boxes=[b for m in found for b in m.boxes],
-        )
-    return _match_one(quote, ev)
+        found.append(m)
+    return QuoteMatch(
+        score=min(m.score for m in found),
+        span=(found[0].span[0], found[-1].span[1]),
+        boxes=[b for m in found for b in m.boxes],
+        source=" ".join(m.source for m in found),
+    )
 
 
-def _match_one(quote: str, ev: Evidence) -> QuoteMatch | None:
+def _match_one(quote: str, ev: Evidence, after: int = 0) -> QuoteMatch | None:
+    found = _match_text(quote, ev, ev.text, after)
+    if found is None and ev.kind == "row" and ev.cells and len(_key(quote)[0]) > SHORT:
+        # a row is shown as "column: value"; a quote can also be its values alone
+        found = _match_text(quote, ev, " ".join(c for c in ev.cells if c.strip()), 0)
+    return found
+
+
+def _value_spans(ev: Evidence) -> list[tuple[int, int, int]]:
+    spans, pos = [], 0
+    for col, cell in enumerate(ev.cells or []):
+        if cell.strip():
+            spans.append((pos, pos + len(cell), col))
+            pos += len(cell) + 1
+    return spans
+
+
+def _match_text(quote: str, ev: Evidence, text: str, after: int) -> QuoteMatch | None:
     q, _ = _key(quote)
-    t, where = _key(ev.text)
-    found = _align(q, t)
+    t, where = _key(text)
+    skip = bisect_left(where, after)
+    found = _align(q, t[skip:])
     if found is None:
         return None
     score, start, end = found
+    start, end = start + skip, end + skip
     span = (where[start], where[end - 1] + 1)
     if ev.kind == "row" and ev.header is not None and ev.cells is not None:
-        _, spans = layout_row(ev.header, ev.cells, ev.group)
+        if text == ev.text:
+            _, spans = layout_row(ev.header, ev.cells, ev.group)
+        else:
+            spans = _value_spans(ev)
         boxes = [
             ev.cell_boxes[col]
             for s, e, col in spans
@@ -108,4 +152,5 @@ def _match_one(quote: str, ev: Evidence) -> QuoteMatch | None:
         ]
     else:
         boxes = [b for s, e, b in _line_ranges(ev) if s < span[1] and e > span[0]]
-    return QuoteMatch(score=score, span=span, boxes=boxes)
+    source = _whole_words(text, *span)
+    return QuoteMatch(score=score, span=span, boxes=boxes, source=source)

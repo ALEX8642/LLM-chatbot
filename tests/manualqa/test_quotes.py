@@ -18,6 +18,10 @@ def text_ev():
     )
 
 
+def _text(text):
+    return Evidence("e", "text", "m", 1, "e", text, [Box(0, 0, 1, 1)])
+
+
 def test_exact_quote_gives_line_boxes():
     m = match_quote("indicator shows red, service the element", text_ev())
     assert m is not None and m.score >= 90
@@ -87,3 +91,58 @@ def test_quote_with_ellipsis_matches_each_fragment():
     assert (
         match_quote("The datum is located ... It is 500 miles behind us.", ev) is None
     )
+
+
+def test_source_is_what_the_quote_matched_not_the_quote():
+    ev = _text("Replace with kit 88-20243 when worn")
+    m = match_quote("Replace with kit 88-20244 when worn", ev)
+    assert m is not None and "88-20243" in m.source and "88-20244" not in m.source
+
+
+def test_source_reaches_whole_words():
+    ev = _text("The relief valve opens at 1250 psi on the bench")
+    m = match_quote("relief valve opens at 125", ev)
+    assert m is None or "1250" in m.source
+
+
+def test_ellipsis_fragments_must_be_in_order():
+    ev = _text("Remove the filter first. Then clean the housing thoroughly.")
+    assert match_quote("Remove the filter ... clean the housing", ev) is not None
+    assert match_quote("clean the housing ... Remove the filter", ev) is None
+
+
+def test_ellipsis_cannot_skip_a_negation():
+    ev = _text("Do not operate the generator without a ground rod installed.")
+    assert match_quote("Do ... operate the generator", ev) is None
+    assert match_quote("Do not operate ... a ground rod installed", ev) is None
+
+
+def test_ellipsis_source_holds_only_the_fragments():
+    ev = _text("Torque is 10 ft-lb. Gap is 3 mm. Pressure is 25 psi.")
+    m = match_quote("Torque is 10 ft-lb ... Pressure is 25 psi", ev)
+    assert m is not None and "3 mm" not in m.source and "25 psi" in m.source
+
+
+def test_blank_lines_do_not_shift_the_boxes():
+    a, b = Box(0, 0, 1, 0.1), Box(0, 0.5, 1, 0.6)
+    ev = Evidence("e", "text", "m", 1, "e", "first line\n\nsecond line", [a, b])
+    assert match_quote("second line", ev).boxes == [b]
+
+
+def test_row_quote_can_be_its_values_without_the_column_names():
+    hit = RowHit(
+        "t",
+        "m.pdf",
+        23,
+        "t",
+        3,
+        ["Item", "Spec"],
+        ["Lubricating System Capacity", "3.2 qts. (3.0 liters)"],
+        [Box(0, 0, 1, 0.1), Box(0, 0.1, 1, 0.2)],
+        None,
+        None,
+        None,
+    )
+    ev = row_evidence(hit)
+    m = match_quote("Lubricating System Capacity 3.2 qts. (3.0 liters)", ev)
+    assert m is not None and len(m.boxes) == 2 and "3.2" in m.source

@@ -130,3 +130,136 @@ def test_ocr_spaced_identifier_matches():
         "in accordance with TABLE 2 - 4",
         text_ev("in accordance with TABLE 2 - 4"),
     ).ok
+
+
+def test_units_on_the_same_number_must_agree():
+    ev = text_ev("Trip pressure 25 psi (172 kPa)")
+    source = "25 psi (172 kPa)"
+    assert check_facts("It trips at 172 kPa.", source, ev).ok
+    assert check_facts("It trips at 25 psi.", source, ev).ok
+    assert not check_facts("It trips at 172 psi.", source, ev).ok
+    assert check_facts("It trips at 172 kilopascals.", source, ev).ok
+
+
+def test_a_number_without_a_printed_unit_takes_the_claims_unit():
+    ev = text_ev("Fuel capacity 40")
+    assert check_facts("The capacity is 40 gallons.", "Fuel capacity 40", ev).ok
+
+
+def test_signs_must_not_be_opposite():
+    ev = text_ev("Limit +15 at sea level, -5 aloft")
+    assert not check_facts("The limit is -15.", "Limit +15", ev).ok
+    assert check_facts("The limit is +15.", "Limit +15", ev).ok
+    assert check_facts("The limit is 15.", "Limit +15", ev).ok
+    assert not check_facts("The limit is minus 15.", "Limit +15", ev).ok
+    assert check_facts("Aloft it is -5.", "-5 aloft", ev).ok
+
+
+def test_a_range_is_not_a_sign():
+    ev = text_ev("Set the gap to 10-15 mm")
+    assert check_facts("The gap is 10-15 mm.", "10-15 mm", ev).ok
+
+
+def test_number_words_in_a_claim_are_facts():
+    ev = text_ev("Do not crank for more than fifteen seconds")
+    source = "more than fifteen seconds"
+    assert not check_facts("Crank for no more than thirty seconds.", source, ev).ok
+    assert check_facts("Crank for no more than fifteen seconds.", source, ev).ok
+    assert check_facts("Crank for no more than 15 seconds.", source, ev).ok
+
+
+def test_compound_number_words():
+    ev = text_ev("Wait 25 minutes")
+    assert check_facts("Wait twenty-five minutes.", "Wait 25 minutes", ev).ok
+    assert not check_facts("Wait twenty-six minutes.", "Wait 25 minutes", ev).ok
+
+
+def test_one_is_not_a_number_fact():
+    ev = text_ev("Open the valve")
+    assert check_facts(
+        "One of the steps is to open the valve.", "Open the valve", ev
+    ).ok
+
+
+def test_ocr_letter_o_in_a_number():
+    ev = text_ev("Torque to 1O ft-lb")
+    assert check_facts("Torque to 10 ft-lb.", "Torque to 1O ft-lb", ev).ok
+
+
+def test_label_after_the_value_is_checked():
+    ev = row()
+    bad = check_facts("18265 is the part number.", "18265", ev)
+    assert not bad.ok and "FSCM" in bad.reason
+    assert check_facts("P14-8969 is the part number.", "P14-8969", ev).ok
+
+
+def test_label_abbreviation_is_checked():
+    ev = row()
+    assert not check_facts("The quantity used is 18265.", "18265", ev).ok
+    assert check_facts("The quantity used is 1.", "1", ev).ok
+    assert not check_facts("The CAGE code is P14-8969.", "P14-8969", ev).ok
+    assert check_facts("The CAGE code is 18265.", "18265", ev).ok
+
+
+def test_item_number_beside_a_labelled_value_passes():
+    ev = row()
+    assert check_facts("Item 17 has part number P14-8969.", "17; P14-8969", ev).ok
+
+
+def under_ev(text, under):
+    return Evidence(
+        "m:p1:b0", "text", "m.pdf", 1, "m:p1:b0", text, [Box(0, 0, 1, 1)], under=under
+    )
+
+
+def test_heading_the_page_sits_under_counts_as_context():
+    ev = under_ev("Maximum baggage 130 pounds", "I - Model SR20, (Normal Category)")
+    assert check_facts("The SR20 allows 130 pounds.", "130 pounds", ev).ok
+    assert not check_facts("The SR22 allows 130 pounds.", "130 pounds", ev).ok
+
+
+def test_column_heading_counts_as_context():
+    hit = RowHit(
+        "t",
+        "m.pdf",
+        24,
+        "t",
+        3,
+        ["Connection", "MEP-802A"],
+        ["120/208", "17 amps"],
+        [Box(0, 0, 1, 1)] * 2,
+        None,
+        None,
+        None,
+    )
+    ev = row_evidence(hit)
+    assert check_facts("The MEP-802A is rated 17 amps.", "17 amps", ev).ok
+
+
+def test_range_broken_over_a_line():
+    ev = text_ev("OIL PRESSURE [25-\n60 psi]")
+    assert check_facts("It reads 25-60 psi.", "OIL PRESSURE [25-\n60 psi]", ev).ok
+
+
+def test_number_run_into_its_unit():
+    ev = text_ev("SET RATING AT 400HZ")
+    assert check_facts("It is for the 400 Hz set.", "RATING AT 400HZ", ev).ok
+    ev = text_ev("DRY WT\n800LBLG")
+    assert check_facts("The dry weight is 800 lb.", "DRY WT\n800LBLG", ev).ok
+
+
+def test_hyphenated_measure_is_a_number():
+    ev = text_ev("a 60 degree bank on a 3,000 pound airplane")
+    source = "a 60 degree bank on a 3,000 pound airplane"
+    assert check_facts("A 60-degree bank on a 3,000-pound airplane.", source, ev).ok
+    assert not check_facts("A 45-degree bank.", source, ev).ok
+
+
+def test_a_number_in_a_heading_is_not_evidence():
+    ev = under_ev("Ensure load does not exceed rating", "Table 3-1. Troubleshooting")
+    assert not check_facts("Limit the load to 3 kW.", "does not exceed rating", ev).ok
+
+
+def test_a_code_ending_in_a_letter_is_not_its_number():
+    ev = text_ev("Oil ML-L-2104C or W-F-800")
+    assert not check_facts("Use 2104 grade oil.", "Oil ML-L-2104C or W-F-800", ev).ok

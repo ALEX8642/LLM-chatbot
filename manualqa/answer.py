@@ -18,10 +18,18 @@ from manualqa.facts import check_facts
 from manualqa.generate import ClaimParser, RawClaim, build_messages
 from manualqa.geometry import Box
 from manualqa.prompts import REWRITE
-from manualqa.quotes import match_quote
-from manualqa.retrieve import Evidence, IngestContext, RetrievalResult, retrieve
+from manualqa.quotes import QuoteMatch, match_quote
+from manualqa.retrieve import (
+    Evidence,
+    IngestContext,
+    RetrievalResult,
+    page_evidence,
+    retrieve,
+)
+from manualqa.textnorm import norm
 
 ABSTAIN = "I could not find the answer in the manual."
+RELOCATE_MIN = 12  # a quote this long is specific enough to find elsewhere on the page
 
 
 @dataclass
@@ -72,6 +80,21 @@ def _page_text(ctx: IngestContext, ev: Evidence) -> str:
     return "\n".join(
         b.text for i, b in ctx.blocks.items() if ctx.block_page[i] == where
     )
+
+
+def _relocate(
+    quote: str, ev: Evidence, ctx: IngestContext
+) -> tuple[Evidence, QuoteMatch] | None:
+    """The model read a line from the page image and named a nearby block: the block on that
+    page that really holds the quote."""
+    if len(norm(quote)) < RELOCATE_MIN:
+        return None
+    best = None
+    for other in page_evidence(ctx, ev.manual, ev.page):
+        match = match_quote(quote, other)
+        if match and (best is None or match.score > best[1].score):
+            best = (other, match)
+    return best
 
 
 def _standalone(question: str, history: list[dict], gen) -> str:
@@ -127,6 +150,10 @@ def answer_stream(
             return
         match = match_quote(raw.quote, ev)
         if match is None:
+            moved = _relocate(raw.quote, ev, ctx)
+            if moved:
+                ev, match = moved
+        if match is None:
             c = CheckedClaim(
                 raw.claim,
                 raw.block,
@@ -139,12 +166,10 @@ def answer_stream(
             removed.append(c)
             yield AnswerEvent("claim_removed", c)
             return
-        c = CheckedClaim(
-            raw.claim, raw.block, raw.quote, ev.page, match.boxes, "pending"
-        )
+        c = CheckedClaim(raw.claim, ev.id, raw.quote, ev.page, match.boxes, "pending")
         timings.setdefault("first_claim_s", time.perf_counter() - start)
         yield AnswerEvent("claim_shown", c)
-        facts = check_facts(raw.claim, raw.quote, ev, query, _page_text(ctx, ev))
+        facts = check_facts(raw.claim, match.source, ev, query, _page_text(ctx, ev))
         if facts.ok:
             c.status = "verified"
             kept.append(c)
