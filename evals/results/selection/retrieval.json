@@ -2,41 +2,41 @@
  "items": 139,
  "chosen": [
   "st:Qwen/Qwen3-Embedding-0.6B",
-  "st:BAAI/bge-reranker-v2-m3"
+  "qwen:Qwen/Qwen3-Reranker-4B"
  ],
  "failed": {},
  "costs": {
   "st:Qwen/Qwen3-Embedding-0.6B": {
-   "index_s": 49.58437330900051,
-   "query_s": 0.3637015341798537
+   "index_s": 49.19797166799981,
+   "query_s": 0.3637775033237356
   },
   "st:BAAI/bge-m3": {
-   "index_s": 21.86451314399983,
-   "query_s": 0.34359718198561007
+   "index_s": 21.709965299000032,
+   "query_s": 0.34914431373380855
   },
   "st:Qwen/Qwen3-Embedding-4B": {
-   "index_s": 77.97582445199987,
-   "query_s": 0.5206191053453203
+   "index_s": 78.9481618180007,
+   "query_s": 0.5252129183956784
   }
  },
  "results": [
   {
    "embedder": "st:BAAI/bge-m3",
    "reranker": "qwen:Qwen/Qwen3-Reranker-0.6B",
-   "hit": 0.920863309352518,
-   "rr": 0.7203323055841041,
-   "all": 0.8776978417266187,
+   "hit": 0.9640287769784173,
+   "rr": 0.7652963343610826,
+   "all": 0.9280575539568345,
    "candidate_hit": 1.0,
-   "rerank_s": 2.485787525323745
+   "rerank_s": 11.24587991496403
   },
   {
    "embedder": "st:BAAI/bge-m3",
    "reranker": "qwen:Qwen/Qwen3-Reranker-4B",
-   "hit": 0.9496402877697842,
-   "rr": 0.8133778691332648,
-   "all": 0.920863309352518,
+   "hit": 1.0,
+   "rr": 0.8575025693730729,
+   "all": 0.9712230215827338,
    "candidate_hit": 1.0,
-   "rerank_s": 5.641966066323738
+   "rerank_s": 5.661075470928055
   },
   {
    "embedder": "st:BAAI/bge-m3",
@@ -50,20 +50,20 @@
   {
    "embedder": "st:Qwen/Qwen3-Embedding-0.6B",
    "reranker": "qwen:Qwen/Qwen3-Reranker-0.6B",
-   "hit": 0.920863309352518,
-   "rr": 0.7183453237410071,
-   "all": 0.8848920863309353,
+   "hit": 0.9640287769784173,
+   "rr": 0.7615707434052758,
+   "all": 0.9280575539568345,
    "candidate_hit": 0.9928057553956835,
-   "rerank_s": 2.9177234978417297
+   "rerank_s": 12.599991409309354
   },
   {
    "embedder": "st:Qwen/Qwen3-Embedding-0.6B",
    "reranker": "qwen:Qwen/Qwen3-Reranker-4B",
-   "hit": 0.9568345323741008,
-   "rr": 0.8121788283658787,
-   "all": 0.9280575539568345,
+   "hit": 0.9856115107913669,
+   "rr": 0.8515073655361425,
+   "all": 0.9568345323741008,
    "candidate_hit": 0.9928057553956835,
-   "rerank_s": 5.288204566863308
+   "rerank_s": 5.570246797848923
   },
   {
    "embedder": "st:Qwen/Qwen3-Embedding-0.6B",
@@ -77,20 +77,20 @@
   {
    "embedder": "st:Qwen/Qwen3-Embedding-4B",
    "reranker": "qwen:Qwen/Qwen3-Reranker-0.6B",
-   "hit": 0.920863309352518,
-   "rr": 0.7217026378896882,
-   "all": 0.8848920863309353,
+   "hit": 0.9640287769784173,
+   "rr": 0.7651678657074341,
+   "all": 0.9280575539568345,
    "candidate_hit": 1.0,
-   "rerank_s": 3.1732011225899277
+   "rerank_s": 13.640229534151082
   },
   {
    "embedder": "st:Qwen/Qwen3-Embedding-4B",
    "reranker": "qwen:Qwen/Qwen3-Reranker-4B",
-   "hit": 0.9640287769784173,
-   "rr": 0.8165039397053786,
-   "all": 0.935251798561151,
+   "hit": 0.9928057553956835,
+   "rr": 0.8549331963001028,
+   "all": 0.9640287769784173,
    "candidate_hit": 1.0,
-   "rerank_s": 5.46771848526618
+   "rerank_s": 5.501025010266184
   },
   {
    "embedder": "st:Qwen/Qwen3-Embedding-4B",

@@ -175,6 +175,7 @@ cumulative. v1 on the same items is 0.50-0.54.
 | Every table row stored (`81dc92e`) | 0.79 / 0.80 | 7 | 7 | 312 / 15 | 17 |
 | Meaning check, block only (`e5563f9`) | 0.78 / 0.78 | 9 | 7 | 302 / 25 | 18 |
 | Meaning check, block then page (`3d2b431`) | 0.79 / 0.80 | 7 | 7 | 309 / 18 | 18 |
+| Qwen3-Reranker-4B at half precision (decision 004) | 0.84 / 0.87 | 3 | 3 | 305 / 13 | 42 |
 
 A run takes one temperature-0 sample, so a change of one or two items is not evidence, and later rows mix check
 changes with whatever the changed evidence did to the model's output.
@@ -217,3 +218,8 @@ unsettled between the judges (0.85 / 0.91).
 **Unexplained.** One attempt at the last run slowed from 10 s to minutes an item from about item 90 with the GPU
 pegged at 40 W and its memory full; judging then began beside it. A rerun of the same code was normal, p95 18 s. The
 cause is not known. p95 fell from 61 s to about 18 s over these runs, also unexplained.
+
+**Reranker.** Both judges agree on 10 items improving and 3 getting worse (faa-ch3-05, faa-12, unans-05). Multi-page
+rose from 0.45 / 0.55 to 0.64 / 0.73 and table from 0.73 / 0.75 to 0.80 / 0.86, on 11 and 56 items. p50 rose from 10 s
+to 13 s; p95 from 18 s to 42 s, which is not yet explained and matters for use. Dev has now tuned this system
+repeatedly, so expect the test score to be lower.

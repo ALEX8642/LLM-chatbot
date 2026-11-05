@@ -209,7 +209,7 @@ def make_v1_adapter(
 def make_v2_adapter(
     ingest_dir: Optional[Path] = None,
     embedder: str = "st:Qwen/Qwen3-Embedding-0.6B",
-    reranker: str = "st:BAAI/bge-reranker-v2-m3",
+    reranker: str = "qwen:Qwen/Qwen3-Reranker-4B",
     ctx: Any = None,
     gen: Any = None,
     config: Optional[Dict[str, Any]] = None,
@@ -775,7 +775,7 @@ def main() -> None:
     g.add_argument("--app-dir", default=".", help="checkout of the system to evaluate")
     g.add_argument("--ingest", default="data/ingest", help="v2: ingested corpus")
     g.add_argument("--embedder", default="st:Qwen/Qwen3-Embedding-0.6B", help="v2")
-    g.add_argument("--reranker", default="st:BAAI/bge-reranker-v2-m3", help="v2")
+    g.add_argument("--reranker", default="qwen:Qwen/Qwen3-Reranker-4B", help="v2")
     g.add_argument("--qa", default=str(DEFAULT_QA))
     g.add_argument("--repeats", type=int, default=1)
     g.add_argument(

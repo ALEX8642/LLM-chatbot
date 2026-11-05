@@ -168,7 +168,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--recordings", type=Path, default=Path("data/recordings"))
     ap.add_argument("--replay", type=Path)
     ap.add_argument("--embedder", default="st:Qwen/Qwen3-Embedding-0.6B")
-    ap.add_argument("--reranker", default="BAAI/bge-reranker-v2-m3")
+    ap.add_argument("--reranker", default="qwen:Qwen/Qwen3-Reranker-4B")
     ap.add_argument("--port", type=int, default=8000)
     args = ap.parse_args(argv)
     ctx = gen = checker = None
@@ -176,12 +176,12 @@ def main(argv: list[str] | None = None) -> int:
         from manualqa.claimcheck import LLMChecker
         from manualqa.generate import Generator
         from manualqa.index import make_embedder
-        from manualqa.retrieve import CrossEncoderReranker, IngestContext
+        from manualqa.retrieve import IngestContext, make_reranker
 
         ctx = IngestContext.load(
             args.ingest,
             make_embedder(args.embedder),
-            CrossEncoderReranker(args.reranker),
+            make_reranker(args.reranker, batch_size=2),
         )
         gen = Generator.from_env()
         checker = LLMChecker(gen)
