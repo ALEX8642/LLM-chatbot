@@ -15,7 +15,9 @@ def test_v2_adapter_record_fields(ctx):
             claim("The part number of the filter element is 18265.", rid, "18265"),
         ]
     )
-    run = run_eval.make_v2_adapter(ctx=ctx, gen=gen, config={"generator": "fake"})
+    run = run_eval.make_v2_adapter(
+        ctx=ctx, gen=gen, config={"generator": "fake"}, meaning_check=False
+    )
     out = run(Q, PARTS)
     for key in ("answer", "ranked_pages", "candidate_pages", "cited_pages", "context"):
         assert key in out

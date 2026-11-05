@@ -4,8 +4,9 @@ Per claim, in order: an unknown evidence id is dropped (and counted); a figure c
 kept, labelled as read from the figure, only if the figure's text contains its numbers;
 otherwise the quote must match the cited evidence (the claim is then shown with its
 highlight boxes) and pass the deterministic fact checks (the claim is then settled as
-verified). A claim that fails is removed, with the reason. If no claim survives, the
-answer says so and lists the pages it looked at.
+checked for meaning against its block, when a checker is given, and only then settled as
+verified). A claim that fails is removed, with the reason. If no claim survives, the answer
+says so and lists the pages it looked at.
 """
 
 from __future__ import annotations
@@ -14,7 +15,8 @@ import time
 from dataclasses import dataclass, field
 from typing import Iterator, Literal
 
-from manualqa.facts import check_facts
+from manualqa.claimcheck import premise_for
+from manualqa.facts import FactResult, check_facts
 from manualqa.generate import ClaimParser, RawClaim, build_messages
 from manualqa.geometry import Box
 from manualqa.prompts import REWRITE
@@ -29,6 +31,7 @@ from manualqa.retrieve import (
 from manualqa.textnorm import norm
 
 ABSTAIN = "I could not find the answer in the manual."
+MEANING_MIN = 0.5  # the checker's score below which the source does not say this
 RELOCATE_MIN = 12  # a quote this long is specific enough to find elsewhere on the page
 
 
@@ -113,6 +116,7 @@ def answer_stream(
     ctx: IngestContext,
     gen,
     history: list[dict] | None = None,
+    checker=None,
 ) -> Iterator[AnswerEvent]:
     start = time.perf_counter()
     history = history or []
@@ -170,6 +174,14 @@ def answer_stream(
         timings.setdefault("first_claim_s", time.perf_counter() - start)
         yield AnswerEvent("claim_shown", c)
         facts = check_facts(raw.claim, match.source, ev, query, _page_text(ctx, ev))
+        if facts.ok and checker is not None:
+            start_check = time.perf_counter()
+            score = checker.supported(raw.claim, premise_for(ev, match.span))
+            timings["meaning_s"] = timings.get("meaning_s", 0.0) + (
+                time.perf_counter() - start_check
+            )
+            if score < MEANING_MIN:
+                facts = FactResult(False, "the source does not say this")
         if facts.ok:
             c.status = "verified"
             kept.append(c)
@@ -217,8 +229,9 @@ def answer(
     ctx: IngestContext,
     gen,
     history: list[dict] | None = None,
+    checker=None,
 ) -> Answer:
-    for event in answer_stream(question, manual, ctx, gen, history):
+    for event in answer_stream(question, manual, ctx, gen, history, checker):
         if event.kind == "done":
             return event.answer
     raise RuntimeError("answer stream ended without a result")

@@ -6,6 +6,9 @@ it says, because that is what the deterministic checks cannot see. They show wha
 can catch, not how often the generator makes such errors.
 
     python -m evals.claims.build RAW COMPOSED TABLES > evals/claims/labelled.jsonl
+
+The hand-written claims refer to the sample by position, so RAW must be the run they were
+written from: the 2026-11-05T03:51 dev run.
 """
 
 from __future__ import annotations
@@ -109,7 +112,7 @@ def main(raw: str, composed: str, tables: str) -> None:
         match = ev and match_quote(c["quote"], ev)
         if not match:
             continue
-        premise = premise_for(ev, match.source)
+        premise = premise_for(ev, match.span)
         _emit(item, c["claim"], premise, True, "real")
         if i in UNSUPPORTED:
             _emit(item, UNSUPPORTED[i], premise, False, "constructed")

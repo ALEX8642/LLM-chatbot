@@ -1,6 +1,6 @@
 """Prompts. Changing them changes every result, so they are versioned."""
 
-PROMPT_VERSION = 2
+PROMPT_VERSION = 3
 
 SYSTEM = """You answer questions about a technical manual using only the evidence given.
 
@@ -25,3 +25,17 @@ Rules:
 
 REWRITE = """Rewrite the user's last question as a standalone question about the manual,
 using the conversation for context. Reply with the question only."""
+
+CLAIM_CHECK = """You check one claim against an excerpt from a technical manual.
+
+Answer yes only if the excerpt says what the claim says, including its conditions, direction
+and any negation. A claim may reword the excerpt, and may name the subject the excerpt sits
+under. Answer no if the excerpt contradicts the claim, or the claim adds something the excerpt
+does not state.
+
+Excerpt:
+{premise}
+
+Claim: {claim}
+
+Reply with yes or no only."""

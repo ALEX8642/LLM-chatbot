@@ -135,3 +135,48 @@ def test_a_quote_from_a_table_cited_to_a_nearby_block_moves_to_the_row(ctx):
 
 def test_a_short_quote_is_not_moved(ctx):
     assert _relocate("P14-8969", _nearby_block(ctx), ctx) is None
+
+
+class FakeChecker:
+    def __init__(self, score):
+        self.score, self.seen = score, []
+
+    def supported(self, claim, premise):
+        self.seen.append((claim, premise))
+        return self.score
+
+
+def test_a_claim_the_source_does_not_say_is_removed(ctx):
+    rid = row_id(ctx)
+    gen = FakeGen([claim("The part number is P14-8969.", rid, "P14-8969")])
+    ans = answer(Q, PARTS, ctx, gen, checker=FakeChecker(0.0))
+    assert ans.abstained and ans.removed[0].reason == "the source does not say this"
+
+
+def test_a_supported_claim_is_verified_and_judged_on_its_whole_row(ctx):
+    rid = row_id(ctx)
+    gen = FakeGen([claim("The part number is P14-8969.", rid, "P14-8969")])
+    checker = FakeChecker(1.0)
+    ans = answer(Q, PARTS, ctx, gen, checker=checker)
+    assert ans.claims[0].status == "verified"
+    assert "FILTER ELEMENT" in checker.seen[0][1] and ans.timings["meaning_s"] >= 0
+
+
+def test_a_claim_that_fails_the_facts_is_not_sent_to_the_checker(ctx):
+    rid = row_id(ctx)
+    gen = FakeGen([claim("The part number is 99-99999.", rid, "P14-8969")])
+    checker = FakeChecker(1.0)
+    answer(Q, PARTS, ctx, gen, checker=checker)
+    assert checker.seen == []
+
+
+def test_figure_claims_are_not_sent_to_the_checker(ctx):
+    fig = next(
+        (i for i, b in ctx.blocks.items() if b.kind == "figure" and b.text.strip()),
+        None,
+    )
+    if fig is None:
+        return
+    checker = FakeChecker(0.0)
+    answer(Q, PARTS, ctx, FakeGen([claim("A figure claim.", fig, "")]), checker=checker)
+    assert checker.seen == []

@@ -80,6 +80,7 @@ def create_app(
     manuals: Path = Path("manuals"),
     replay: Path | None = None,
     pages_dir: Path | None = None,
+    checker=None,
 ) -> FastAPI:
     app = FastAPI(title="manualqa")
     catalogue = read_manuals(Path(manuals))
@@ -112,7 +113,9 @@ def create_app(
     def live(req: AskRequest):
         history = [t.model_dump() for t in req.history]
         log = []
-        for event in answer_stream(req.question, req.manual, ctx, gen, history):
+        for event in answer_stream(
+            req.question, req.manual, ctx, gen, history, checker
+        ):
             data = _payload(event)
             log.append({"event": event.kind, "data": data, "t": time.monotonic()})
             yield _frame(event.kind, data)
@@ -168,8 +171,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--reranker", default="BAAI/bge-reranker-v2-m3")
     ap.add_argument("--port", type=int, default=8000)
     args = ap.parse_args(argv)
-    ctx = gen = None
+    ctx = gen = checker = None
     if not args.replay:
+        from manualqa.claimcheck import LLMChecker
         from manualqa.generate import Generator
         from manualqa.index import make_embedder
         from manualqa.retrieve import CrossEncoderReranker, IngestContext
@@ -180,6 +184,7 @@ def main(argv: list[str] | None = None) -> int:
             CrossEncoderReranker(args.reranker),
         )
         gen = Generator.from_env()
+        checker = LLMChecker(gen)
     app = create_app(
         ctx,
         gen,
@@ -187,6 +192,7 @@ def main(argv: list[str] | None = None) -> int:
         args.manuals,
         args.replay,
         pages_dir=args.ingest / "pages",
+        checker=checker,
     )
     uvicorn.run(app, host="127.0.0.1", port=args.port)
     return 0

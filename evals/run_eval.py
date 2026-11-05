@@ -213,12 +213,14 @@ def make_v2_adapter(
     ctx: Any = None,
     gen: Any = None,
     config: Optional[Dict[str, Any]] = None,
+    meaning_check: bool = True,
 ) -> Callable[..., Dict[str, Any]]:
     """v2 (the manualqa package) over an ingested corpus. The generator comes from
     GEN_BASE_URL / GEN_API_KEY / GEN_MODEL; only the model name is recorded."""
     from dataclasses import asdict
 
     from manualqa.answer import answer
+    from manualqa.claimcheck import LLMChecker
     from manualqa.generate import Generator
     from manualqa.index import make_embedder
     from manualqa.prompts import PROMPT_VERSION
@@ -232,10 +234,11 @@ def make_v2_adapter(
             Path(ingest_dir), make_embedder(embedder), CrossEncoderReranker(model)
         )
     gen = gen or Generator.from_env()
+    checker = LLMChecker(gen) if meaning_check else None
     summary = Path(ctx.root) / "summary.json"
 
     def run(question: str, manual: str) -> Dict[str, Any]:
-        ans = answer(question, manual, ctx, gen)
+        ans = answer(question, manual, ctx, gen, checker=checker)
         timings = {k: round(v, 3) for k, v in ans.timings.items()}
         return {
             "answer": ans.text,
@@ -262,6 +265,7 @@ def make_v2_adapter(
         "embedder": getattr(ctx.embedder, "name", None),
         "reranker": getattr(ctx.reranker, "name", None),
         "prompt_version": PROMPT_VERSION,
+        "meaning_check": "llm" if meaning_check else None,
         "ingest_summary_sha256": sha256_file(summary) if summary.exists() else None,
         **(config or {}),
     }

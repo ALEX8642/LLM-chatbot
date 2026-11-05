@@ -11,6 +11,8 @@ interface Props {
 function Mark({ status }: { status: Claim['status'] }) {
   if (status === 'pending')
     return <span aria-label="checking" className="text-slate-400">…</span>
+  if (status === 'figure')
+    return <span aria-label="read from a figure, not checked" className="text-slate-400">◦</span>
   return <span aria-label="verified" className="text-emerald-600">✓</span>
 }
 

@@ -6,26 +6,23 @@ needed" on "do not crank in excess of"). The checker compares its meaning with t
 
 from __future__ import annotations
 
+from manualqa.prompts import CLAIM_CHECK
 from manualqa.retrieve import Evidence
 
-PROMPT = """You check one claim against an excerpt from a technical manual.
-
-Answer yes only if the excerpt says what the claim says, including its conditions, direction
-and any negation. A claim may reword the excerpt, and may name the subject the excerpt sits
-under. Answer no if the excerpt contradicts the claim, or the claim adds something the excerpt
-does not state.
-
-Excerpt:
-{premise}
-
-Claim: {claim}
-
-Reply with yes or no only."""
+PREMISE_CHARS = 2000  # a long block is cut, keeping the claim's quote in view
 
 
-def premise_for(ev: Evidence, source: str) -> str:
-    """What the claim is judged against: the matched text, or the whole row, and its heading."""
-    text = ev.text if ev.kind == "row" else source
+def premise_for(ev: Evidence, match_span: tuple[int, int] | None = None) -> str:
+    """What the claim is judged against: its whole block or row, and the headings above it.
+
+    Not the quote alone: a claim's subject is often in the sentence before ("Step 1. Check
+    for dirty air cleaner element" under the malfunction it treats).
+    """
+    text = ev.text
+    if len(text) > PREMISE_CHARS:
+        middle = sum(match_span) // 2 if match_span else 0
+        start = max(0, middle - PREMISE_CHARS // 2)
+        text = text[start : start + PREMISE_CHARS]
     return f"({ev.under})\n{text}" if ev.under else text
 
 
@@ -40,7 +37,7 @@ class LLMChecker:
             [
                 {
                     "role": "user",
-                    "content": PROMPT.format(premise=premise, claim=claim),
+                    "content": CLAIM_CHECK.format(premise=premise, claim=claim),
                 }
             ]
         )
