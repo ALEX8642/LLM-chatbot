@@ -45,6 +45,70 @@ class CrossEncoderReranker:
         return [float(s) for s in self._model.predict([(query, t) for t in texts])]
 
 
+class QwenReranker:
+    """Qwen3-Reranker: a causal model asked yes or no, scored by the odds of "yes"."""
+
+    PREFIX = (
+        "<|im_start|>system\nJudge whether the Document meets the requirements based on "
+        'the Query and the Instruct provided. Note that the answer can only be "yes" or '
+        '"no".<|im_end|>\n<|im_start|>user\n'
+    )
+    SUFFIX = "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    INSTRUCT = (
+        "Given a web search query, retrieve relevant passages that answer the query"
+    )
+
+    def __init__(self, model: str, device: str | None = None, batch_size: int = 8):
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+
+        self.name, self.torch, self.batch_size = model, torch, batch_size
+        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        self.tokenizer = AutoTokenizer.from_pretrained(model, padding_side="left")
+        self.model = (
+            AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.float16)
+            .to(self.device)
+            .eval()
+        )
+        self.yes = self.tokenizer.convert_tokens_to_ids("yes")
+        self.no = self.tokenizer.convert_tokens_to_ids("no")
+
+    def _prompt(self, query: str, text: str) -> str:
+        return (
+            f"{self.PREFIX}<Instruct>: {self.INSTRUCT}\n<Query>: {query}\n"
+            f"<Document>: {text}{self.SUFFIX}"
+        )
+
+    def score(self, query: str, texts: list[str]) -> list[float]:
+        out: list[float] = []
+        for start in range(0, len(texts), self.batch_size):
+            batch = [
+                self._prompt(query, t) for t in texts[start : start + self.batch_size]
+            ]
+            inputs = self.tokenizer(
+                batch,
+                padding=True,
+                truncation=True,
+                max_length=1024,
+                return_tensors="pt",
+            ).to(self.device)
+            with self.torch.no_grad():
+                logits = self.model(**inputs).logits[:, -1, :]
+            pair = logits[:, [self.no, self.yes]].float().softmax(-1)[:, 1]
+            out += [float(x) for x in pair]
+        return out
+
+
+def make_reranker(spec: str) -> Reranker:
+    """``st:<model>`` for a cross-encoder, ``qwen:<model>`` for Qwen3-Reranker."""
+    kind, _, model = spec.partition(":")
+    if kind == "st":
+        return CrossEncoderReranker(model)
+    if kind == "qwen":
+        return QwenReranker(model)
+    raise ValueError(f"unknown reranker {spec!r}")
+
+
 class HttpReranker:
     """An OpenAI-style ``/v1/rerank`` endpoint (vLLM, Infinity, TEI)."""
 

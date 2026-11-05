@@ -4,8 +4,8 @@ Per claim, in order: an unknown evidence id is dropped (and counted); a figure c
 kept, labelled as read from the figure, only if the figure's text contains its numbers;
 otherwise the quote must match the cited evidence (the claim is then shown with its
 highlight boxes) and pass the deterministic fact checks (the claim is then settled as
-checked for meaning against its block, when a checker is given, and only then settled as
-verified). A claim that fails is removed, with the reason. If no claim survives, the answer
+checked for meaning against its block, then its whole page if that says no, when a checker
+is given, and only then settled as verified). A claim that fails is removed, with the reason. If no claim survives, the answer
 says so and lists the pages it looked at.
 """
 
@@ -33,6 +33,7 @@ from manualqa.textnorm import norm
 
 ABSTAIN = "I could not find the answer in the manual."
 MEANING_MIN = 0.5  # the checker's score below which the source does not say this
+PAGE_CHARS = 6000
 RELOCATE_MIN = 12  # a quote this long is specific enough to find elsewhere on the page
 
 
@@ -179,6 +180,9 @@ def answer_stream(
             start_check = time.perf_counter()
             premise = premise_for(ev, match.span, lead_in(ctx, ev))
             score = checker.supported(raw.claim, premise)
+            if score < MEANING_MIN:  # its subject can be further up the page
+                page = _page_text(ctx, ev)[:PAGE_CHARS]
+                score = checker.supported(raw.claim, page)
             timings["meaning_s"] = timings.get("meaning_s", 0.0) + (
                 time.perf_counter() - start_check
             )

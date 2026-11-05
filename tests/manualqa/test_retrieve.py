@@ -94,3 +94,12 @@ def test_titles_carry_over_to_a_continuation_page():
     assert t[("m", 2)] == "I - Model SR20; Figure 1."
     assert t[("m", 3)] == "I - Model SR20; II - Model SR22; Figure 1."
     assert t[("m", 4)] == "II - Model SR22; Figure 1."
+
+
+def test_unknown_reranker_is_refused():
+    import pytest
+
+    from manualqa.retrieve import make_reranker
+
+    with pytest.raises(ValueError):
+        make_reranker("nope:x")

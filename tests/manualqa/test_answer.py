@@ -149,8 +149,22 @@ class FakeChecker:
 def test_a_claim_the_source_does_not_say_is_removed(ctx):
     rid = row_id(ctx)
     gen = FakeGen([claim("The part number is P14-8969.", rid, "P14-8969")])
-    ans = answer(Q, PARTS, ctx, gen, checker=FakeChecker(0.0))
+    checker = FakeChecker(0.0)
+    ans = answer(Q, PARTS, ctx, gen, checker=checker)
     assert ans.abstained and ans.removed[0].reason == "the source does not say this"
+    assert len(checker.seen) == 2  # its block, then its page
+
+
+def test_a_no_on_the_block_can_be_overturned_by_the_page(ctx):
+    class PageSaysYes(FakeChecker):
+        def supported(self, claim, premise):
+            self.seen.append((claim, premise))
+            return float(len(self.seen) == 2)
+
+    rid = row_id(ctx)
+    gen = FakeGen([claim("The part number is P14-8969.", rid, "P14-8969")])
+    ans = answer(Q, PARTS, ctx, gen, checker=PageSaysYes(0.0))
+    assert ans.claims[0].status == "verified"
 
 
 def test_a_supported_claim_is_verified_and_judged_on_its_whole_row(ctx):
