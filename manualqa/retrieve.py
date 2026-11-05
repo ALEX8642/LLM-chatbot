@@ -99,13 +99,13 @@ class QwenReranker:
         return out
 
 
-def make_reranker(spec: str) -> Reranker:
+def make_reranker(spec: str, batch_size: int = 8) -> Reranker:
     """``st:<model>`` for a cross-encoder, ``qwen:<model>`` for Qwen3-Reranker."""
     kind, _, model = spec.partition(":")
     if kind == "st":
         return CrossEncoderReranker(model)
     if kind == "qwen":
-        return QwenReranker(model)
+        return QwenReranker(model, batch_size=batch_size)
     raise ValueError(f"unknown reranker {spec!r}")
 
 

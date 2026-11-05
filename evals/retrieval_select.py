@@ -20,6 +20,7 @@ from pathlib import Path
 from evals.items import load_items
 
 K_CHUNKS, POOL, MIN_GAIN = 8, 50, 0.015
+LARGE = 4.0  # models this size run at half precision and in small batches, to fit 16 GB
 EMBEDDERS = {
     "st:Qwen/Qwen3-Embedding-0.6B": 0.6,
     "st:BAAI/bge-m3": 1.0,
@@ -30,6 +31,15 @@ RERANKERS = {
     "qwen:Qwen/Qwen3-Reranker-0.6B": 0.6,
     "qwen:Qwen/Qwen3-Reranker-4B": 4.0,
 }
+
+
+def _free_gpu() -> None:
+    import gc
+
+    import torch
+
+    gc.collect()
+    torch.cuda.empty_cache()
 
 
 def page_metrics(pages: list[int], gold: list[int]) -> dict:
@@ -80,64 +90,80 @@ def main(argv: list[str] | None = None) -> int:
 
     pools: dict[str, dict[str, list]] = {}
     costs: dict[str, dict] = {}
-    for spec in EMBEDDERS:
-        embedder = make_embedder(spec)
+    failed: dict[str, str] = {}
+    for spec, size in EMBEDDERS.items():
         where = args.out / spec.replace("/", "_").replace(":", "_")
-        start = time.perf_counter()
-        build_index(chunks, where, embedder)
-        built = time.perf_counter() - start
-        start = time.perf_counter()
-        pools[spec] = {
-            it.id: [
-                c
-                for c, _ in search(
-                    it.question, where, embedder, k=POOL, manual=it.manual
-                )
-            ]
-            for it in items
-        }
-        costs[spec] = {
-            "index_s": built,
-            "query_s": (time.perf_counter() - start) / len(items),
-        }
-        del embedder
-        print(f"embedded {spec} {costs[spec]}", flush=True)
+        try:
+            embedder = make_embedder(
+                spec, half=size >= LARGE, batch_size=2 if size >= LARGE else 16
+            )
+            start = time.perf_counter()
+            build_index(chunks, where, embedder)
+            built = time.perf_counter() - start
+            start = time.perf_counter()
+            pools[spec] = {
+                it.id: [
+                    c
+                    for c, _ in search(
+                        it.question, where, embedder, k=POOL, manual=it.manual
+                    )
+                ]
+                for it in items
+            }
+            costs[spec] = {
+                "index_s": built,
+                "query_s": (time.perf_counter() - start) / len(items),
+            }
+            print(f"embedded {spec} {costs[spec]}", flush=True)
+        except RuntimeError as e:  # out of GPU memory: report it, keep the others
+            failed[spec] = str(e)[:200]
+            print(f"failed {spec} {failed[spec]}", flush=True)
+        embedder = None
+        _free_gpu()
 
     results: dict[tuple[str, str], dict] = {}
-    for spec in RERANKERS:
-        reranker = make_reranker(spec)
-        for emb, pool in pools.items():
-            rows = []
-            start = time.perf_counter()
-            for it in items:
-                cands = pool[it.id]
-                got = (
-                    reranker.score(it.question, [c.text for c in cands])
-                    if cands
-                    else []
-                )
-                ranked = [c for _, c in sorted(zip(got, cands), key=lambda p: -p[0])][
-                    :K_CHUNKS
-                ]
-                row = page_metrics(ordered_pages(ranked), it.gold_pages)
-                row["candidate_hit"] = page_metrics(
-                    ordered_pages(cands), it.gold_pages
-                )["hit"]
-                row["id"], row["category"] = it.id, it.category
-                rows.append(row)
-            summary = summarize(rows)
-            summary["rerank_s"] = (time.perf_counter() - start) / len(items)
-            results[(emb, spec)] = summary
-            (args.out / "per_item.jsonl").open("a").write(
-                json.dumps({"embedder": emb, "reranker": spec, "rows": rows}) + "\n"
-            )
-            print(emb, spec, json.dumps(summary), flush=True)
-        del reranker
+    for spec, size in RERANKERS.items():
+        try:
+            reranker = make_reranker(spec, batch_size=2 if size >= LARGE else 8)
+            for emb, pool in pools.items():
+                rows = []
+                start = time.perf_counter()
+                for it in items:
+                    cands = pool[it.id]
+                    got = (
+                        reranker.score(it.question, [c.text for c in cands])
+                        if cands
+                        else []
+                    )
+                    ranked = [
+                        c for _, c in sorted(zip(got, cands), key=lambda p: -p[0])
+                    ][:K_CHUNKS]
+                    row = page_metrics(ordered_pages(ranked), it.gold_pages)
+                    row["candidate_hit"] = page_metrics(
+                        ordered_pages(cands), it.gold_pages
+                    )["hit"]
+                    row["id"], row["category"] = it.id, it.category
+                    rows.append(row)
+                summary = summarize(rows)
+                summary["rerank_s"] = (time.perf_counter() - start) / len(items)
+                results[(emb, spec)] = summary
+                with (args.out / "per_item.jsonl").open("a") as f:
+                    f.write(
+                        json.dumps({"embedder": emb, "reranker": spec, "rows": rows})
+                        + "\n"
+                    )
+                print(emb, spec, json.dumps(summary), flush=True)
+        except RuntimeError as e:
+            failed[spec] = str(e)[:200]
+            print(f"failed {spec} {failed[spec]}", flush=True)
+        reranker = None
+        _free_gpu()
 
     chosen = choose(results)
     report = {
         "items": len(items),
         "chosen": chosen,
+        "failed": failed,
         "costs": costs,
         "results": [
             {"embedder": e, "reranker": r, **m} for (e, r), m in sorted(results.items())

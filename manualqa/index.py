@@ -32,19 +32,27 @@ class Embedder(Protocol):
 
 class SentenceTransformerEmbedder:
     def __init__(
-        self, model: str = "Qwen/Qwen3-Embedding-0.6B", device: str | None = None
+        self,
+        model: str = "Qwen/Qwen3-Embedding-0.6B",
+        device: str | None = None,
+        half: bool = False,
+        batch_size: int = 16,
     ):
         from sentence_transformers import SentenceTransformer
 
-        self.name = model
-        self._model = SentenceTransformer(model, device=device)
+        self.name, self._batch_size = model, batch_size
+        kwargs = {"model_kwargs": {"torch_dtype": "float16"}} if half else {}
+        self._model = SentenceTransformer(model, device=device, **kwargs)
         self.dim = self._model.get_sentence_embedding_dimension()
 
     def embed(self, texts: list[str], query: bool = False) -> list[list[float]]:
         # Qwen3-Embedding: queries take the model's "query" prompt, documents none
         prompt = "query" if query and "query" in self._model.prompts else None
         vectors = self._model.encode(
-            texts, prompt_name=prompt, normalize_embeddings=True, batch_size=16
+            texts,
+            prompt_name=prompt,
+            normalize_embeddings=True,
+            batch_size=self._batch_size,
         )
         return [v.tolist() for v in vectors]
 
@@ -69,11 +77,11 @@ class OpenAIEmbedder:
         return [d["embedding"] for d in data]
 
 
-def make_embedder(spec: str) -> Embedder:
+def make_embedder(spec: str, half: bool = False, batch_size: int = 16) -> Embedder:
     """``st:<model>`` or ``openai:<model>`` (endpoint from EMBED_BASE_URL/EMBED_API_KEY)."""
     kind, _, model = spec.partition(":")
     if kind == "st":
-        return SentenceTransformerEmbedder(model)
+        return SentenceTransformerEmbedder(model, half=half, batch_size=batch_size)
     if kind == "openai":
         return OpenAIEmbedder(
             os.environ["EMBED_BASE_URL"], model, os.environ.get("EMBED_API_KEY")
