@@ -74,6 +74,8 @@ One judge reply had no JSON (faa-14, the faithfulness call), so its faithfulness
 
 ## Dev set of 172, independent judge (2026-11-04)
 
+> **Superseded by the section below**, which uses the corrected grader. Kept for the record.
+
 The first numbers from the independent judges and the key-fact grader, on the full dev set. `Correct` needs
 every key fact. `Primary` also needs the judge to find them in the cited source. These are stricter than the
 tables above, so do not compare across them. Dev only: the test set has not been run.
@@ -117,3 +119,45 @@ excluded.
 The judge errors first seen here came from phi4 adding text after its JSON, a parser bug fixed in `e240ed2`.
 `228217b` raised the token limit on a wrong diagnosis; it changed no error counts, and was kept because it
 matches judge selection. About 1 item per run still fails, because the judge split a key fact in two.
+
+## Dev set of 172, corrected grader (2026-11-05)
+
+After the M2 review: exact matching no longer fails bold or percent signs or passes values inside longer codes;
+abstention is judged for both systems (prompt version 2); page citations are deduplicated. Same runs as above.
+Primary needs the answer correct and the judge finding its key facts in the cited source. Dev only.
+
+| Primary | v1 | v1 at temp 0 | v2 |
+|---|---|---|---|
+| All 172, phi4 | 0.50 | 0.51 | **0.71** |
+| All 172, mistral | 0.54 | 0.55 | **0.70** |
+| 130 new items, phi4 | 0.52 | 0.54 | **0.69** |
+| 130 new items, mistral | 0.57 | 0.58 | **0.69** |
+| Original 42, phi4 | 0.42 | 0.43 | 0.79 |
+| Parts manual (28), phi4 | 0.27 | 0.25 | 0.75 |
+| Operator manual, phi4 | 0.48 | 0.52 | 0.65 |
+| FAA handbook, phi4 | 0.59 | 0.60 | 0.76 |
+| Table (56), phi4 | 0.32 | 0.34 | 0.55 |
+| Single page (62), phi4 | 0.57 | 0.59 | 0.79 |
+
+v1 has 3 repeats under phi4 and 1 under mistral; v2 has 1 under each. v2's primary at page-level citation is 0.73 (phi4)
+and 0.71 (mistral). v2 wrongly declines 20 of 138 answerable items, and v1 16 (the 1 item with a judge error is left out).
+
+**Unanswerables are not settled.** Of 33:
+
+| | v1 | v1 at temp 0 | v2 |
+|---|---|---|---|
+| phi4 | 0.81 | 0.82 | 0.94 |
+| mistral | 0.76 | 0.73 | 0.85 |
+| Recorded by v2 | | | 0.76 |
+
+The judges count some of v2's true but off-topic answers as declines. phi4 still does so after the wording was
+tightened (6 disagreements with v2's own record, mistral 3). Some of these say in words that the text does not state the
+answer, so the record is not simply right either. By phi4's figure v2 beats v1 here; by v2's own record it does not.
+These cases go into the blind session. The prompt was not reworded further. If v2's 6 disagreements count as wrong, its
+overall phi4 primary falls by about 0.035.
+
+**Other cautions.** phi4 rejects correct answers on source support at very different rates: 14 of 71 for v1, 5 of 96 for v2;
+mistral 3 of 70 and 2 of 94. So phi4 may be biased against v1 on this, which is why mistral shows a smaller gap; the blind
+session should test it. The checker was fixed on the original 42, so the 130 new items are the fairer figure, and the gap
+there is 0.11-0.17 by judge and baseline. There are no confidence intervals yet. v2's length bias (0.06 per 100 characters,
+interval above 0) is still unexplained. Item wording is Claude's, checked by a sample of 60 and a review of 30.

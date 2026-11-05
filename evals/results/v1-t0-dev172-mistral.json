@@ -1,6 +1,6 @@
 {
   "kind": "graded-keyfacts",
-  "created": "2026-11-04T09:56:06+00:00",
+  "created": "2026-11-05T01:16:03+00:00",
   "raw_file": "evals/results/raw/v1-t0-dev172.json",
   "config": {
     "system": "v1",
@@ -16,7 +16,7 @@
   },
   "judge": {
     "model": "mistral-small3.2:24b",
-    "prompt_version": 1
+    "prompt_version": 2
   },
   "repeats": [
     {
@@ -24,9 +24,10 @@
         "n": 172,
         "n_graded": 171,
         "judge_errors": 1,
-        "correct": 0.5789,
+        "correct": 0.5731,
         "primary": 0.5497,
-        "abstained": 0.1988
+        "primary_pages": 0.5497,
+        "abstained": 0.2398
       },
       "by_category": {
         "figure": {
@@ -35,7 +36,8 @@
           "judge_errors": 1,
           "correct": 0.2222,
           "primary": 0.2222,
-          "abstained": 0.1111
+          "primary_pages": 0.2222,
+          "abstained": 0.3333
         },
         "multi_page": {
           "n": 11,
@@ -43,6 +45,7 @@
           "judge_errors": 0,
           "correct": 0.3636,
           "primary": 0.3636,
+          "primary_pages": 0.3636,
           "abstained": 0.0
         },
         "single_page": {
@@ -50,7 +53,8 @@
           "n_graded": 62,
           "judge_errors": 0,
           "correct": 0.7258,
-          "primary": 0.6774,
+          "primary": 0.6935,
+          "primary_pages": 0.6935,
           "abstained": 0.0484
         },
         "table": {
@@ -59,22 +63,24 @@
           "judge_errors": 0,
           "correct": 0.4107,
           "primary": 0.375,
-          "abstained": 0.0893
+          "primary_pages": 0.375,
+          "abstained": 0.1964
         },
         "unanswerable": {
           "n": 33,
           "n_graded": 33,
           "judge_errors": 0,
-          "correct": 0.7576,
-          "primary": 0.7576,
-          "abstained": 0.7576
+          "correct": 0.7273,
+          "primary": 0.7273,
+          "primary_pages": 0.7273,
+          "abstained": 0.7273
         }
       },
       "length_bias": {
-        "slope_per_100_chars": -0.0033,
+        "slope_per_100_chars": -0.0037,
         "ci95": [
-          -0.0181,
-          0.0104
+          -0.0186,
+          0.01
         ]
       },
       "items": [
@@ -85,6 +91,8 @@
           "answer_chars": 986,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Weighing the aircraft.",
@@ -110,6 +118,8 @@
           "answer_chars": 382,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "The pilot in command.",
@@ -127,6 +137,8 @@
           "answer_chars": 1143,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": false,
           "facts": [],
           "supported_in_source": false,
           "primary": false,
@@ -139,6 +151,8 @@
           "answer_chars": 1792,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Higher takeoff speed and a longer takeoff run.",
@@ -168,6 +182,8 @@
           "answer_chars": 1974,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "A deliberate attempt to load the aircraft for the most critical balance condition.",
@@ -189,6 +205,8 @@
           "answer_chars": 2849,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Too far aft: unstable and difficult to recover from a stall.",
@@ -210,6 +228,8 @@
           "answer_chars": 2365,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Weight acts through the single wing attach point.",
@@ -231,6 +251,8 @@
           "answer_chars": 696,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Unsecured dogs moved aft during takeoff.",
@@ -256,6 +278,8 @@
           "answer_chars": 269,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -268,6 +292,8 @@
           "answer_chars": 300,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -280,6 +306,8 @@
           "answer_chars": 684,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [],
           "supported_in_source": true,
           "primary": true,
@@ -292,6 +320,8 @@
           "answer_chars": 310,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": false,
           "facts": [
             {
               "fact": "No more than 20 percent MAC.",
@@ -309,6 +339,8 @@
           "answer_chars": 380,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "The average of the root chord and the tip chord.",
@@ -326,6 +358,8 @@
           "answer_chars": 112,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "4 seats.",
@@ -347,6 +381,8 @@
           "answer_chars": 72,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "8 quarts",
@@ -368,6 +404,8 @@
           "answer_chars": 156,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "58.5 gallons total at 154.9 inches.",
@@ -389,6 +427,8 @@
           "answer_chars": 507,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "17,500 ft MSL.",
@@ -410,6 +450,8 @@
           "answer_chars": 271,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Takeoff 3000 lb.",
@@ -435,6 +477,8 @@
           "answer_chars": 128,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Teledyne Continental IO-360-ES",
@@ -456,14 +500,16 @@
           "answer_chars": 283,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "The moment is divided by 1,000 to make it more manageable.",
               "present": true
             }
           ],
-          "supported_in_source": false,
-          "primary": false,
+          "supported_in_source": true,
+          "primary": true,
           "judge_error": null
         },
         {
@@ -473,6 +519,8 @@
           "answer_chars": 637,
           "correct": false,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "33.8 pounds",
@@ -494,6 +542,8 @@
           "answer_chars": 886,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -506,6 +556,8 @@
           "answer_chars": 270,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -518,6 +570,8 @@
           "answer_chars": 512,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -530,6 +584,8 @@
           "answer_chars": 878,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Regulations do not require it.",
@@ -551,6 +607,8 @@
           "answer_chars": 321,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "After extensive repair or major alteration.",
@@ -576,6 +634,8 @@
           "answer_chars": 531,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "At least 2 hours before use.",
@@ -597,6 +657,8 @@
           "answer_chars": 145,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "6.14 lb at 32 \u00b0F.",
@@ -618,6 +680,8 @@
           "answer_chars": 1014,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Drain until the gauges read empty in level-flight attitude.",
@@ -639,6 +703,8 @@
           "answer_chars": 1264,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Tare is the weight of the chocks.",
@@ -660,6 +726,8 @@
           "answer_chars": 789,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "114.8 inches aft of the datum.",
@@ -681,6 +749,8 @@
           "answer_chars": 776,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Add and remove a weight, then recheck zero.",
@@ -702,6 +772,8 @@
           "answer_chars": 563,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -714,6 +786,8 @@
           "answer_chars": 601,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -726,6 +800,8 @@
           "answer_chars": 1616,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -738,6 +814,8 @@
           "answer_chars": 887,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "3,100 lb takeoff.",
@@ -763,6 +841,8 @@
           "answer_chars": 1420,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Manual computational method.",
@@ -788,6 +868,8 @@
           "answer_chars": 2704,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Total moment 131,806.2 lb-in.",
@@ -809,6 +891,8 @@
           "answer_chars": 1540,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "The moment divided by a reduction factor such as 100 or 1,000.",
@@ -830,9 +914,11 @@
           "answer_chars": 76,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [],
-          "supported_in_source": false,
-          "primary": false,
+          "supported_in_source": true,
+          "primary": true,
           "judge_error": null
         },
         {
@@ -842,6 +928,8 @@
           "answer_chars": 509,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -854,6 +942,8 @@
           "answer_chars": 1191,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -866,6 +956,8 @@
           "answer_chars": 753,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Revised empty weight.",
@@ -891,6 +983,8 @@
           "answer_chars": 909,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [],
           "supported_in_source": true,
           "primary": true,
@@ -903,6 +997,8 @@
           "answer_chars": 583,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Lead bars or canvas bags of sand or lead shot.",
@@ -924,6 +1020,8 @@
           "answer_chars": 121,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Fixed-wing aircraft above 12,500 pounds takeoff weight.",
@@ -941,6 +1039,8 @@
           "answer_chars": 458,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "If more than 36 calendar months since the last weighing.",
@@ -962,6 +1062,8 @@
           "answer_chars": 442,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Large cabin \u00b110 lb.",
@@ -987,6 +1089,8 @@
           "answer_chars": 1263,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Total weight 177,710 lb.",
@@ -1012,6 +1116,8 @@
           "answer_chars": 184,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": false,
           "facts": [
             {
               "fact": "3,400 lb.",
@@ -1022,8 +1128,8 @@
               "present": true
             }
           ],
-          "supported_in_source": true,
-          "primary": true,
+          "supported_in_source": false,
+          "primary": false,
           "judge_error": null
         },
         {
@@ -1033,6 +1139,8 @@
           "answer_chars": 372,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": false,
           "facts": [
             {
               "fact": "Forward hold 2,040.",
@@ -1054,6 +1162,8 @@
           "answer_chars": 665,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Basic or fleet empty weight plus operational items.",
@@ -1071,6 +1181,8 @@
           "answer_chars": 1959,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "8%: 7 3/4 units airplane nose up.",
@@ -1092,6 +1204,8 @@
           "answer_chars": 1706,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "587.51 inches behind the datum.",
@@ -1113,6 +1227,8 @@
           "answer_chars": 973,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -1125,6 +1241,8 @@
           "answer_chars": 586,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -1137,6 +1255,8 @@
           "answer_chars": 942,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -1149,6 +1269,8 @@
           "answer_chars": 250,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Empty weight plus required crew and their baggage.",
@@ -1170,6 +1292,8 @@
           "answer_chars": 266,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Standard empty weight plus optional equipment.",
@@ -1187,6 +1311,8 @@
           "answer_chars": 1575,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Permanent ballast is part of empty weight.",
@@ -1208,6 +1334,8 @@
           "answer_chars": 940,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -1220,6 +1348,8 @@
           "answer_chars": 446,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Normal category: 3.8 times its weight.",
@@ -1245,6 +1375,8 @@
           "answer_chars": 256,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "The CG moves forward when fuel is used from the outboard tanks.",
@@ -1262,6 +1394,8 @@
           "answer_chars": 441,
           "correct": false,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Maximum baggage is 130 lb.",
@@ -1283,6 +1417,8 @@
           "answer_chars": 114,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [],
           "supported_in_source": true,
           "primary": true,
@@ -1295,6 +1431,8 @@
           "answer_chars": 659,
           "correct": false,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "The datum is 100 inches in front of the forward face of the firewall bulkhead.",
@@ -1312,6 +1450,8 @@
           "answer_chars": 321,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [],
           "supported_in_source": true,
           "primary": true,
@@ -1324,6 +1464,8 @@
           "answer_chars": 238,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -1336,6 +1478,8 @@
           "answer_chars": 263,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Potable water is not part of empty weight.",
@@ -1361,6 +1505,8 @@
           "answer_chars": 558,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Net weight 2,006 lb.",
@@ -1382,6 +1528,8 @@
           "answer_chars": 1335,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Minimum fuel is the fuel needed for half an hour at rated maximum continuous power.",
@@ -1403,6 +1551,8 @@
           "answer_chars": 1217,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Permanent ballast is usually lead blocks painted red.",
@@ -1428,6 +1578,8 @@
           "answer_chars": 522,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "When the cumulative weight change exceeds \u00b10.5% of the maximum landing weight.",
@@ -1449,6 +1601,8 @@
           "answer_chars": 749,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "It is within the envelope for takeoff.",
@@ -1474,6 +1628,8 @@
           "answer_chars": 650,
           "correct": false,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "About 16.8 lb-in/1,000 (16.5 to 17.0 accepted).",
@@ -1491,6 +1647,8 @@
           "answer_chars": 138,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "-O marks optional equipment items replacing required or standard items.",
@@ -1508,6 +1666,8 @@
           "answer_chars": 125,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [],
           "supported_in_source": true,
           "primary": true,
@@ -1520,6 +1680,8 @@
           "answer_chars": 73,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [],
           "supported_in_source": true,
           "primary": true,
@@ -1532,6 +1694,8 @@
           "answer_chars": 574,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "0.55 gallons (2.1 liters) per hour.",
@@ -1553,6 +1717,8 @@
           "answer_chars": 212,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "At +40 \u00b0F (4 \u00b0C) or below.",
@@ -1570,6 +1736,8 @@
           "answer_chars": 246,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "It shuts down when coolant temperature exceeds 225 \u00b1 5 \u00b0F (107 \u00b1 3 \u00b0C).",
@@ -1587,6 +1755,8 @@
           "answer_chars": 761,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "The restriction indicator on the air cleaner housing displays red.",
@@ -1604,6 +1774,8 @@
           "answer_chars": 398,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "DEAD CRANK switch in NORMAL.",
@@ -1633,6 +1805,8 @@
           "answer_chars": 442,
           "correct": false,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Crank no more than 15 seconds at a time.",
@@ -1654,6 +1828,8 @@
           "answer_chars": 607,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "AC CIRCUIT INTERRUPTER switch to OPEN.",
@@ -1683,6 +1859,8 @@
           "answer_chars": 1979,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Below 40 \u00b0F, use PREHEAT for at most 30 seconds before cranking.",
@@ -1704,6 +1882,8 @@
           "answer_chars": 1566,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Hold the MASTER SWITCH in START until oil pressure reaches 25 psi.",
@@ -1725,6 +1905,8 @@
           "answer_chars": 588,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Improper fuel type.",
@@ -1750,6 +1932,8 @@
           "answer_chars": 713,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Check the circuit breaker on the side of the Ground Fault Circuit Interrupter and reset it if tripped.",
@@ -1766,7 +1950,9 @@
           "manual": "Army_5kW_Generator_Operator_Manual.pdf",
           "answer_chars": 671,
           "correct": false,
-          "abstained": false,
+          "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -1778,7 +1964,9 @@
           "manual": "Army_5kW_Generator_Operator_Manual.pdf",
           "answer_chars": 409,
           "correct": false,
-          "abstained": false,
+          "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -1791,6 +1979,8 @@
           "answer_chars": 77,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "105-269 for the 8EM3005CA alternator.",
@@ -1812,6 +2002,8 @@
           "answer_chars": 63,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -1824,6 +2016,8 @@
           "answer_chars": 53,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -1836,13 +2030,15 @@
           "answer_chars": 71,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
-              "fact": "Battery cover 88-20243",
+              "fact": "Battery cover 88-20243.",
               "present": false
             },
             {
-              "fact": "Quantity 4",
+              "fact": "Quantity 4.",
               "present": false
             }
           ],
@@ -1857,6 +2053,8 @@
           "answer_chars": 110,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "A wing nut (item 16) holds the filter element.",
@@ -1878,6 +2076,8 @@
           "answer_chars": 765,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Item 51 is the rotor assembly.",
@@ -1899,6 +2099,8 @@
           "answer_chars": 704,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -1911,6 +2113,8 @@
           "answer_chars": 440,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -1923,6 +2127,8 @@
           "answer_chars": 550,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -1935,6 +2141,8 @@
           "answer_chars": 569,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -1947,6 +2155,8 @@
           "answer_chars": 273,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -1959,6 +2169,8 @@
           "answer_chars": 696,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -1971,6 +2183,8 @@
           "answer_chars": 665,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "10 amp, 120 VAC.",
@@ -1996,6 +2210,8 @@
           "answer_chars": 133,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "3.2 quarts (3.0 liters)",
@@ -2017,6 +2233,8 @@
           "answer_chars": 166,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "18 amps at 24 VDC",
@@ -2034,6 +2252,8 @@
           "answer_chars": 174,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "153 \u00b1 3 VAC for at least 200 milliseconds.",
@@ -2055,6 +2275,8 @@
           "answer_chars": 125,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [],
           "supported_in_source": true,
           "primary": true,
@@ -2067,6 +2289,8 @@
           "answer_chars": 177,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "5.0-6.5 psi",
@@ -2084,6 +2308,8 @@
           "answer_chars": 347,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "The fan belt drives the alternator.",
@@ -2105,6 +2331,8 @@
           "answer_chars": 397,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -2117,6 +2345,8 @@
           "answer_chars": 340,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "-10 to +20 amps.",
@@ -2138,6 +2368,8 @@
           "answer_chars": 1052,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "The transfer pump draws fuel from the tank.",
@@ -2167,6 +2399,8 @@
           "answer_chars": 1152,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "MASTER SWITCH on PRIME & RUN AUX FUEL runs the auxiliary pump.",
@@ -2192,6 +2426,8 @@
           "answer_chars": 439,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "120 \u00b0F to 240 \u00b0F",
@@ -2209,6 +2445,8 @@
           "answer_chars": 1036,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Two preheaters warm the air intake manifold.",
@@ -2230,6 +2468,8 @@
           "answer_chars": 391,
           "correct": false,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "120 V single phase, 2 wire.",
@@ -2255,6 +2495,8 @@
           "answer_chars": 364,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "The magnetic pickup senses engine speed.",
@@ -2276,6 +2518,8 @@
           "answer_chars": 326,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "The engine cranks without starting.",
@@ -2295,11 +2539,13 @@
           "category": "unanswerable",
           "manual": "Army_5kW_Generator_Operator_Manual.pdf",
           "answer_chars": 840,
-          "correct": true,
-          "abstained": true,
+          "correct": false,
+          "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
-          "primary": true,
+          "primary": false,
           "judge_error": null
         },
         {
@@ -2309,6 +2555,8 @@
           "answer_chars": 195,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -2321,6 +2569,8 @@
           "answer_chars": 550,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Coolant 170-200 \u00b0F.",
@@ -2342,6 +2592,8 @@
           "answer_chars": 518,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Five minutes without load.",
@@ -2363,6 +2615,8 @@
           "answer_chars": 741,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "MASTER SWITCH to PRIME AND RUN.",
@@ -2384,6 +2638,8 @@
           "answer_chars": 829,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Rotate the AM-VM switch through each phase while watching the ammeter.",
@@ -2405,6 +2661,8 @@
           "answer_chars": 608,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Load lines to L1, L2 and L3.",
@@ -2430,6 +2688,8 @@
           "answer_chars": 148,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "MEP-802A: 800 lb.",
@@ -2451,6 +2711,8 @@
           "answer_chars": 385,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "In the holding clip on the right side of the skid base.",
@@ -2468,6 +2730,8 @@
           "answer_chars": 190,
           "correct": null,
           "abstained": null,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": null,
@@ -2480,6 +2744,8 @@
           "answer_chars": 109,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -2492,6 +2758,8 @@
           "answer_chars": 872,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Check that the DEAD CRANK switch is in NORMAL.",
@@ -2517,6 +2785,8 @@
           "answer_chars": 1173,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Check the FAULT INDICATOR lights (NO FUEL: paragraph 3-3.5.1).",
@@ -2538,6 +2808,8 @@
           "answer_chars": 426,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Dirty air cleaner element.",
@@ -2563,6 +2835,8 @@
           "answer_chars": 1668,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Low oil level: add oil.",
@@ -2588,6 +2862,8 @@
           "answer_chars": 268,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Improper fuel type.",
@@ -2609,6 +2885,8 @@
           "answer_chars": 1761,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Check the oil level.",
@@ -2638,6 +2916,8 @@
           "answer_chars": 1622,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Check the BATTERY CHARGER FUSE.",
@@ -2663,6 +2943,8 @@
           "answer_chars": 505,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Check and set the FREQUENCY adjust control.",
@@ -2684,6 +2966,8 @@
           "answer_chars": 1268,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Press-test the light.",
@@ -2709,6 +2993,8 @@
           "answer_chars": 175,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "LO 9-6115-641-12",
@@ -2726,6 +3012,8 @@
           "answer_chars": 1157,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -2738,6 +3026,8 @@
           "answer_chars": 419,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -2750,6 +3040,8 @@
           "answer_chars": 1554,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "The electrolyte must cover the plates, at the bottom of each cap cylinder.",
@@ -2771,6 +3063,8 @@
           "answer_chars": 1772,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Loosen the clamp and remove the end cap.",
@@ -2800,6 +3094,8 @@
           "answer_chars": 809,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "To the HOT line if hot.",
@@ -2821,6 +3117,8 @@
           "answer_chars": 319,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Water and MIL-A-46153 antifreeze at 1:1.",
@@ -2841,7 +3139,9 @@
           "manual": "Army_5kW_Generator_Operator_Manual.pdf",
           "answer_chars": 574,
           "correct": false,
-          "abstained": false,
+          "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -2854,6 +3154,8 @@
           "answer_chars": 206,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "VV-F-800 grade DF-1.",
@@ -2875,6 +3177,8 @@
           "answer_chars": 749,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "MASTER SWITCH to prime and run.",
@@ -2900,6 +3204,8 @@
           "answer_chars": 1078,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -2912,6 +3218,8 @@
           "answer_chars": 1097,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -2924,6 +3232,8 @@
           "answer_chars": 1272,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -2936,6 +3246,8 @@
           "answer_chars": 430,
           "correct": false,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Part number MS35000-1.",
@@ -2957,6 +3269,8 @@
           "answer_chars": 221,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -2968,7 +3282,9 @@
           "manual": "Army_5kW_Generator_Parts_Manual.pdf",
           "answer_chars": 533,
           "correct": false,
-          "abstained": false,
+          "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -2981,6 +3297,8 @@
           "answer_chars": 352,
           "correct": false,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Negative diode 101-193.",
@@ -3006,6 +3324,8 @@
           "answer_chars": 433,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -3017,7 +3337,9 @@
           "manual": "Army_5kW_Generator_Parts_Manual.pdf",
           "answer_chars": 197,
           "correct": false,
-          "abstained": false,
+          "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -3029,7 +3351,9 @@
           "manual": "Army_5kW_Generator_Parts_Manual.pdf",
           "answer_chars": 308,
           "correct": false,
-          "abstained": false,
+          "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -3042,6 +3366,8 @@
           "answer_chars": 90,
           "correct": true,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": true,
           "facts": [],
           "supported_in_source": true,
           "primary": true,
@@ -3054,6 +3380,8 @@
           "answer_chars": 143,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Part number 88-20488.",
@@ -3074,7 +3402,9 @@
           "manual": "Army_5kW_Generator_Parts_Manual.pdf",
           "answer_chars": 325,
           "correct": false,
-          "abstained": false,
+          "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -3087,6 +3417,8 @@
           "answer_chars": 839,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "102 in Figure 5.",
@@ -3116,6 +3448,8 @@
           "answer_chars": 880,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -3128,6 +3462,8 @@
           "answer_chars": 134,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -3140,6 +3476,8 @@
           "answer_chars": 49,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -3152,6 +3490,8 @@
           "answer_chars": 69,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -3164,6 +3504,8 @@
           "answer_chars": 215,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,
@@ -3175,7 +3517,9 @@
           "manual": "Army_5kW_Generator_Parts_Manual.pdf",
           "answer_chars": 458,
           "correct": false,
-          "abstained": false,
+          "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": false,
@@ -3188,6 +3532,8 @@
           "answer_chars": 393,
           "correct": false,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "Upper radiator hose 88-20189.",
@@ -3209,6 +3555,8 @@
           "answer_chars": 675,
           "correct": false,
           "abstained": false,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [
             {
               "fact": "2 drain cocks.",
@@ -3230,6 +3578,8 @@
           "answer_chars": 812,
           "correct": true,
           "abstained": true,
+          "recorded_abstained": null,
+          "supported_in_pages": null,
           "facts": [],
           "supported_in_source": null,
           "primary": true,

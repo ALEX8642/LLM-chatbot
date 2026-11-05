@@ -20,3 +20,7 @@ against 5 of 96 for v2, reviewer's counts; those read looked like judge misses),
 set dev's size. Leak search covered numbers and question similarity, so non-numeric paraphrase pairs may remain.
 Exact matching does not understand negation ("208 volts, not 120 volts" passes "120 volts"), so exact answers were
 removed where a nearby value could appear. Figure questions whose value is in the text layer do not test vision.
+
+**From regrading dev (2026-11-05):** phi4 is lax on abstention and strict on source support, and these lean opposite ways
+between the systems. Decide before the test run whether abstention should come from the second judge, and require the blind
+session to cover both (the 6 v2 disagreements with its record, and correct v1 answers rejected on source support).
