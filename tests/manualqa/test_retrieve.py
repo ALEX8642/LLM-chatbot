@@ -103,3 +103,28 @@ def test_unknown_reranker_is_refused():
 
     with pytest.raises(ValueError):
         make_reranker("nope:x")
+
+
+def test_qwen_reranker_keeps_the_end_of_its_prompt_when_a_document_is_cut():
+    from manualqa.retrieve import QwenReranker
+
+    class Encoded(dict):
+        def to(self, device):
+            return self
+
+    class Tok:
+        def encode(self, text, add_special_tokens=False):
+            return [1] * 3 if text == QwenReranker.PREFIX else [2] * 2
+
+        def __call__(self, texts, max_length, **kw):
+            return {"input_ids": [[9] * max_length for _ in texts]}
+
+        def pad(self, ids, **kw):
+            return Encoded(ids)
+
+    r = QwenReranker.__new__(QwenReranker)
+    r.tokenizer, r.device = Tok(), "cpu"
+    r._prefix, r._suffix = [1] * 3, [2] * 2
+    ids = r._encode("q", ["x" * 99999])["input_ids"][0]
+    assert ids[-2:] == [2, 2] and ids[:3] == [1, 1, 1]
+    assert len(ids) == QwenReranker.MAX_LENGTH

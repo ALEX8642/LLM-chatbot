@@ -46,7 +46,10 @@ class CrossEncoderReranker:
 
 
 class QwenReranker:
-    """Qwen3-Reranker: a causal model asked yes or no, scored by the odds of "yes"."""
+    """Qwen3-Reranker, as on its model card: a causal model asked yes or no, scored by the
+    odds of "yes"."""
+
+    MAX_LENGTH = 8192
 
     PREFIX = (
         "<|im_start|>system\nJudge whether the Document meets the requirements based on "
@@ -70,28 +73,33 @@ class QwenReranker:
             .to(self.device)
             .eval()
         )
+        self._prefix = self.tokenizer.encode(self.PREFIX, add_special_tokens=False)
+        self._suffix = self.tokenizer.encode(self.SUFFIX, add_special_tokens=False)
         self.yes = self.tokenizer.convert_tokens_to_ids("yes")
         self.no = self.tokenizer.convert_tokens_to_ids("no")
 
-    def _prompt(self, query: str, text: str) -> str:
-        return (
-            f"{self.PREFIX}<Instruct>: {self.INSTRUCT}\n<Query>: {query}\n"
-            f"<Document>: {text}{self.SUFFIX}"
+    def _encode(self, query: str, texts: list[str]):
+        """Only the query and document are cut, so the prompt's end always survives."""
+        bare = [
+            f"<Instruct>: {self.INSTRUCT}\n<Query>: {query}\n<Document>: {t}"
+            for t in texts
+        ]
+        ids = self.tokenizer(
+            bare,
+            padding=False,
+            truncation="longest_first",
+            return_attention_mask=False,
+            max_length=self.MAX_LENGTH - len(self._prefix) - len(self._suffix),
+        )
+        ids["input_ids"] = [self._prefix + x + self._suffix for x in ids["input_ids"]]
+        return self.tokenizer.pad(ids, padding=True, return_tensors="pt").to(
+            self.device
         )
 
     def score(self, query: str, texts: list[str]) -> list[float]:
         out: list[float] = []
         for start in range(0, len(texts), self.batch_size):
-            batch = [
-                self._prompt(query, t) for t in texts[start : start + self.batch_size]
-            ]
-            inputs = self.tokenizer(
-                batch,
-                padding=True,
-                truncation=True,
-                max_length=1024,
-                return_tensors="pt",
-            ).to(self.device)
+            inputs = self._encode(query, texts[start : start + self.batch_size])
             with self.torch.no_grad():
                 logits = self.model(**inputs).logits[:, -1, :]
             pair = logits[:, [self.no, self.yes]].float().softmax(-1)[:, 1]

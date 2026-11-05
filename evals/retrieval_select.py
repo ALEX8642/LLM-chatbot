@@ -83,6 +83,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--ingest", type=Path, required=True)
     ap.add_argument("--qa", type=Path, default=Path("evals/qa.jsonl"))
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--rerankers", nargs="*", help="only these; default all")
     args = ap.parse_args(argv)
     args.out.mkdir(parents=True, exist_ok=True)
     items = [i for i in load_items(args.qa) if i.category != "unanswerable"]
@@ -123,6 +124,8 @@ def main(argv: list[str] | None = None) -> int:
 
     results: dict[tuple[str, str], dict] = {}
     for spec, size in RERANKERS.items():
+        if args.rerankers and spec not in args.rerankers:
+            continue
         try:
             reranker = make_reranker(spec, batch_size=2 if size >= LARGE else 8)
             for emb, pool in pools.items():
@@ -159,6 +162,11 @@ def main(argv: list[str] | None = None) -> int:
         reranker = None
         _free_gpu()
 
+    previous = args.out / "summary.json"
+    if previous.exists():  # a partial rerun keeps the other pairs' results
+        for r in json.loads(previous.read_text())["results"]:
+            pair = (r.pop("embedder"), r.pop("reranker"))
+            results.setdefault(pair, r)
     chosen = choose(results)
     report = {
         "items": len(items),
