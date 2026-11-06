@@ -149,3 +149,16 @@ def test_qwen_reranker_scores_stay_with_their_texts_when_batched_by_length():
     r._encode = lambda q, texts: {"input_ids": torch.tensor([[len(t)] for t in texts])}
     got = r.score("q", ["aaa", "a", "aaaaa", "aa"])
     assert sorted(range(4), key=lambda i: got[i]) == [1, 3, 0, 2]
+
+
+def test_gpu_allocator_setting_is_a_default_not_an_override():
+    import os
+    import subprocess
+    import sys
+
+    env = {**os.environ, "PYTORCH_CUDA_ALLOC_CONF": "max_split_size_mb:64"}
+    code = "import manualqa, os; print(os.environ['PYTORCH_CUDA_ALLOC_CONF'])"
+    out = subprocess.run(
+        [sys.executable, "-c", code], env=env, capture_output=True, text=True
+    )
+    assert out.stdout.strip() == "max_split_size_mb:64"
