@@ -88,6 +88,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--rerankers", nargs="*", help="only these; default all")
     ap.add_argument("--embedders", nargs="*", help="only these; default all")
     ap.add_argument(
+        "--max-length", type=int, default=8192, help="reranker prompt limit, tokens"
+    )
+    ap.add_argument(
         "--half-from",
         type=float,
         default=LARGE,
@@ -144,12 +147,14 @@ def main(argv: list[str] | None = None) -> int:
                 spec,
                 batch_size=2 if size >= LARGE else 8,
                 half=size >= args.half_from,
+                max_length=args.max_length,
             )
             for emb, pool in pools.items():
                 rows = []
                 start = time.perf_counter()
                 for it in items:
                     cands = pool[it.id]
+                    item_start = time.perf_counter()
                     got = (
                         reranker.score(it.question, [c.text for c in cands])
                         if cands
@@ -163,9 +168,13 @@ def main(argv: list[str] | None = None) -> int:
                         ordered_pages(cands), it.gold_pages
                     )["hit"]
                     row["id"], row["category"] = it.id, it.category
+                    row["rerank_s"] = round(time.perf_counter() - item_start, 2)
                     rows.append(row)
                 summary = summarize(rows)
                 summary["rerank_s"] = (time.perf_counter() - start) / len(items)
+                seconds = sorted(r["rerank_s"] for r in rows)
+                summary["rerank_p95_s"] = seconds[int(0.95 * len(seconds))]
+                summary["rerank_max_s"] = seconds[-1]
                 results[(emb, spec)] = summary
                 with (args.out / "per_item.jsonl").open("a") as f:
                     f.write(
@@ -188,6 +197,7 @@ def main(argv: list[str] | None = None) -> int:
     report = {
         "items": len(items),
         "half_from": args.half_from,
+        "max_length": args.max_length,
         "chosen": chosen,
         "failed": failed,
         "costs": costs,

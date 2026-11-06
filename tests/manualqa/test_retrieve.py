@@ -123,7 +123,7 @@ def test_qwen_reranker_keeps_the_end_of_its_prompt_when_a_document_is_cut():
             return Encoded(ids)
 
     r = QwenReranker.__new__(QwenReranker)
-    r.tokenizer, r.device = Tok(), "cpu"
+    r.tokenizer, r.device, r.max_length = Tok(), "cpu", QwenReranker.MAX_LENGTH
     r._prefix, r._suffix = [1] * 3, [2] * 2
     ids = r._encode("q", ["x" * 99999])["input_ids"][0]
     assert ids[-2:] == [2, 2] and ids[:3] == [1, 1, 1]

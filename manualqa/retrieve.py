@@ -49,7 +49,7 @@ class QwenReranker:
     """Qwen3-Reranker, as on its model card: a causal model asked yes or no, scored by the
     odds of "yes"."""
 
-    MAX_LENGTH = 8192
+    MAX_LENGTH = 8192  # the model card's
 
     PREFIX = (
         "<|im_start|>system\nJudge whether the Document meets the requirements based on "
@@ -67,11 +67,13 @@ class QwenReranker:
         device: str | None = None,
         batch_size: int = 8,
         half: bool = True,
+        max_length: int = MAX_LENGTH,
     ):
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
         self.name, self.torch, self.batch_size = model, torch, batch_size
+        self.max_length = max_length
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.tokenizer = AutoTokenizer.from_pretrained(model, padding_side="left")
         self.model = (
@@ -97,7 +99,7 @@ class QwenReranker:
             padding=False,
             truncation="longest_first",
             return_attention_mask=False,
-            max_length=self.MAX_LENGTH - len(self._prefix) - len(self._suffix),
+            max_length=self.max_length - len(self._prefix) - len(self._suffix),
         )
         ids["input_ids"] = [self._prefix + x + self._suffix for x in ids["input_ids"]]
         return self.tokenizer.pad(ids, padding=True, return_tensors="pt").to(
@@ -119,13 +121,20 @@ class QwenReranker:
         return out
 
 
-def make_reranker(spec: str, batch_size: int = 8, half: bool = True) -> Reranker:
+def make_reranker(
+    spec: str,
+    batch_size: int = 8,
+    half: bool = True,
+    max_length: int = QwenReranker.MAX_LENGTH,
+) -> Reranker:
     """``st:<model>`` for a cross-encoder, ``qwen:<model>`` for Qwen3-Reranker."""
     kind, _, model = spec.partition(":")
     if kind == "st":
         return CrossEncoderReranker(model)
     if kind == "qwen":
-        return QwenReranker(model, batch_size=batch_size, half=half)
+        return QwenReranker(
+            model, batch_size=batch_size, half=half, max_length=max_length
+        )
     raise ValueError(f"unknown reranker {spec!r}")
 
 
