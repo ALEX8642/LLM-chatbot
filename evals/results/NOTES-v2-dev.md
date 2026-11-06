@@ -223,3 +223,10 @@ cause is not known. p95 fell from 61 s to about 18 s over these runs, also unexp
 rose from 0.45 / 0.55 to 0.64 / 0.73 and table from 0.73 / 0.75 to 0.80 / 0.86, on 11 and 56 items. p50 rose from 10 s
 to 13 s; p95 from 18 s to 42 s. The slowest eight items are parts-manual questions spending 31-57 s in retrieval, which points to the reranker on long table chunks in batches of 2; not yet confirmed. Dev has now tuned this system
 repeatedly, so expect the test score to be lower.
+
+**Latency, still open.** Batching the reranker by length (`310c7df`) showed no clear gain: items ran at about 13 s
+either way, and the slow stretch late in the parts manual was 20 s against 22 s where the runs overlap. That run did
+not finish. It stalled for about 20 minutes around items 21-40 (63 s an item, against 13 s) and hit its 57-minute limit
+at item 159, so it has no p95 and no results were kept. This is the second unexplained stall on the laptop; the first
+slowed one attempt from about item 90. Both were on the 16 GB GPU, and neither has a known cause. The scored figures
+above come from the run before this change.
