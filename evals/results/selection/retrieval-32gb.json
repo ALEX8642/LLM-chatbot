@@ -1,0 +1,101 @@
+{
+ "items": 139,
+ "half_from": 8.0,
+ "chosen": [
+  "st:Qwen/Qwen3-Embedding-0.6B",
+  "qwen:Qwen/Qwen3-Reranker-4B"
+ ],
+ "failed": {},
+ "costs": {
+  "st:Qwen/Qwen3-Embedding-0.6B": {
+   "index_s": 35.719469626999995,
+   "query_s": 0.2018068502805756
+  },
+  "st:BAAI/bge-m3": {
+   "index_s": 25.602091630000004,
+   "query_s": 0.1477522993884892
+  },
+  "st:Qwen/Qwen3-Embedding-4B": {
+   "index_s": 68.81817519999998,
+   "query_s": 0.2896222264460431
+  },
+  "st:Qwen/Qwen3-Embedding-8B": {
+   "index_s": 69.72865643299997,
+   "query_s": 0.34707686913669056
+  }
+ },
+ "results": [
+  {
+   "embedder": "st:BAAI/bge-m3",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-4B",
+   "hit": 1.0,
+   "rr": 0.8610996916752311,
+   "all": 0.9712230215827338,
+   "candidate_hit": 1.0,
+   "rerank_s": 4.739241262309352
+  },
+  {
+   "embedder": "st:BAAI/bge-m3",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-8B",
+   "hit": 0.9856115107913669,
+   "rr": 0.8417951353203152,
+   "all": 0.9568345323741008,
+   "candidate_hit": 1.0,
+   "rerank_s": 2.6895780234820177
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-0.6B",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-4B",
+   "hit": 0.9856115107913669,
+   "rr": 0.8551044878383007,
+   "all": 0.9568345323741008,
+   "candidate_hit": 0.9928057553956835,
+   "rerank_s": 4.507906567122302
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-0.6B",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-8B",
+   "hit": 0.9784172661870504,
+   "rr": 0.8410071942446044,
+   "all": 0.9424460431654677,
+   "candidate_hit": 0.9928057553956835,
+   "rerank_s": 2.6260912376258982
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-4B",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-4B",
+   "hit": 0.9928057553956835,
+   "rr": 0.858530318602261,
+   "all": 0.9640287769784173,
+   "candidate_hit": 1.0,
+   "rerank_s": 4.6056894884460435
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-4B",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-8B",
+   "hit": 0.9712230215827338,
+   "rr": 0.8396968139773895,
+   "all": 0.935251798561151,
+   "candidate_hit": 1.0,
+   "rerank_s": 2.6748339084676296
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-8B",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-4B",
+   "hit": 0.9928057553956835,
+   "rr": 0.858530318602261,
+   "all": 0.9640287769784173,
+   "candidate_hit": 1.0,
+   "rerank_s": 4.6516114150215815
+  },
+  {
+   "embedder": "st:Qwen/Qwen3-Embedding-8B",
+   "reranker": "qwen:Qwen/Qwen3-Reranker-8B",
+   "hit": 0.9784172661870504,
+   "rr": 0.8408958547447757,
+   "all": 0.9424460431654677,
+   "candidate_hit": 1.0,
+   "rerank_s": 2.681721995618704
+  }
+ ]
+}

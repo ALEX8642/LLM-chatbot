@@ -1,8 +1,8 @@
 # 004: Embedder and reranker
 
 **Decision (2026-11-05):** keep `Qwen/Qwen3-Embedding-0.6B`; replace the reranker with `Qwen/Qwen3-Reranker-4B`, at
-half precision on 16 GB. **Provisional:** full precision and the 8B models have not been run. They need the 32 GB 5090,
-which Alex prefers to a downgraded model unless the difference does not matter.
+half precision. Everything runs on a 16 GB GPU. Checked on a 32 GB RTX 5090: full precision changes nothing that
+matters and the 8B models are no better, so the larger GPU is not needed.
 
 ## How it was chosen
 
@@ -23,7 +23,7 @@ more than 1.5 points, about two items. Results: `evals/results/selection/retriev
 | Qwen3 4B | Qwen3-Reranker-4B | 0.993 | 0.964 | 0.855 | 1.000 | 5.5 |
 
 BGE-M3 with the same reranker finds a gold page for all 139 items, two more than the choice. That is 1.44 points,
-just inside the margin, so the rule keeps the smaller embedder. Close enough to retest with the 5090's results.
+just inside the margin, so the rule keeps the smaller embedder.
 
 **End to end on the 172 dev items, against the old reranker:** primary 0.79 / 0.80 to 0.84 / 0.87 (phi4 / mistral),
 false declines 7 to 3, unanswerable questions answered 7 to 3. p50 10 s to 13 s, p95 18 s to 42 s; the slowest items spend 31-57 s in retrieval, on
@@ -37,10 +37,31 @@ An earlier version of this record kept the defaults, on figures that showed Qwen
 far worse. The wrapper cut whole prompts at 1,024 tokens, so long chunks lost the prompt's end, and with it the point
 where the model answers. Checking it against the model card found this. The Qwen rows above are from after the fix.
 
+## On 32 GB
+
+Alex prefers his 5090 over a downgraded model unless the difference does not matter, so the reduced setups were
+rerun there. Same rule, same items, same chunks; `evals/results/selection/retrieval-32gb.json`.
+
+| Embedder | Reranker | Gold page in top 8 | All gold pages in top 8 | MRR | Rerank s |
+|---|---|---|---|---|---|
+| Qwen3 0.6B | Qwen3-Reranker-4B, full | 0.986 | 0.957 | 0.855 | 4.5 |
+| BGE-M3 | Qwen3-Reranker-4B, full | 1.000 | 0.971 | 0.861 | 4.7 |
+| Qwen3 4B, full | Qwen3-Reranker-4B, full | 0.993 | 0.964 | 0.859 | 4.6 |
+| Qwen3 8B, half | Qwen3-Reranker-4B, full | 0.993 | 0.964 | 0.859 | 4.7 |
+| Qwen3 0.6B | Qwen3-Reranker-8B, half | 0.978 | 0.942 | 0.841 | 2.6 |
+| BGE-M3 | Qwen3-Reranker-8B, half | 0.986 | 0.957 | 0.842 | 2.7 |
+| Qwen3 4B, full | Qwen3-Reranker-8B, half | 0.971 | 0.935 | 0.840 | 2.7 |
+| Qwen3 8B, half | Qwen3-Reranker-8B, half | 0.978 | 0.942 | 0.841 | 2.7 |
+
+- **Full precision:** the reranker's item counts are identical to half precision on all three embedders run on both
+  machines, and MRR rises by at most 0.003.
+- **8B:** the 8B reranker is worse than the 4B on every embedder, and the 8B embedder matches the 4B. 8B at full
+  precision would need about 32 GB for its weights alone, so it ran at half; full-precision 8B remains unrun.
+- **BGE-M3 is the live alternative.** It again finds a gold page for all 139 items, and it indexes and queries faster
+  than Qwen3 0.6B here. The rule assumed a larger model costs more, which is not so for this pair. The choice stands
+  under the rule; it has not been run end to end.
+
 ## Limits
 
-- All Qwen3 rerankers ran at half precision; the 4B ones in batches of 2. The 4B embedder also ran at half precision.
-- Not run: full precision, the 8B embedder, the 8B reranker (not among the spec's candidates, but it exists).
-- If a 5090-only model wins by a meaningful margin, the spec's aim that a stranger can reproduce the system on 16 GB
-  needs the best 16 GB setup reported beside it.
+- On 16 GB the Qwen3 rerankers and 4B embedder ran at half precision; the 4B reranker in batches of 2.
 - Retrieval figures and the end-to-end run are dev only, and the same items tuned the checks.
