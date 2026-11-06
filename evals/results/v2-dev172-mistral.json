@@ -1,6 +1,6 @@
 {
   "kind": "graded-keyfacts",
-  "created": "2026-11-05T19:17:02+00:00",
+  "created": "2026-11-06T14:12:00+00:00",
   "raw_file": "evals/results/raw/v2-dev172.json",
   "config": {
     "system": "v2",
@@ -74,10 +74,10 @@
         }
       },
       "length_bias": {
-        "slope_per_100_chars": 0.0179,
+        "slope_per_100_chars": 0.0171,
         "ci95": [
-          -0.0164,
-          0.049
+          -0.0122,
+          0.0443
         ]
       },
       "items": [
@@ -112,7 +112,7 @@
           "id": "faa-ch1-02",
           "category": "single_page",
           "manual": "FAA_Weight_and_Balance_Handbook.pdf",
-          "answer_chars": 278,
+          "answer_chars": 258,
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,
@@ -494,7 +494,7 @@
           "id": "faa-ch2-13",
           "category": "single_page",
           "manual": "FAA_Weight_and_Balance_Handbook.pdf",
-          "answer_chars": 138,
+          "answer_chars": 386,
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,
@@ -513,7 +513,7 @@
           "id": "faa-ch2-14",
           "category": "table",
           "manual": "FAA_Weight_and_Balance_Handbook.pdf",
-          "answer_chars": 143,
+          "answer_chars": 105,
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,
@@ -601,7 +601,7 @@
           "id": "faa-ch3-02",
           "category": "single_page",
           "manual": "FAA_Weight_and_Balance_Handbook.pdf",
-          "answer_chars": 672,
+          "answer_chars": 1023,
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,
@@ -2031,11 +2031,11 @@
           "supported_in_pages": null,
           "facts": [
             {
-              "fact": "Battery cover 88-20243",
+              "fact": "Battery cover 88-20243.",
               "present": true
             },
             {
-              "fact": "Quantity 4",
+              "fact": "Quantity 4.",
               "present": false
             }
           ],
@@ -2879,7 +2879,7 @@
           "id": "op-3-1-06",
           "category": "table",
           "manual": "Army_5kW_Generator_Operator_Manual.pdf",
-          "answer_chars": 697,
+          "answer_chars": 822,
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,

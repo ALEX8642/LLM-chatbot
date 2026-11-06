@@ -24,3 +24,33 @@ removed where a nearby value could appear. Figure questions whose value is in th
 **From regrading dev (2026-11-05):** phi4 is lax on abstention and strict on source support, and these lean opposite ways
 between the systems. Decide before the test run whether abstention should come from the second judge, and require the blind
 session to cover both (the 6 v2 disagreements with its record, and correct v1 answers rejected on source support).
+
+## The system to freeze (2026-11-06)
+
+Tuned on dev only; the test set has not been run by any system.
+
+- **v2:** the `v2` branch at this commit. Text layer plus PaddleOCR-VL ingest; `Qwen3-Embedding-0.6B` + BM25; top 50
+  reranked by `Qwen3-Reranker-4B` at half precision to 8 chunks; Qwen3.8 at temperature 0; quote match, fact checks and
+  the meaning check. Decisions 002 and 004.
+- **Comparators:** v1 and v1 at temperature 0, unchanged.
+- **Judges:** phi4 primary, mistral second, grader prompt version 2 (decision 003).
+- **Hardware:** 16 GB GPU; the generator on the existing gateway.
+
+**Dev results to register as the expectation:** primary 0.83 / 0.87 (phi4 / mistral) against v1 0.50-0.54 and v1 at
+temperature 0 0.51-0.55. Expect test to be lower: dev steered many changes in this round. v1's dev grades predate no
+system change, since v1 did not change.
+
+**Add to what is reported:**
+
+- Time per answer, p50 and p95, with the hardware, and whether any stall occurred. Two dev attempts stalled for reasons
+  unknown, so a stall during the test run is to be reported, and the affected run repeated only if it times out.
+- The meaning check's removals on test, read by hand. On dev it removes 1 to 3 real claims and has caught no real
+  error since the page look was added, so its value is an open question for the report, not a claim.
+- Run-to-run noise: 165 of 172 dev answers matched between two runs differing only in a memory setting. Repeats on test
+  are needed to separate this from real differences.
+
+**Add to the blind session:**
+
+- It must confirm each save and show a stored count; earlier clicks were lost once, cause unknown.
+- The 6 v2 abstention items on which the judges disagreed.
+- Correct v1 answers rejected on source support (above).

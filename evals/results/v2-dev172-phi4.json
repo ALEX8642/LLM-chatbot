@@ -1,6 +1,6 @@
 {
   "kind": "graded-keyfacts",
-  "created": "2026-11-05T18:58:30+00:00",
+  "created": "2026-11-06T13:51:53+00:00",
   "raw_file": "evals/results/raw/v2-dev172.json",
   "config": {
     "system": "v2",
@@ -19,12 +19,12 @@
     {
       "summary": {
         "n": 172,
-        "n_graded": 171,
-        "judge_errors": 1,
-        "correct": 0.8713,
-        "primary": 0.8363,
-        "primary_pages": 0.8538,
-        "abstained": 0.1988
+        "n_graded": 170,
+        "judge_errors": 2,
+        "correct": 0.8706,
+        "primary": 0.8294,
+        "primary_pages": 0.8588,
+        "abstained": 0.2
       },
       "by_category": {
         "figure": {
@@ -47,11 +47,11 @@
         },
         "single_page": {
           "n": 62,
-          "n_graded": 62,
-          "judge_errors": 0,
-          "correct": 0.9032,
-          "primary": 0.8548,
-          "primary_pages": 0.871,
+          "n_graded": 61,
+          "judge_errors": 1,
+          "correct": 0.9016,
+          "primary": 0.8525,
+          "primary_pages": 0.8852,
           "abstained": 0.0
         },
         "table": {
@@ -59,7 +59,7 @@
           "n_graded": 56,
           "judge_errors": 0,
           "correct": 0.8393,
-          "primary": 0.8036,
+          "primary": 0.7857,
           "primary_pages": 0.8393,
           "abstained": 0.0357
         },
@@ -74,10 +74,10 @@
         }
       },
       "length_bias": {
-        "slope_per_100_chars": 0.0203,
+        "slope_per_100_chars": 0.0187,
         "ci95": [
-          -0.0122,
-          0.049
+          -0.0116,
+          0.048
         ]
       },
       "items": [
@@ -112,7 +112,7 @@
           "id": "faa-ch1-02",
           "category": "single_page",
           "manual": "FAA_Weight_and_Balance_Handbook.pdf",
-          "answer_chars": 278,
+          "answer_chars": 258,
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,
@@ -180,7 +180,7 @@
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,
-          "supported_in_pages": false,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "A deliberate attempt to load the aircraft for the most critical balance condition.",
@@ -249,7 +249,7 @@
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,
-          "supported_in_pages": true,
+          "supported_in_pages": false,
           "facts": [
             {
               "fact": "Unsecured dogs moved aft during takeoff.",
@@ -494,26 +494,21 @@
           "id": "faa-ch2-13",
           "category": "single_page",
           "manual": "FAA_Weight_and_Balance_Handbook.pdf",
-          "answer_chars": 138,
-          "correct": true,
-          "abstained": false,
+          "answer_chars": 386,
+          "correct": null,
+          "abstained": null,
           "recorded_abstained": false,
-          "supported_in_pages": true,
-          "facts": [
-            {
-              "fact": "The moment is divided by 1,000 to make it more manageable.",
-              "present": true
-            }
-          ],
-          "supported_in_source": true,
-          "primary": true,
-          "judge_error": null
+          "supported_in_pages": null,
+          "facts": [],
+          "supported_in_source": null,
+          "primary": null,
+          "judge_error": "judge returned [{'fact': 'The moment is divided by 1,000 to make it more manageable.', 'present': True}, {'fact': 'Moment indexes are used to eliminate large numbers that result from multiplying weight by arm, which can be awkward to calculate and a source of error.', 'present': True}, {'fact': 'The"
         },
         {
           "id": "faa-ch2-14",
           "category": "table",
           "manual": "FAA_Weight_and_Balance_Handbook.pdf",
-          "answer_chars": 143,
+          "answer_chars": 105,
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,
@@ -601,7 +596,7 @@
           "id": "faa-ch3-02",
           "category": "single_page",
           "manual": "FAA_Weight_and_Balance_Handbook.pdf",
-          "answer_chars": 672,
+          "answer_chars": 1023,
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,
@@ -1098,7 +1093,7 @@
               "present": true
             },
             {
-              "fact": "CG in percent MAC 27.1%.",
+              "fact": "27.1% MAC.",
               "present": true
             }
           ],
@@ -1290,7 +1285,7 @@
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,
-          "supported_in_pages": false,
+          "supported_in_pages": true,
           "facts": [
             {
               "fact": "Standard empty weight plus optional equipment.",
@@ -2879,7 +2874,7 @@
           "id": "op-3-1-06",
           "category": "table",
           "manual": "Army_5kW_Generator_Operator_Manual.pdf",
-          "answer_chars": 697,
+          "answer_chars": 822,
           "correct": true,
           "abstained": false,
           "recorded_abstained": false,
@@ -3163,8 +3158,8 @@
               "present": true
             }
           ],
-          "supported_in_source": true,
-          "primary": true,
+          "supported_in_source": false,
+          "primary": false,
           "judge_error": null
         },
         {

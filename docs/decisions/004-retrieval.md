@@ -26,8 +26,7 @@ BGE-M3 with the same reranker finds a gold page for all 139 items, two more than
 just inside the margin, so the rule keeps the smaller embedder.
 
 **End to end on the 172 dev items, against the old reranker:** primary 0.79 / 0.80 to 0.84 / 0.87 (phi4 / mistral),
-false declines 7 to 3, unanswerable questions answered 7 to 3. p50 10 s to 13 s, p95 18 s to 42 s; the slowest items spend 31-57 s in retrieval, on
-the parts manual. See `evals/results/NOTES-v2-dev.md`.
+false declines 7 to 3, unanswerable questions answered 7 to 3. p50 10 s to 13 s, p95 18 s to 42 s; see "Running it". See `evals/results/NOTES-v2-dev.md`.
 
 Licences: Apache-2.0, except BGE-M3 (MIT).
 
@@ -57,9 +56,13 @@ rerun there. Same rule, same items, same chunks; `evals/results/selection/retrie
   machines, and MRR rises by at most 0.003.
 - **8B:** the 8B reranker is worse than the 4B on every embedder, and the 8B embedder matches the 4B. 8B at full
   precision would need about 32 GB for its weights alone, so it ran at half; full-precision 8B remains unrun.
-- **BGE-M3 is the live alternative.** It again finds a gold page for all 139 items, and it indexes and queries faster
-  than Qwen3 0.6B here. The rule assumed a larger model costs more, which is not so for this pair. The choice stands
-  under the rule; it has not been run end to end.
+- **BGE-M3, run end to end because it found a gold page for all 139 items and is faster:** primary 0.82 / 0.85 against
+  0.84 / 0.87, with both judges agreeing on 2 items better and 3 worse. No gain, so it was not adopted.
+
+## Running it
+
+`manualqa` sets `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`, which took the dev run's p95 from 42 s to 21 s on
+16 GB (one run; `evals/results/NOTES-v2-dev.md`). The reranker's prompt limit stays at the model card's 8,192 tokens.
 
 ## Limits
 

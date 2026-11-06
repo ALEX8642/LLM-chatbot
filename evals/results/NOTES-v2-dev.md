@@ -176,6 +176,7 @@ cumulative. v1 on the same items is 0.50-0.54.
 | Meaning check, block only (`e5563f9`) | 0.78 / 0.78 | 9 | 7 | 302 / 25 | 18 |
 | Meaning check, block then page (`3d2b431`) | 0.79 / 0.80 | 7 | 7 | 309 / 18 | 18 |
 | Qwen3-Reranker-4B at half precision (decision 004) | 0.84 / 0.87 | 3 | 3 | 305 / 13 | 42 |
+| Expandable GPU memory: the final configuration (`304eaec`'s setting) | 0.83 / 0.87 | 3 | 3 | 308 / 13 | 21 |
 
 A run takes one temperature-0 sample, so a change of one or two items is not evidence, and later rows mix check
 changes with whatever the changed evidence did to the model's output.
@@ -224,9 +225,21 @@ rose from 0.45 / 0.55 to 0.64 / 0.73 and table from 0.73 / 0.75 to 0.80 / 0.86, 
 to 13 s; p95 from 18 s to 42 s. The slowest eight items are parts-manual questions spending 31-57 s in retrieval, which points to the reranker on long table chunks in batches of 2; not yet confirmed. Dev has now tuned this system
 repeatedly, so expect the test score to be lower.
 
-**Latency, still open.** Batching the reranker by length (`310c7df`) showed no clear gain: items ran at about 13 s
-either way, and the slow stretch late in the parts manual was 20 s against 22 s where the runs overlap. That run did
-not finish. It stalled for about 20 minutes around items 21-40 (63 s an item, against 13 s) and hit its 57-minute limit
-at item 159, so it has no p95 and no results were kept. This is the second unexplained stall on the laptop; the first
-slowed one attempt from about item 90. Both were on the 16 GB GPU, and neither has a known cause. The scored figures
-above come from the run before this change.
+**Latency.** The stalls were searched, and tested as far as one run can.
+
+| Run | Retrieval p95 s | Worst retrieval s | Total p95 s | Shared memory peak GB |
+|---|---|---|---|---|
+| Default allocator | 29 | 57 | 42 | not logged |
+| BGE-M3, default allocator | 14 | 21 | 25 | 3.5 |
+| `expandable_segments` | 8 | 14 | 21 | 1.7 |
+
+The closest published match is the NVIDIA driver spilling GPU memory into system RAM: GPU busy at low power with
+shared memory climbing. It is not confirmed here. Shared memory sat at 3.5 GB for over 30 minutes of the BGE-M3 run
+with items at their normal 13 s, so spilling alone does not cause a stall. Two runs did stall, one from about item 90
+and one around items 21-40, for reasons still unknown. One run with the allocator setting had no stall, which is not
+proof, since other runs without it had none either. On the 32 GB 5090 the same reranker's worst question was 4.7 s.
+Batching by length (`310c7df`) showed no clear gain, and a prompt limit does not help: at 1,024 tokens it costs 3 items
+(0.986 to 0.964) with no speedup, and no chunk exceeds 1,271 tokens.
+
+The final run answers 165 of 172 items as the run before it did, and ranks 162 the same, from nothing but a memory
+setting and run-to-run variation. That is the noise to expect in the figures above.
