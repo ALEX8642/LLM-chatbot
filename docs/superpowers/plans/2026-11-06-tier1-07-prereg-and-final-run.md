@@ -7,9 +7,9 @@
 - [x] Draft registration.
 - [x] Alex agreed.
 - [x] Tag `prereg`.
-- [ ] Laptop: v1, v1 at temperature 0, v2 on test, 3 repeats each. Raw outputs committed.
-- [ ] Judge: phi4 on all repeats, mistral on the first. Judge outputs committed.
-- [ ] Analysis, first with the registered figures only.
+- [x] Laptop: v1, v1 at temperature 0, v2 on test, 3 repeats each. Raw outputs committed.
+- [x] Judge: phi4 on all repeats, mistral on the first. Judge outputs committed.
+- [x] Analysis, first with the registered figures only.
 - [ ] Blind session artifact, as `docs/prereg.md` sets out; Alex grades.
 - [ ] Judge validity per system; failure labels; misses.
-- [ ] Restore the laptop's sleep: `powercfg /change standby-timeout-ac 60` when the laptop work ends.
+- [x] Restore the laptop's sleep: `powercfg /change standby-timeout-ac 60` when the laptop work ends.
