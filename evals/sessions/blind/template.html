@@ -1,0 +1,128 @@
+<title>Blind Answer Grading</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: an inspector's grading sheet; the answer under test on the left, the pages it cites on the right. */
+:root{--bg:#f2f3f5;--panel:#fff;--fg:#1f2430;--muted:#5b6272;--line:#cfd3db;--accent:#34507a;--on-accent:#fff;--good:#2c7a43;--bad:#b23a2a;--mid:#8a5a00;--sheet:#fff;--quote:#eef1f6;
+--sans:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181e;--panel:#1e222a;--fg:#e5e8ee;--muted:#a1a8b6;--line:#363c48;--accent:#8fb0e0;--on-accent:#111722;--good:#6cc48a;--bad:#ec8877;--mid:#e5b45c;--sheet:#f4f4f2;--quote:#262b35;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15181e;--panel:#1e222a;--fg:#e5e8ee;--muted:#a1a8b6;--line:#363c48;--accent:#8fb0e0;--on-accent:#111722;--good:#6cc48a;--bad:#ec8877;--mid:#e5b45c;--sheet:#f4f4f2;--quote:#262b35;color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--sans);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px;box-sizing:border-box}
+#app{display:grid;grid-template-columns:minmax(320px,5fr) 6fr;gap:16px;height:100%;max-width:1500px;margin:auto}
+@media (max-width:820px){#app{grid-template-columns:1fr;height:auto}}
+.sheet{display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow-y:auto;padding-right:4px}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.bar{flex:1 1 120px;height:6px;background:var(--line);border-radius:3px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
+.saved{font-size:13px;color:var(--good);font-weight:500}.err{color:var(--bad);font-size:13px;font-weight:500}
+h1{font-size:18px;line-height:1.35;font-weight:600;margin:0;text-wrap:balance}
+.lab{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.block p{margin:0}.block ul{margin:0;padding-left:18px}
+.answer{background:var(--quote);border-radius:4px;padding:10px 12px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:40vh;overflow:auto}
+fieldset{border:1px solid var(--line);border-radius:4px;padding:8px 10px;margin:0;display:flex;flex-direction:column;gap:6px}
+legend{font-weight:600;font-size:14px;padding:0 4px}
+.opts{display:flex;gap:6px;flex-wrap:wrap}
+button{font:500 14px var(--sans);color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:7px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+button:disabled{opacity:.45;cursor:default}
+kbd{font:12px var(--mono);opacity:.75;margin-left:5px}
+.hint{font-size:13px;color:var(--muted)}
+.act{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pagepane{min-width:0;min-height:0;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:8px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;align-items:center;font-size:13px;color:var(--muted)}
+.tabs button{padding:2px 9px;font-size:13px}
+.page{background:var(--sheet);line-height:0}.page img{display:block;width:100%}
+.none{color:var(--muted);padding:24px}
+.sum{max-width:720px;margin:auto;grid-column:1/-1;display:flex;flex-direction:column;gap:12px}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .15s}}
+</style>
+<div id="app"><p>Loading the grading sheet…</p></div>
+<script>
+const SCREENS = /*SCREENS*/[];
+const CORRECT = [["correct","Correct","1"],["partly","Partly right","2"],["wrong","Wrong","3"],["declined","Says it can't answer","4"]];
+const SUPPORT = [["yes","Yes","y"],["no","No","n"],["unsure","Can't tell","c"]];
+const app = document.getElementById("app");
+const el = (t, a = {}, ...kids) => { const e = document.createElement(t);
+  for (const [k, v] of Object.entries(a)) k.startsWith("on") ? e.addEventListener(k.slice(2), v) : k === "class" ? e.className = v : e.setAttribute(k, v);
+  e.append(...kids.filter(k => k !== null && k !== undefined)); return e; };
+let db = null, grades = {}, at = 0, pageAt = 0, draft = {}, note = "", noteKind = "", loaded = false, summary = false, busy = false;
+try { const s = localStorage.getItem("blind-at"); if (s) at = Math.min(+s || 0, SCREENS.length - 1); } catch (e) {}
+const stored = () => SCREENS.filter(s => grades[s.code]).length;
+const firstOpen = () => { const n = SCREENS.findIndex(s => !grades[s.code]); return n < 0 ? 0 : n; };
+function go(n) { at = Math.max(0, Math.min(SCREENS.length - 1, n)); pageAt = 0; draft = { ...(grades[SCREENS[at].code] || {}) }; summary = false;
+  try { localStorage.setItem("blind-at", String(at)); } catch (e) {} render(); }
+async function save() {
+  const s = SCREENS[at];
+  if (!draft.correct || (draft.correct !== "declined" && !draft.support)) return;
+  if (!db) { note = "Not saved: this page is not connected to storage. Reload it and try again."; noteKind = "err"; render(); return; }
+  busy = true; render();
+  const record = { correct: draft.correct, support: draft.correct === "declined" ? null : draft.support, at: new Date().toISOString() };
+  try {
+    await db.doc("grades/" + s.code).set(record);
+    const back = await db.doc("grades/" + s.code).get();
+    if (!back.exists) throw new Error("the grade did not read back");
+    grades[s.code] = back.data(); busy = false;
+    note = "Saved. " + stored() + " of " + SCREENS.length + " stored."; noteKind = "saved";
+    if (stored() === SCREENS.length) { summary = true; render(); return; }
+    const next = SCREENS.findIndex((x, i) => i > at && !grades[x.code]);
+    go(next < 0 ? firstOpen() : next);
+  } catch (e) { busy = false; note = "Not saved (" + (e.message || e.code || "error") + "). Try again."; noteKind = "err"; render(); }
+}
+function pick(field, value) { draft[field] = value; if (field === "correct" && value === "declined") draft.support = null; render();
+  if (draft.correct && (draft.correct === "declined" || draft.support)) save(); }
+function choices(field, opts, disabled) {
+  return el("div", { class: "opts" }, ...opts.map(([v, label, key]) => el("button", { "aria-pressed": String(draft[field] === v), onclick: () => pick(field, v), ...(disabled ? { disabled: "" } : {}) }, label, el("kbd", {}, key))));
+}
+function pagePane(s) {
+  if (!s.pages.length) return el("div", { class: "pagepane" }, el("p", { class: "none" }, "This answer cites no page."));
+  const p = s.pages[Math.min(pageAt, s.pages.length - 1)];
+  return el("div", { class: "pagepane" },
+    el("div", { class: "tabs" }, el("span", {}, "Cited pages, " + s.manual + ":"), ...s.pages.map((x, i) => el("button", { "aria-pressed": String(i === pageAt), onclick: () => { pageAt = i; render(); } }, "p. " + x.page, s.pages.length > 1 ? el("kbd", {}, String(i + 5)) : null))),
+    el("div", { class: "page" }, el("img", { src: p.src, alt: "manual page " + p.page })));
+}
+function renderSummary() {
+  app.replaceChildren(el("div", { class: "sum" }, el("h1", {}, stored() + " of " + SCREENS.length + " graded and stored"),
+    el("p", {}, "Every grade has been read back from storage. Tell Claude the session is finished, and it will read them."),
+    el("div", { class: "act" }, el("button", { onclick: () => go(0) }, "Review the grades"))));
+}
+function render() {
+  if (summary) return renderSummary();
+  const s = SCREENS[at], g = grades[s.code];
+  const sheet = el("div", { class: "sheet" },
+    el("div", { class: "top" }, el("strong", {}, "Answer " + (at + 1) + " of " + SCREENS.length),
+      el("div", { class: "bar", role: "progressbar", "aria-valuenow": String(stored()), "aria-valuemax": String(SCREENS.length), "aria-label": "answers stored" }, el("i", { style: "width:" + (100 * stored() / SCREENS.length) + "%" })),
+      el("span", { class: "hint" }, stored() + " stored")),
+    !db && loaded ? el("p", { class: "err" }, "Not connected to storage, so grades cannot be saved. Reload this page.") : null,
+    note ? el("p", { class: noteKind }, note) : null,
+    el("h1", {}, s.question),
+    el("div", { class: "block" }, el("div", { class: "lab" }, s.unanswerable ? "Expected: the manual does not answer this" : "Reference answer"), el("p", {}, s.reference_answer)),
+    s.key_facts.length ? el("div", { class: "block" }, el("div", { class: "lab" }, "Key facts"), el("ul", {}, ...s.key_facts.map(f => el("li", {}, f)))) : null,
+    el("div", { class: "block" }, el("div", { class: "lab" }, "The answer to grade"), el("div", { class: "answer" }, s.answer)),
+    el("fieldset", {}, el("legend", {}, "Is the answer right?"), choices("correct", CORRECT, busy),
+      s.unanswerable ? el("span", { class: "hint" }, "For this question the right response is to say the manual doesn't answer it.") : null),
+    el("fieldset", {}, el("legend", {}, "Do the cited pages show what it says?"), choices("support", SUPPORT, busy || !draft.correct || draft.correct === "declined"),
+      el("span", { class: "hint" }, "Judge only the pages on the right. Skipped when the answer declines.")),
+    g ? el("p", { class: "saved" }, "Stored: " + CORRECT.find(c => c[0] === g.correct)[1] + (g.support ? ", pages: " + SUPPORT.find(c => c[0] === g.support)[1] : "")) : null,
+    el("div", { class: "act" }, el("button", { onclick: () => go(at - 1) }, "Previous", el("kbd", {}, "←")), el("button", { onclick: () => go(at + 1) }, "Next", el("kbd", {}, "→")),
+      el("button", { onclick: () => go(firstOpen()) }, "First ungraded")));
+  app.replaceChildren(sheet, pagePane(s));
+}
+document.addEventListener("keydown", e => {
+  if (e.ctrlKey || e.metaKey || e.altKey || summary || busy) return;
+  const k = e.key.toLowerCase(), c = CORRECT.find(x => x[2] === k), u = SUPPORT.find(x => x[2] === k);
+  if (c) pick("correct", c[0]); else if (u && draft.correct && draft.correct !== "declined") pick("support", u[0]);
+  else if (e.key === "ArrowRight") go(at + 1); else if (e.key === "ArrowLeft") go(at - 1);
+  else if (k >= "5" && k <= "8") { const i = +k - 5; if (i < SCREENS[at].pages.length) { pageAt = i; render(); } }
+});
+draft = {}; render();
+const timer = setTimeout(() => { loaded = true; render(); }, 10000);
+claude.use("db").then(d => { db = d; if (!d) { clearTimeout(timer); loaded = true; render(); return; }
+  d.collection("grades").get().then(snap => { clearTimeout(timer); loaded = true;
+    for (const x of snap.docs) grades[x.id] = x.data();
+    if (!SCREENS[at] || grades[SCREENS[at].code]) at = firstOpen();
+    draft = { ...(grades[SCREENS[at].code] || {}) };
+    note = stored() ? stored() + " of " + SCREENS.length + " already stored." : ""; noteKind = "saved";
+    if (stored() === SCREENS.length) summary = true;
+    render(); }).catch(() => { clearTimeout(timer); loaded = true; db = null; render(); }); });
+</script>
