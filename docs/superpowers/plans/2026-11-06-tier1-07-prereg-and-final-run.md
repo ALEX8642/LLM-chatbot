@@ -5,8 +5,8 @@
 
 - [x] Analysis code with tests (`evals/analysis.py`), run on dev.
 - [x] Draft registration.
-- [ ] Alex reads the draft. **Stop here until he says yes.**
-- [ ] Tag `prereg`.
+- [x] Alex agreed.
+- [x] Tag `prereg`.
 - [ ] Laptop: v1, v1 at temperature 0, v2 on test, 3 repeats each. Raw outputs committed.
 - [ ] Judge: phi4 on all repeats, mistral on the first. Judge outputs committed.
 - [ ] Analysis, first with the registered figures only.

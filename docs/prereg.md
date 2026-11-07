@@ -1,7 +1,7 @@
 # Pre-registration: v2 against v1 on the held-out test set
 
-**Status: DRAFT, not tagged.** It takes effect when the tag `prereg` is placed on the commit holding it, before any
-system runs on `evals/test.jsonl`. Everything after the tag that changes a result is reported as a deviation.
+**Registered at tag `prereg`, before any system ran on `evals/test.jsonl`.** Alexander agreed on 2026-11-06. Everything
+after the tag that changes a result is reported as a deviation.
 
 ## Question
 
@@ -67,6 +67,8 @@ independent, so the interval is the more cautious of the two, which is why both 
 - **v2:** this commit, as in `docs/prereg-notes.md` and decisions 002, 003 and 004. Abstains when no claim survives; no
   threshold to tune.
 - **v1 and v1 at temperature 0:** unchanged code at tag `v1`.
+- **Source text for grading:** the ingest's own `composed.jsonl`, sha256 begins `21ce1fd29589b646`. The dev grades above
+  used an earlier copy, differing in 75 of 3,497 blocks, mostly line-break characters, so they may move slightly.
 - **Environment:** the laptop's 16 GB GPU; generator through the existing gateway. Model names and revisions are recorded
   in each raw file.
 
