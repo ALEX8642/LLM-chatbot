@@ -54,7 +54,28 @@ items, and the design could only reliably detect a difference of about 28 points
   unexplained.
 - The raw files do not record the commit; they were produced from a detached checkout of `prereg`.
 
+## v2's misses (33 of 169)
+
+Labelled by Claude, first by rule from recorded facts, then by reading the answer against the reference. Not yet
+checked by Alexander. Per item: `evals/results/test/v2-misses.jsonl`.
+
+| Label | Items | What it means |
+|---|---|---|
+| Wrong abstention, model found nothing | 7 | No claim offered: the evidence did not hold the answer, or the model did not see it |
+| Incomplete | 6 | Right as far as it goes, but missing a key fact the reference has |
+| Judge rejected support | 5 | Correct and citing the gold page; the judge did not find the facts in the cited block |
+| Wrong abstention, claims removed by checks | 4 | The model answered; the fact checks removed every claim |
+| Answered an unanswerable question | 4 | Two read a value from a figure or another table |
+| Not retrieved | 2 | No gold page among those ranked |
+| Checker removed a true claim | 2 | The unit check (op-2-3-13) and the column check (parts-g08-02) removed correct claims |
+| Wrong passage, misread, judge miss | 1 each | |
+
+Read with care, two things stand out. **About 6 misses look like judge errors** (5 rejected support plus op-2-1-08, whose
+answer matches the reference); the blind grading should show whether they are. **The checks cost v2 up to 6 items**: two
+true claims removed outright, and four abstentions where every claim was removed, not all of them read yet. The checks
+are what make a citation trustworthy, so this is their price, now measured.
+
 ## Still to do (registered)
 
-- Blind grading by Alexander, and judge agreement per system with the 10-point rule.
-- Failure labels for every v2 miss, and the misses in the README.
+- Blind grading by Alexander (session published), and judge agreement per system with the 10-point rule.
+- The misses in the README.
