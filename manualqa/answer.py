@@ -71,9 +71,14 @@ class AnswerEvent:
 
 
 def _figure_claim(
-    raw: RawClaim, ev: Evidence, question: str, page: str
+    raw: RawClaim, ev: Evidence, question: str, page: str, checker=None
 ) -> CheckedClaim:
     facts = check_facts(raw.claim, ev.text, ev, question, page)
+    if facts.ok and checker is not None:
+        # a figure claim has no quote to match, so its page must say it
+        premise = f"{ev.text}\n{page}"[:PAGE_CHARS]
+        if checker.supported(raw.claim, premise) < MEANING_MIN:
+            facts = FactResult(False, "the page does not say this")
     status, reason = ("figure", None) if facts.ok else ("removed", facts.reason)
     return CheckedClaim(
         raw.claim, raw.block, raw.quote, ev.page, ev.boxes, status, reason
@@ -148,7 +153,7 @@ def answer_stream(
             unknown += 1
             return
         if ev.kind == "figure":
-            c = _figure_claim(raw, ev, query, _page_text(ctx, ev))
+            c = _figure_claim(raw, ev, query, _page_text(ctx, ev), checker)
             (kept if c.status == "figure" else removed).append(c)
             yield AnswerEvent(
                 "claim_settled" if c.status == "figure" else "claim_removed", c

@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { ask, type Claim, type Turn } from './api'
 import ClaimList from './ClaimList'
-import { answerText, applyEvent, newTurn, type TurnState } from './turn'
+import { answerText, applyEvent, newTurn, stopped, type TurnState } from './turn'
 
 interface Props {
   manual: string
@@ -30,13 +30,16 @@ export default function Conversation({ manual, selected, onSelect, onPage, onRem
     setTurns((ts) => [...ts, newTurn(q)])
     setQuestion('')
     setBusy(true)
+    let finished = false
     try {
       for await (const ev of ask(q, manual, history)) {
         update((t) => applyEvent(t, ev))
         if (ev.event === 'claim_removed') onRemoved(ev.data)
+        if (ev.event === 'done' || ev.event === 'error') finished = true
       }
+      if (!finished) update((t) => stopped(t, 'The answer stopped before it was checked.'))
     } catch (err) {
-      update((t) => ({ ...t, error: String(err) }))
+      update((t) => stopped(t, String(err)))
     } finally {
       setBusy(false)
     }

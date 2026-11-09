@@ -146,3 +146,24 @@ def test_row_quote_can_be_its_values_without_the_column_names():
     ev = row_evidence(hit)
     m = match_quote("Lubricating System Capacity 3.2 qts. (3.0 liters)", ev)
     assert m is not None and len(m.boxes) == 2 and "3.2" in m.source
+
+
+def test_a_values_only_row_match_reports_its_span_in_the_displayed_row():
+    hit = RowHit(
+        "t",
+        "m.pdf",
+        23,
+        "t",
+        3,
+        ["Item", "Spec"],
+        ["Lubricating System Capacity", "3.2 qts. (3.0 liters)"],
+        [Box(0, 0, 1, 0.1), Box(0, 0.1, 1, 0.2)],
+        None,
+        None,
+        None,
+    )
+    ev = row_evidence(hit)
+    m = match_quote("Lubricating System Capacity 3.2 qts.", ev)
+    assert m is not None
+    assert ev.text[m.span[0] : m.span[1]].startswith("Lubricating")
+    assert "3.2" in ev.text[m.span[0] : m.span[1]]

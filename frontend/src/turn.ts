@@ -37,6 +37,8 @@ export function applyEvent(t: TurnState, { event, data }: AnswerEvent): TurnStat
       return { ...t, claims: t.claims.filter((c) => !same(c, data)), removed: [...t.removed, data] }
     case 'done':
       return { ...t, done: data, pages: data.pages ?? t.pages }
+    case 'error':
+      return stopped(t, data.message ?? 'The answer failed.')
     default:
       return t
   }
@@ -44,3 +46,10 @@ export function applyEvent(t: TurnState, { event, data }: AnswerEvent): TurnStat
 
 /** The text a later turn sends back as this turn's answer. */
 export const answerText = (t: TurnState) => t.done?.text ?? t.claims.map((c) => c.claim).join('\n')
+
+/** An answer that ended without finishing: unchecked claims are not left on screen. */
+export const stopped = (t: TurnState, message: string): TurnState => ({
+  ...t,
+  error: message,
+  claims: t.claims.filter((c) => c.status !== 'pending'),
+})

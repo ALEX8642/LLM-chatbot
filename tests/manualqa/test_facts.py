@@ -263,3 +263,18 @@ def test_a_number_in_a_heading_is_not_evidence():
 def test_a_code_ending_in_a_letter_is_not_its_number():
     ev = text_ev("Oil ML-L-2104C or W-F-800")
     assert not check_facts("Use 2104 grade oil.", "Oil ML-L-2104C or W-F-800", ev).ok
+
+
+def test_an_identifier_must_match_a_whole_token():
+    ev = text_ev("Part number P14-8969, screw MS35338-44, set MEP-802A")
+    src = ev.text
+    assert not check_facts("The part number is P14-89.", src, ev).ok
+    assert not check_facts("Use screw MS35338-4.", src, ev).ok
+    assert not check_facts("The set is the MEP-802.", src, ev).ok
+    assert check_facts("The part number is P14-8969.", src, ev).ok
+
+
+def test_in_and_a_before_a_word_are_not_units():
+    ev = text_ev("Set the pressure to 15 psi")
+    assert check_facts("Set it to 15 in accordance with the table.", "15 psi", ev).ok
+    assert not check_facts("Set it to 15 in.", "15 psi", ev).ok

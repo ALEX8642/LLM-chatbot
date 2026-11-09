@@ -117,8 +117,28 @@ def _match_one(quote: str, ev: Evidence, after: int = 0) -> QuoteMatch | None:
     found = _match_text(quote, ev, ev.text, after)
     if found is None and ev.kind == "row" and ev.cells and len(_key(quote)[0]) > SHORT:
         # a row is shown as "column: value"; a quote can also be its values alone
-        found = _match_text(quote, ev, " ".join(c for c in ev.cells if c.strip()), 0)
+        layout = layout_row(ev.header or [""] * len(ev.cells), ev.cells, ev.group)[1]
+        values = _value_spans(ev)
+        text = " ".join(c for c in ev.cells if c.strip())
+        found = _match_text(quote, ev, text, _move(after, layout, values))
+        if found is not None:  # callers read spans in the row's displayed text
+            found.span = (
+                _move(found.span[0], values, layout),
+                _move(found.span[1], values, layout, end=True),
+            )
     return found
+
+
+def _move(pos: int, frm: list, to: list, end: bool = False) -> int:
+    """A position in one rendering of a row, in the other: same cell, same offset."""
+    target = {col: (s, e) for s, e, col in to}
+    for s, e, col in frm:
+        if (s < pos <= e) if end else (s <= pos < e):
+            ts, te = target[col]
+            return min(ts + (pos - s), te)
+        if pos < s:
+            return target[col][0]
+    return to[-1][1] if to else pos
 
 
 def _value_spans(ev: Evidence) -> list[tuple[int, int, int]]:

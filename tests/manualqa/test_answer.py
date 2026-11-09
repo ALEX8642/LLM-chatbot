@@ -184,7 +184,7 @@ def test_a_claim_that_fails_the_facts_is_not_sent_to_the_checker(ctx):
     assert checker.seen == []
 
 
-def test_figure_claims_are_not_sent_to_the_checker(ctx):
+def test_figure_claims_are_checked_against_their_page(ctx):
     fig = next(
         (i for i, b in ctx.blocks.items() if b.kind == "figure" and b.text.strip()),
         None,
@@ -192,5 +192,8 @@ def test_figure_claims_are_not_sent_to_the_checker(ctx):
     if fig is None:
         return
     checker = FakeChecker(0.0)
-    answer(Q, PARTS, ctx, FakeGen([claim("A figure claim.", fig, "")]), checker=checker)
-    assert checker.seen == []
+    ans = answer(
+        Q, PARTS, ctx, FakeGen([claim("A figure claim.", fig, "")]), checker=checker
+    )
+    assert len(checker.seen) == 1 and not ans.claims
+    assert ans.removed[0].reason == "the page does not say this"

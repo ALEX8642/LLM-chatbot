@@ -9,32 +9,36 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import threading
 import time
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Literal
 
 import pymupdf
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from manualqa.answer import AnswerEvent, answer_stream
 from manualqa.render import render_manual
 from manualqa.textnorm import norm
 
 REPLAY_GAP_S = 0.3
+MAX_QUESTION_CHARS, MAX_TURN_CHARS, MAX_TURNS = 2000, 8000, 20
+_ONE_AT_A_TIME = threading.Lock()  # one GPU, one table store connection
 
 
 class Turn(BaseModel):
-    role: str
-    content: str
+    role: Literal["user", "assistant"]
+    content: str = Field(max_length=MAX_TURN_CHARS)
 
 
 class AskRequest(BaseModel):
-    question: str
+    question: str = Field(min_length=1, max_length=MAX_QUESTION_CHARS)
     manual: str
-    history: list[Turn] = []
+    history: list[Turn] = Field(default=[], max_length=MAX_TURNS)
 
 
 def _payload(event: AnswerEvent) -> dict:
@@ -83,6 +87,7 @@ def create_app(
     replay: Path | None = None,
     pages_dir: Path | None = None,
     checker=None,
+    record: bool = True,
 ) -> FastAPI:
     app = FastAPI(title="manualqa")
     catalogue = read_manuals(Path(manuals))
@@ -122,12 +127,22 @@ def create_app(
     def live(req: AskRequest):
         history = [t.model_dump() for t in req.history]
         log = []
-        for event in answer_stream(
-            req.question, req.manual, ctx, gen, history, checker
-        ):
-            data = _payload(event)
-            log.append({"event": event.kind, "data": data, "t": time.monotonic()})
-            yield _frame(event.kind, data)
+        try:
+            with _ONE_AT_A_TIME:
+                for event in answer_stream(
+                    req.question, req.manual, ctx, gen, history, checker
+                ):
+                    data = _payload(event)
+                    log.append(
+                        {"event": event.kind, "data": data, "t": time.monotonic()}
+                    )
+                    yield _frame(event.kind, data)
+        except Exception as e:  # the client must not keep showing unchecked claims
+            data = {"message": f"The answer failed before it was checked ({e})."}
+            log.append({"event": "error", "data": data, "t": time.monotonic()})
+            yield _frame("error", data)
+        if not record:
+            return
         start = log[0]["t"] if log else 0
         for e in log:
             e["t"] = round(e["t"] - start, 3)
@@ -179,6 +194,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--embedder", default="st:Qwen/Qwen3-Embedding-0.6B")
     ap.add_argument("--reranker", default="qwen:Qwen/Qwen3-Reranker-4B")
     ap.add_argument("--port", type=int, default=8000)
+    ap.add_argument(
+        "--no-record", action="store_true", help="do not keep questions and answers"
+    )
     args = ap.parse_args(argv)
     ctx = gen = checker = None
     if not args.replay:
@@ -202,6 +220,7 @@ def main(argv: list[str] | None = None) -> int:
         args.replay,
         pages_dir=args.ingest / "pages",
         checker=checker,
+        record=not args.no_record,
     )
     uvicorn.run(app, host="127.0.0.1", port=args.port)
     return 0

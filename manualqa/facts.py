@@ -152,12 +152,22 @@ def _contains(text: str, kind: str, value: str) -> bool:
     text = _clean(text)
     if kind == "num":
         return float(value.replace(",", "")) in _numbers(text)
-    return value in _identifiers(text) or value in text
+    if value in _identifiers(text):
+        return True
+    # a whole token only: "p14-89" must not pass on "p14-8969"
+    return re.search(rf"(?<![\w-]){re.escape(value)}(?![\w-])", text) is not None
+
+
+_COMMON_WORDS = {"in", "a"}  # also English words: "15 in accordance", "1 a minute"
 
 
 def _unit_at(text: str, end: int) -> str | None:
     m = _AFTER_NUMBER.match(text, end)
-    return _UNIT.get(m.group(1)) if m else None
+    if not m:
+        return None
+    if m.group(1) in _COMMON_WORDS and re.match(r"\s*[a-z]", text[m.end() :]):
+        return None
+    return _UNIT.get(m.group(1))
 
 
 def _sign_at(text: str, start: int) -> str | None:
