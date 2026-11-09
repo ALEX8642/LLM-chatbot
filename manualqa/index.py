@@ -36,7 +36,7 @@ class SentenceTransformerEmbedder:
         model: str = "Qwen/Qwen3-Embedding-0.6B",
         device: str | None = None,
         half: bool = False,
-        batch_size: int = 16,
+        batch_size: int = 4,  # 16 peaks at 20 GiB on the longest chunks; same vectors
     ):
         from sentence_transformers import SentenceTransformer
 
@@ -77,7 +77,7 @@ class OpenAIEmbedder:
         return [d["embedding"] for d in data]
 
 
-def make_embedder(spec: str, half: bool = False, batch_size: int = 16) -> Embedder:
+def make_embedder(spec: str, half: bool = False, batch_size: int = 4) -> Embedder:
     """``st:<model>`` or ``openai:<model>`` (endpoint from EMBED_BASE_URL/EMBED_API_KEY)."""
     kind, _, model = spec.partition(":")
     if kind == "st":
