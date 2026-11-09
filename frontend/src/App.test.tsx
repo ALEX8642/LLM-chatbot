@@ -140,3 +140,13 @@ it('follow-up sends history and shows the rewritten question', async () => {
   await send({ event: 'retrieved', data: { pages: [20], standalone_question: 'How much OE/HDO 30 oil?' } })
   expect(screen.getByText(/How much OE\/HDO 30 oil\?/)).toBeInTheDocument()
 })
+
+it('the theme button switches to dark and back, and remembers the choice', async () => {
+  render(<App />)
+  await userEvent.click(screen.getByRole('button', { name: 'Switch to dark mode' }))
+  expect(document.documentElement.classList.contains('dark')).toBe(true)
+  expect(localStorage.getItem('theme')).toBe('dark')
+  await userEvent.click(screen.getByRole('button', { name: 'Switch to light mode' }))
+  expect(document.documentElement.classList.contains('dark')).toBe(false)
+  expect(localStorage.getItem('theme')).toBe('light')
+})

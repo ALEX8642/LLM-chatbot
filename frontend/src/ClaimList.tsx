@@ -13,7 +13,7 @@ function Mark({ status }: { status: Claim['status'] }) {
     return <span aria-label="checking" className="text-slate-400">…</span>
   if (status === 'figure')
     return <span aria-label="read from a figure, not checked" className="text-slate-400">◦</span>
-  return <span aria-label="verified" className="text-emerald-600">✓</span>
+  return <span aria-label="verified" className="text-emerald-600 dark:text-emerald-400">✓</span>
 }
 
 export default function ClaimList({ claims, removed, selected, onSelect }: Props) {
@@ -27,7 +27,7 @@ export default function ClaimList({ claims, removed, selected, onSelect }: Props
                 type="button"
                 onClick={() => onSelect(c)}
                 onMouseEnter={() => onSelect(c)}
-                className={`text-left rounded px-1 hover:bg-amber-100 ${selected && same(selected, c) ? 'bg-amber-100' : ''}`}
+                className={`text-left rounded px-1 hover:bg-amber-100 dark:hover:bg-amber-900/40 ${selected && same(selected, c) ? 'bg-amber-100 dark:bg-amber-900/40' : ''}`}
               >
                 <span>{c.claim}</span>
                 {c.status === 'figure' && <span className="ml-2 text-xs text-slate-500">read from figure</span>}
@@ -37,7 +37,7 @@ export default function ClaimList({ claims, removed, selected, onSelect }: Props
           ))}
         </ul>
       {removed.length > 0 && (
-        <details className="mt-2 text-sm text-slate-500">
+        <details className="mt-2 text-sm text-slate-500 dark:text-slate-400">
           <summary className="cursor-pointer">
             {removed.length} {removed.length === 1 ? 'claim' : 'claims'} removed, see why
           </summary>

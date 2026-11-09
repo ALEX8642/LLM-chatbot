@@ -52,12 +52,12 @@ export default function Conversation({ manual, selected, onSelect, onPage, onRem
         {turns.map((t, i) => (
           <li key={i}>
             <p className="font-medium">{t.question}</p>
-            {t.standalone && t.standalone !== t.question && <p className="text-xs text-slate-500">Searched for: {t.standalone}</p>}
+            {t.standalone && t.standalone !== t.question && <p className="text-xs text-slate-500 dark:text-slate-400">Searched for: {t.standalone}</p>}
             <div className="mt-2">
               <ClaimList claims={t.claims} removed={t.removed} selected={selected} onSelect={onSelect} />
               {!t.done && !t.error && <p className="text-sm text-slate-400">Checking the manual…</p>}
               {t.done?.abstained && (
-                <p className="text-slate-700">
+                <p className="text-slate-700 dark:text-slate-300">
                   {t.done.text}
                   {t.pages.length > 0 && !t.done.replay_miss && (
                     <span className="ml-1">
@@ -69,7 +69,7 @@ export default function Conversation({ manual, selected, onSelect, onPage, onRem
                             e.preventDefault()
                             onPage(p)
                           }}
-                          className="ml-2 text-blue-700 underline"
+                          className="ml-2 text-blue-700 underline dark:text-blue-400"
                         >
                           page {p}
                         </a>
@@ -78,18 +78,18 @@ export default function Conversation({ manual, selected, onSelect, onPage, onRem
                   )}
                 </p>
               )}
-              {t.error && <p className="text-red-700">Something went wrong: {t.error}</p>}
+              {t.error && <p className="text-red-700 dark:text-red-400">Something went wrong: {t.error}</p>}
             </div>
           </li>
         ))}
       </ol>
-      <form onSubmit={submit} className="flex gap-2 border-t p-3">
+      <form onSubmit={submit} className="flex gap-2 border-t border-slate-200 dark:border-slate-700 p-3">
         {questions ? (
           <select
             aria-label="question"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            className="min-w-0 flex-1 rounded border px-3 py-2"
+            className="min-w-0 flex-1 rounded border border-slate-200 dark:border-slate-700 bg-white px-3 py-2 dark:bg-slate-800"
           >
             <option value="">Choose a recorded question</option>
             {questions.map((q) => (
@@ -104,10 +104,10 @@ export default function Conversation({ manual, selected, onSelect, onPage, onRem
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Ask about this manual"
-            className="flex-1 rounded border px-3 py-2"
+            className="flex-1 rounded border border-slate-200 dark:border-slate-700 bg-white px-3 py-2 dark:bg-slate-800"
           />
         )}
-        <button type="submit" disabled={busy || !manual} className="rounded bg-slate-800 px-4 py-2 text-white disabled:opacity-50">
+        <button type="submit" disabled={busy || !manual} className="rounded bg-slate-800 px-4 py-2 text-white disabled:opacity-50 dark:bg-slate-200 dark:text-slate-900">
           Ask
         </button>
       </form>

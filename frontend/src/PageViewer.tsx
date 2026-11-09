@@ -11,11 +11,11 @@ interface Props {
 /** The page render with the claim's boxes drawn over it, once that page has loaded. */
 export default function PageViewer({ manual, page, boxes }: Props) {
   const [loaded, setLoaded] = useState<string | null>(null)
-  if (page == null) return <p className="p-6 text-slate-500">Select a claim to see its source on the page.</p>
+  if (page == null) return <p className="p-6 text-slate-500 dark:text-slate-400">Select a claim to see its source on the page.</p>
   const src = pageUrl(manual, page)
   return (
     <figure className="m-0">
-      <figcaption className="mb-1 text-sm text-slate-500">Page {page}</figcaption>
+      <figcaption className="mb-1 text-sm text-slate-500 dark:text-slate-400">Page {page}</figcaption>
       <div className="relative inline-block w-full">
         <img
           key={src}
