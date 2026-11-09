@@ -1,6 +1,6 @@
 # 005: An external benchmark beside the held-out test (proposed, 2026-11-08)
 
-**Status: research only, nothing run.** The registered result (`evals/results/TEST.md`) stands on the held-out test set.
+**Status: step 1 protocol fixed (below); not yet run.** The registered result (`evals/results/TEST.md`) stands on the held-out test set.
 An external benchmark would add a number outsiders recognise, reported as exploratory and kept apart from it.
 
 ## Candidates
@@ -35,3 +35,24 @@ later at little cost.
 
 **Before running:** confirm the licence and download the corpus; fix the protocol (corpus, metrics, judge) in this record
 before any run, as was done for the test set; and leave the v2 configuration exactly as registered.
+
+## Constraint and protocol (fixed 2026-11-08, before any run)
+
+Alexander ruled out paid APIs, so the GPT-5.2-judged answer score is off the table. FACTS Grounding needs frontier judges
+too, so it is out.
+
+**Step 1, retrieval only, no judge** (`evals/vidore.py`):
+
+- Corpus `vidore/vidore_v3_industrial` (CC-BY-4.0): all 5,244 pages, using the corpus's own page markdown, not v2's
+  parser, so this measures v2's retrieval alone.
+- Queries: the English ones, with the published graded relevance (qrels).
+- System: the registered v2 retrieval, unchanged: `Qwen3-Embedding-0.6B` + BM25 fused, top 50 reranked by
+  `Qwen3-Reranker-4B` at half precision; pages ranked by their best chunk. Searched across the whole corpus, since a
+  query does not name its document.
+- Metrics: NDCG@10 over pages (linear gains, as MTEB), recall@10, and the same NDCG before reranking.
+- Comparison: published NDCG@10 for this corpus, from the paper or the MTEB leaderboard, with the caveat that most
+  published retrievers read page images, not text.
+- Reported as exploratory, apart from the registered result. Nothing in v2 is changed for it.
+
+**Not decided:** an end-to-end answer run judged locally (phi4) would be free but not comparable with the published
+answer scores; the queries are partly machine-generated (`query_generator` "sdg"), which the report must say.
