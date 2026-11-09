@@ -194,3 +194,18 @@ def test_no_record_keeps_nothing(ctx, tmp_path):
     )
     events(ask(c))
     assert not (tmp_path / "rec").exists()
+
+
+def test_static_serves_the_interface_beside_the_api(tmp_path):
+    (tmp_path / "ui").mkdir()
+    (tmp_path / "ui" / "index.html").write_text("<title>Manual Q&A</title>")
+    app = create_app(
+        None,
+        None,
+        recordings=tmp_path / "rec",
+        manuals=ROOT / "manuals",
+        static=tmp_path / "ui",
+    )
+    c = TestClient(app)
+    assert "Manual Q&A" in c.get("/").text
+    assert PARTS in {m["file"] for m in c.get("/api/manuals").json()}

@@ -7,6 +7,7 @@ figures with text. Each piece has a stable id the generator copies into its clai
 
 from __future__ import annotations
 
+import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -78,7 +79,12 @@ class QwenReranker:
         self.tokenizer = AutoTokenizer.from_pretrained(model, padding_side="left")
         self.model = (
             AutoModelForCausalLM.from_pretrained(
-                model, torch_dtype=torch.float16 if half else torch.float32
+                model,
+                torch_dtype=(
+                    torch.float16
+                    if half and self.device == "cuda"  # half is slow on CPU
+                    else torch.float32
+                ),
             )
             .to(self.device)
             .eval()
@@ -127,13 +133,18 @@ def make_reranker(
     half: bool = True,
     max_length: int = QwenReranker.MAX_LENGTH,
 ) -> Reranker:
-    """``st:<model>`` for a cross-encoder, ``qwen:<model>`` for Qwen3-Reranker."""
+    """``st:<model>`` for a cross-encoder, ``qwen:<model>`` for Qwen3-Reranker, or
+    ``http:<model>`` for a rerank endpoint (RERANK_BASE_URL, RERANK_API_KEY)."""
     kind, _, model = spec.partition(":")
     if kind == "st":
         return CrossEncoderReranker(model)
     if kind == "qwen":
         return QwenReranker(
             model, batch_size=batch_size, half=half, max_length=max_length
+        )
+    if kind == "http":
+        return HttpReranker(
+            os.environ["RERANK_BASE_URL"], model, os.environ.get("RERANK_API_KEY")
         )
     raise ValueError(f"unknown reranker {spec!r}")
 

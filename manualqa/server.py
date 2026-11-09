@@ -18,6 +18,7 @@ from typing import Literal
 import pymupdf
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from manualqa.answer import AnswerEvent, answer_stream
@@ -74,6 +75,7 @@ def create_app(
     pages_dir: Path | None = None,
     checker=None,
     record: bool = True,
+    static: Path | None = None,
 ) -> FastAPI:
     app = FastAPI(title="manualqa")
     catalogue = read_manuals(Path(manuals))
@@ -166,6 +168,8 @@ def create_app(
         stream = replayed(req) if replay else live(req)
         return StreamingResponse(stream, media_type="text/event-stream")
 
+    if static:  # the built interface, so one process serves everything
+        app.mount("/", StaticFiles(directory=static, html=True), name="interface")
     return app
 
 
@@ -180,6 +184,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--embedder", default="st:Qwen/Qwen3-Embedding-0.6B")
     ap.add_argument("--reranker", default="qwen:Qwen/Qwen3-Reranker-4B")
     ap.add_argument("--port", type=int, default=8000)
+    ap.add_argument("--host", default="127.0.0.1")
+    ap.add_argument("--static", type=Path, help="serve the built interface from here")
     ap.add_argument(
         "--no-record", action="store_true", help="do not keep questions and answers"
     )
@@ -207,8 +213,9 @@ def main(argv: list[str] | None = None) -> int:
         pages_dir=args.ingest / "pages",
         checker=checker,
         record=not args.no_record,
+        static=args.static,
     )
-    uvicorn.run(app, host="127.0.0.1", port=args.port)
+    uvicorn.run(app, host=args.host, port=args.port)
     return 0
 
 

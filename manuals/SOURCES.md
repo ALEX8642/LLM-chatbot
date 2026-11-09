@@ -26,3 +26,10 @@ They cover different document styles, which stress different parts of the pipeli
 
 The two Army manuals describe the same equipment, which allows cross-manual questions (for example,
 "which part does this troubleshooting step refer to, and what is its part number").
+
+## Parses
+
+`paddle-parses.jsonl.gz` is PaddleOCR-VL's output for every page of the three manuals (the
+`spike-out/paddle/parses.jsonl` the evaluated index was built from, gzipped). Parsing takes hours on
+a GPU; ingesting this file takes minutes, so a fresh clone or the Docker image starts from it.
+With PyMuPDF 1.26.4 from `uv.lock`, it reproduces the tested `composed.jsonl` byte for byte.

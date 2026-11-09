@@ -6,6 +6,7 @@ All boxes are page-normalised (see ``manualqa.geometry``). Block ids are
 
 from __future__ import annotations
 
+import gzip
 import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -98,7 +99,10 @@ def append_page(pp: PageParse, path: Path) -> None:
 
 
 def load_pages(path: Path) -> list[PageParse]:
-    with Path(path).open(encoding="utf-8") as f:
+    """Pages from a JSONL file, gzipped when its name ends in ``.gz``."""
+    path = Path(path)
+    opener = gzip.open if path.suffix == ".gz" else open
+    with opener(path, "rt", encoding="utf-8") as f:
         return [_page_from_dict(json.loads(line)) for line in f if line.strip()]
 
 

@@ -105,6 +105,16 @@ def test_unknown_reranker_is_refused():
         make_reranker("nope:x")
 
 
+def test_http_reranker_takes_its_endpoint_from_the_environment(monkeypatch):
+    from manualqa.retrieve import HttpReranker, make_reranker
+
+    monkeypatch.setenv("RERANK_BASE_URL", "http://rerank.example/")
+    monkeypatch.setenv("RERANK_API_KEY", "k")
+    r = make_reranker("http:Qwen/Qwen3-Reranker-4B")
+    assert isinstance(r, HttpReranker) and r.name == "Qwen/Qwen3-Reranker-4B"
+    assert r._url == "http://rerank.example" and r._key == "k"
+
+
 def test_qwen_reranker_keeps_the_end_of_its_prompt_when_a_document_is_cut():
     from manualqa.retrieve import QwenReranker
 

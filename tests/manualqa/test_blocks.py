@@ -59,6 +59,16 @@ def test_round_trip(tmp_path):
     assert load_pages(tmp_path / "p.jsonl") == [pp, other]
 
 
+def test_gzipped_parses_load(tmp_path):
+    import gzip
+
+    pp = make_page()
+    dump_pages([pp], tmp_path / "p.jsonl")
+    gz = tmp_path / "p.jsonl.gz"
+    gz.write_bytes(gzip.compress((tmp_path / "p.jsonl").read_bytes()))
+    assert load_pages(gz) == [pp]
+
+
 def test_validate_accepts_good_page():
     assert validate(make_page()) == []
 

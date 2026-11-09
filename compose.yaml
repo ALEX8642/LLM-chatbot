@@ -1,0 +1,34 @@
+# docker compose --profile replay up   recorded answers, no GPU or model (open localhost:8000)
+# docker compose --profile live up     live answers on an NVIDIA GPU; copy .env.example to .env first
+# docker compose --profile cpu up      live answers without a GPU (slow unless the reranker is remote)
+
+x-app: &app
+  build: .
+  image: llm-chatbot:2
+  ports: ["127.0.0.1:${PORT:-8000}:8000"]  # this machine only: the server has no login
+  volumes: [data:/data, models:/models]
+  extra_hosts: ["host.docker.internal:host-gateway"]  # an endpoint on this machine
+
+services:
+  replay:
+    <<: *app
+    profiles: [replay]
+    environment: { MODE: replay }
+
+  live:
+    <<: *app
+    profiles: [live]
+    env_file: .env
+    deploy:
+      resources:
+        reservations:
+          devices: [{ driver: nvidia, count: all, capabilities: [gpu] }]
+
+  cpu:
+    <<: *app
+    profiles: [cpu]
+    env_file: .env
+
+volumes:
+  data:
+  models:
