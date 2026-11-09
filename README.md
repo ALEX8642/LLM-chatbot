@@ -105,40 +105,54 @@ a minimum credible version first, planned as a
 ## Repository layout
 
 ```
-manualqa/              v2 package
-  geometry.py          the one coordinate system (render pages; PDF points and pixels -> [0,1] boxes)
-  blocks.py            block schema every parser emits (lines, tables with cells, figures)
-  ocr_detect.py        decides per page whether the PDF text layer can be trusted
-  overlay.py           draws parses over rendered pages for checking by eye
-  parsers/             parser adapters (text layer reference, Docling, PaddleOCR-VL)
+manualqa/              v2: parsing, ingestion, retrieval, answer path with checks, server
+  parsers/             parser adapters (text layer, PaddleOCR-VL, Docling)
+  compose.py           text layer + Paddle merged per page; table_grid.py, table_geometry.py place cells
+  tables.py            SQLite table store and lookup_table
+  index.py, retrieve.py  dense + BM25 index, fusion, reranker, evidence
+  answer.py            claims, quote match, facts.py, claimcheck.py, abstention
+  server.py            FastAPI with streaming answers and replay
+frontend/              React interface: claims with page highlights
 evals/
-  qa.jsonl             42 dev questions with gold pages and reference answers
-  run_eval.py          harness: generate, score (retrieval metrics, LLM judge), summarise
-  results/             v1 baseline results and raw answers
-  spike/               parser spike: pages, expectations, runner, metrics, report
-manuals/               three public manuals (sources and licences in manuals/SOURCES.md)
+  pool/, qa.jsonl, test.jsonl   items; dev and the frozen test set
+  run_eval.py, grade.py         generate and grade (key facts, judge)
+  analysis.py                   the registered analysis
+  results/                      dev notes, TEST.md, raw outputs, judge outputs
+  sessions/                     human-check pages and their records
 docs/
-  superpowers/specs/   the v2 design
-  superpowers/plans/   implementation plans
-  spike/               spike overlays and metrics
-  decisions/           decision records (what was tried, what won, by how much)
-api.py, backend/, frontend/, docker-compose.yaml, scripts/
-                       v1 code (scored as the baseline; to be replaced)
+  decisions/           what was tried, what won, by how much (001-005)
+  prereg.md            the registration
+  superpowers/         the design and the plans
+manuals/               three public manuals (sources and licences in manuals/SOURCES.md)
+api.py, backend/, docker-compose.yaml, scripts/
+                       v1 code, kept because v1 is scored from it
 ```
 
-## Running what exists
+## Running it
 
-Requires Python 3.12 and [uv](https://docs.astral.sh/uv/).
+Needs Python 3.12, [uv](https://docs.astral.sh/uv/), Node 20+, a 16 GB NVIDIA GPU for parsing, embeddings and the
+reranker, and an OpenAI-compatible chat endpoint for a vision-capable generator (v2 was built and tested with Qwen3.8).
 
 ```bash
 uv sync --extra dev
-uv run pytest tests/ -q                                    # unit tests (GPU parser tests skip)
-uv run python -m evals.spike.run_spike --parser textlayer  # spike: parses, overlays, metrics
-uv run python -m evals.spike.report docs/spike/*/metrics.json
+uv run pytest tests/ -q                     # unit tests; GPU parser tests skip
+
+# 1. Parse every page with PaddleOCR-VL (about 5 h on an RTX 4090 Laptop; it can hang, so rerun with --resume)
+uv sync --extra paddle
+uv run python -m evals.spike.run_spike --parser paddle --pages all --resume
+
+# 2. Ingest: compose pages, table store, chunks, page renders, index (about 2 min)
+uv run python -m manualqa.ingest --raw spike-out/paddle/parses.jsonl --out data/ingest
+
+# 3. Serve the API, then the interface
+export GEN_BASE_URL=http://your-endpoint GEN_MODEL=your-model GEN_API_KEY=...
+uv run python -m manualqa.server --ingest data/ingest --port 8000
+cd frontend && npm install && npm run build && npx vite preview   # open the printed address
 ```
 
-The parser candidates need a GPU and their own optional dependencies; tests that need them run with
-`MANUALQA_PARSERS=1`. Reproducing the v1 baseline is described in [`evals/README.md`](evals/README.md).
+Without a GPU or generator, the interface can replay recorded answers:
+`uv run python -m manualqa.server --replay docs/demo/answers.jsonl --ingest data/ingest`. The replay still needs the page
+renders from step 2. Running the evaluation is described in [`EVAL.md`](EVAL.md) and [`evals/README.md`](evals/README.md).
 
 ## Data
 

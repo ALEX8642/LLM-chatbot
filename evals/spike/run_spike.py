@@ -82,10 +82,27 @@ def _parse_one(parser, pdf: Path, n: int, decision, page) -> PageParse:
         )
 
 
+def _page_list(pages: Path, manuals: Path) -> dict[str, list[int]]:
+    if str(pages) != "all":
+        return json.loads(pages.read_text())
+    import pymupdf
+
+    out = {}
+    for pdf in sorted(manuals.glob("*.pdf")):
+        with pymupdf.open(pdf) as doc:
+            out[pdf.name] = list(range(1, doc.page_count + 1))
+    return out
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--parser", required=True)
-    ap.add_argument("--pages", type=Path, default=HERE / "pages.json")
+    ap.add_argument(
+        "--pages",
+        type=Path,
+        default=HERE / "pages.json",
+        help='JSON {manual: [pages]}, or "all" for every page of every manual',
+    )
     ap.add_argument("--expectations", type=Path, default=HERE / "expectations.json")
     ap.add_argument("--manuals", type=Path, default=ROOT / "manuals")
     ap.add_argument("--out", type=Path, default=ROOT / "spike-out")
@@ -127,7 +144,7 @@ def main(argv: list[str] | None = None) -> int:
             out_file.write_text("")
 
     parses, page_metrics, checks = [], [], []
-    for manual, pages in json.loads(args.pages.read_text()).items():
+    for manual, pages in _page_list(args.pages, args.manuals).items():
         pdf = args.manuals / manual
         with pymupdf.open(pdf) as doc:
             for n in pages:
