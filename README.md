@@ -142,7 +142,7 @@ Live answers need an OpenAI-compatible chat endpoint serving a model that accept
 Studio or a hosted API); `.env.example` explains each setting. The `live` profile needs an NVIDIA GPU with 16 GB of
 memory and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
 The first start downloads the embedder and reranker (about 9 GB) and builds the index from the bundled parses (about
-5 minutes in all on a 16 GB laptop GPU, plus the download); later starts take about 40 seconds, and answers 10-20
+5 minutes in all on a 16 GB laptop GPU, download included); later starts take about 40 seconds, and answers 10-20
 seconds. The image is about 12 GB. The `cpu` profile runs the embedder on the processor and expects the reranker on a
 rerank endpoint (`.env.example`); it has been tested only in parts. Scores here were measured with Qwen3.8 as the
 generator; other models will behave differently. The server has no login, so compose publishes it on this machine only.
