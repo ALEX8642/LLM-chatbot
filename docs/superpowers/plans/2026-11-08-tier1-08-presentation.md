@@ -4,9 +4,9 @@
 `docs/superpowers/specs/2026-11-01-v2-design.md`, "Presentation".
 
 - [x] README: headline table, judge caveat, misses, cost, not yet tested.
-- [ ] `EVAL.md`: the method in one place (split, judge, registration, analysis, blind check, deviations).
+- [x] `EVAL.md`: the method in one place (split, judge, registration, analysis, blind check, deviations).
 - [ ] Demo GIF from the replay of real answers, replacing the still image.
 - [ ] Running v2: ingest, serve, replay, with the hardware it needs.
 - [ ] Repository layout section brought up to date.
-- [ ] External benchmark: decision 005, if Alexander agrees; a section left for it in the README.
+- [x] External benchmark: decision 005, if Alexander agrees; a section left for it in the README.
 - [ ] M4 review: reproduce from a cold clone.
