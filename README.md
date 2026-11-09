@@ -151,8 +151,8 @@ cd frontend && npm install && npm run build && npx vite preview   # open the pri
 ```
 
 Without a GPU or generator, the interface can replay recorded answers:
-`uv run python -m manualqa.server --replay docs/demo/answers.jsonl --ingest data/ingest`. The replay still needs the page
-renders from step 2. Running the evaluation is described in [`EVAL.md`](EVAL.md) and [`evals/README.md`](evals/README.md).
+`uv run python -m manualqa.server --replay docs/demo/answers.jsonl`, then step 3's interface. Pages are rendered from the
+bundled manuals as they are first shown, so this works from a fresh clone. Running the evaluation is described in [`EVAL.md`](EVAL.md) and [`evals/README.md`](evals/README.md).
 
 ## Data
 

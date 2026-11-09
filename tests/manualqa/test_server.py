@@ -135,3 +135,26 @@ def test_replay_unknown_question(client, tmp_path):
     )
     ((kind, data),) = events(resp)
     assert kind == "done" and data["replay_miss"] is True
+
+
+def test_replay_renders_a_missing_page_from_the_manual(client, tmp_path):
+    c, _, rec = client
+    ask(c)
+    (log,) = list(rec.glob("*.jsonl"))
+    empty = tmp_path / "pages"
+    replay = TestClient(
+        create_app(
+            None,
+            None,
+            recordings=tmp_path / "unused",
+            manuals=ROOT / "manuals",
+            replay=log,
+            pages_dir=empty,
+        )
+    )
+    got = replay.get("/api/pages/Army_5kW_Generator_Parts_Manual/59")
+    assert got.status_code == 200 and got.content[:2] == b"\xff\xd8"
+    assert (empty / "Army_5kW_Generator_Parts_Manual" / "p059.jpg").exists()
+    assert (
+        replay.get("/api/pages/Army_5kW_Generator_Parts_Manual/9999").status_code == 404
+    )

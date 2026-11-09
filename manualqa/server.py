@@ -14,11 +14,13 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 
+import pymupdf
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 
 from manualqa.answer import AnswerEvent, answer_stream
+from manualqa.render import render_manual
 from manualqa.textnorm import norm
 
 REPLAY_GAP_S = 0.3
@@ -106,8 +108,15 @@ def create_app(
     @app.get("/api/pages/{stem}/{page}")
     def page_image(stem: str, page: int) -> FileResponse:
         path = pages_root / stem / f"p{page:03d}.jpg" if pages_root else None
-        if stem not in stems or path is None or not path.exists():
+        if stem not in stems or path is None:
             raise HTTPException(404, "no such page")
+        if not path.exists():  # a fresh clone has the manuals but no renders yet
+            pdf = Path(manuals) / f"{stem}.pdf"
+            with pymupdf.open(pdf) as doc:
+                count = len(doc)
+            if not 1 <= page <= count:
+                raise HTTPException(404, "no such page")
+            render_manual(pdf, pages_root, [page])
         return FileResponse(path, media_type="image/jpeg")
 
     def live(req: AskRequest):
