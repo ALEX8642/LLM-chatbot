@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import threading
 import time
 from dataclasses import asdict
@@ -22,6 +21,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from manualqa.answer import AnswerEvent, answer_stream
+from manualqa.catalogue import read_manuals
 from manualqa.render import render_manual
 from manualqa.textnorm import norm
 
@@ -59,20 +59,6 @@ def _payload(event: AnswerEvent) -> dict:
 
 def _frame(kind: str, data: dict) -> str:
     return f"event: {kind}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
-
-
-def read_manuals(manuals: Path) -> list[dict]:
-    """Manuals from the table in manuals/SOURCES.md: file, title, pages."""
-    out = []
-    sources = manuals / "SOURCES.md"
-    for line in sources.read_text().splitlines() if sources.exists() else []:
-        cols = [c.strip() for c in line.strip().strip("|").split("|")]
-        if len(cols) >= 3 and cols[0].startswith("`") and cols[0].endswith(".pdf`"):
-            title = re.sub(r"[*_]", "", cols[1])
-            out.append(
-                {"file": cols[0].strip("`"), "title": title, "pages": int(cols[2])}
-            )
-    return out
 
 
 def _replay_key(manual: str, question: str, history: list) -> tuple:

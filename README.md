@@ -20,7 +20,8 @@ survive, the assistant says it could not find the answer.
   much larger generator than v1, so the gain is the pipeline and the model together.
 - **Public benchmark:** v2's retrieval scores NDCG@10 0.567 on ViDoRe V3's industrial manuals, placed 2nd of the 9 text
   retrievers in one vendor's published table when checked on 2026-11-09 (details below).
-- **Try it:** replay recorded answers without a GPU or a model, from a fresh clone (see [Running it](#running-it)).
+- **Try it:** [in the browser](https://alex8642.github.io/LLM-chatbot/), replaying 14 recorded answers in the real
+  interface; or from a fresh clone, with no GPU or model (see [Running it](#running-it)).
 - **Needs, to run live:** an NVIDIA GPU with 16 GB, and an OpenAI-compatible endpoint serving a vision-capable model.
 
 ## Result
@@ -122,7 +123,7 @@ and Node 20+.
 
 ```bash
 uv sync --extra dev
-uv run python -m manualqa.server --replay docs/demo/answers.jsonl --port 8000
+uv run python -m manualqa.server --replay docs/demo/replay.jsonl --port 8000
 cd frontend && npm install && npm run build && npx vite preview   # open the printed address
 ```
 
@@ -143,6 +144,9 @@ uv run python -m manualqa.ingest --raw spike-out/paddle/parses.jsonl --out data/
 export GEN_BASE_URL=https://your-endpoint GEN_MODEL=your-model GEN_API_KEY=...
 uv run python -m manualqa.server --ingest data/ingest --port 8000
 ```
+
+The browser demo is the same interface built with `--mode demo`, reading the recordings as static files
+(`.github/workflows/pages.yml`, `manualqa/static_demo.py`).
 
 Questions and answers are recorded to `data/recordings/` unless the server is started with `--no-record`. Running the
 evaluation: [`EVAL.md`](EVAL.md) and [`evals/README.md`](evals/README.md).

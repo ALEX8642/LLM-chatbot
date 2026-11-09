@@ -9,9 +9,10 @@ interface Props {
   onSelect: (c: Claim) => void
   onPage: (page: number) => void
   onRemoved: (c: Claim) => void
+  questions?: string[] // a fixed list to pick from, in place of free text
 }
 
-export default function Conversation({ manual, selected, onSelect, onPage, onRemoved }: Props) {
+export default function Conversation({ manual, selected, onSelect, onPage, onRemoved, questions }: Props) {
   const [turns, setTurns] = useState<TurnState[]>([])
   const [question, setQuestion] = useState('')
   const [busy, setBusy] = useState(false)
@@ -83,13 +84,29 @@ export default function Conversation({ manual, selected, onSelect, onPage, onRem
         ))}
       </ol>
       <form onSubmit={submit} className="flex gap-2 border-t p-3">
-        <input
-          type="text"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Ask about this manual"
-          className="flex-1 rounded border px-3 py-2"
-        />
+        {questions ? (
+          <select
+            aria-label="question"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            className="min-w-0 flex-1 rounded border px-3 py-2"
+          >
+            <option value="">Choose a recorded question</option>
+            {questions.map((q) => (
+              <option key={q} value={q}>
+                {q}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type="text"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder="Ask about this manual"
+            className="flex-1 rounded border px-3 py-2"
+          />
+        )}
         <button type="submit" disabled={busy || !manual} className="rounded bg-slate-800 px-4 py-2 text-white disabled:opacity-50">
           Ask
         </button>
