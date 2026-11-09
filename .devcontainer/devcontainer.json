@@ -2,9 +2,11 @@
   "name": "llm-chatbot",
   "image": "ghcr.io/astral-sh/uv:python3.12-bookworm-slim",
   "postCreateCommand": "uv sync --extra dev",
-  "forwardPorts": [8000],
+  "forwardPorts": [8000, 4173, 5173],
   "portsAttributes": {
-    "8000": { "label": "FastAPI" }
+    "8000": { "label": "API" },
+    "4173": { "label": "Interface (preview)" },
+    "5173": { "label": "Interface (dev)" }
   },
   "customizations": {
     "vscode": {
@@ -15,7 +17,7 @@
         "ms-python.flake8"
       ],
       "settings": {
-        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.defaultInterpreterPath": "${containerWorkspaceFolder}/.venv/bin/python",
         "[python]": {
           "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.formatOnSave": true

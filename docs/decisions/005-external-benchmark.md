@@ -1,4 +1,4 @@
-# 005: An external benchmark beside the held-out test (proposed, 2026-11-08)
+# 005: An external benchmark beside the held-out test (2026-11-08)
 
 **Status: step 1 run 2026-11-08; results below.** The registered result (`evals/results/TEST.md`) stands on the held-out test set.
 An external benchmark would add a number outsiders recognise, reported as exploratory and kept apart from it.
@@ -75,11 +75,16 @@ Published figures: [Mixedbread's text evals](https://www.mixedbread.com/evals/vi
 pre-parsed to markdown", tested September 2026. Mixedbread is a vendor reporting its own models, and its runs were not
 reproduced here.
 
-- **Standing, checked 2026-11-09:** 2nd of 9 in Mixedbread's text-retrieval table for this corpus, 0.072 behind the first.
-  That table lists only what Mixedbread chose to run, so the rank is a snapshot, not a leaderboard position. Image-based
+- **Standing, checked 2026-11-09:** placed among the 8 runs in Mixedbread's text-retrieval table for this corpus, v2
+  would be 2nd, 0.072 behind the first. v2 is not in that table; it was placed there by this project, and Mixedbread's
+  runs, a vendor's own, were not reproduced. The rank is a snapshot, not a leaderboard position. The protocol named the
+  paper or the MTEB leaderboard as the comparison; neither gave industrial-only text figures that were found, so this
+  vendor page was used instead. Image-based
   retrievers, which lead the official [ViDoRe leaderboard](https://huggingface.co/blog/nvidia/nemotron-colembed-v2), read
   page images and publish no industrial-only figures that were found, so they are not ranked against here.
-- v2's fused first stage beats both published single retrievers it is built from, and the reranker adds 7 points.
+- v2's fused first stage (0.497) is above published BM25 (0.456) and Qwen3-Embedding-8B (0.447), the larger sibling
+  of the 0.6B model v2 uses; the reranker adds 7 points.
+- The queries are partly machine-generated (the dataset's `query_generator` field), as the corpus card says.
 - The best published text pipeline is about 7 points ahead, outside v2's interval. On this corpus v2's retrieval is good
   but not the best available.
 - Recall@10 is 0.586. Time per query on the laptop GPU: p50 6.2 s, p95 7.8 s, almost all of it the 4B reranker.

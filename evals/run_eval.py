@@ -213,6 +213,7 @@ def cmd_generate(args) -> None:
 # Judge
 # -------------------------
 
+
 def first_json_object(text: str) -> Optional[Dict[str, Any]]:
     """The first complete JSON object in a reply; models often keep talking after it."""
     decoder = json.JSONDecoder()
@@ -270,6 +271,7 @@ class Judge:
 # Scoring
 # -------------------------
 
+
 class CachingJudge(Judge):
     """Repeats of one answer get one judge call; the judge is fixed at temperature 0."""
 
@@ -303,8 +305,8 @@ def cmd_score_keyfacts(args) -> None:
         summarize_grades,
     )
     from evals.items import load_items
-    from manualqa.blocks import load_pages
     from evals.prompts import PROMPT_VERSION
+    from manualqa.blocks import load_pages
 
     raw = json.loads(Path(args.raw).read_text())
     items = {i.id: i for i in load_items(Path(args.qa))}
@@ -393,12 +395,14 @@ def main() -> None:
     s = sub.add_parser("score", help="score a raw run")
     s.add_argument("raw")
     s.add_argument("--qa", default=str(DEFAULT_QA))
-    s.add_argument("--composed", default="data/ingest/composed.jsonl", help="source text the judge reads")
+    s.add_argument(
+        "--composed",
+        default="data/ingest/composed.jsonl",
+        help="source text the judge reads",
+    )
     s.add_argument("--max-repeats", type=int, help="grade only the first N repeats")
     s.add_argument("--reuse", help="keep good grades from this earlier file")
-    s.add_argument(
-        "--regrade-category", help="with --reuse, redo this category"
-    )
+    s.add_argument("--regrade-category", help="with --reuse, redo this category")
     s.add_argument("--out", required=True)
     s.set_defaults(func=cmd_score)
 

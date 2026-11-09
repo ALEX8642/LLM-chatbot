@@ -52,6 +52,8 @@ contrasts, the exploratory list and the analysis code ([`evals/analysis.py`](eva
 
 ## What this does not show
 
+- The pipeline's effect alone: v1 uses Command R7B (7B, local) and v2 Qwen3.8 (larger, behind an OpenAI-compatible
+  endpoint). A run of v2's pipeline with v1's model was planned and not done.
 - Any manual neither system was tuned near: test and dev share manuals.
 - Expert agreement: the human checks are by one non-expert.
 - Answer quality on a public benchmark: the published answer scores use a paid judge.
@@ -63,5 +65,5 @@ contrasts, the exploratory list and the analysis code ([`evals/analysis.py`](eva
 
 Raw generations and judge outputs are committed (`evals/results/raw/`, `evals/results/test/`), so the analysis re-runs
 without GPUs: `python -m evals.analysis --items evals/test.jsonl --a evals/results/test/v2-test-phi4.json --b
-evals/results/test/v1-test-phi4.json`. Regenerating needs a 16 GB GPU for retrieval and an OpenAI-compatible endpoint
-for the generator.
+evals/results/test/v1-test-phi4.json`. Regenerating needs an NVIDIA GPU with 16 GB for retrieval and an OpenAI-compatible
+endpoint serving a vision-capable model; v1's answers came from the code at tag `prereg`.

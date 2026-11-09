@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, v2]
   pull_request:
     branches: [main]
 
@@ -20,11 +20,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --extra dev
       - name: Black
-        run: uv run black --check manualqa/ evals/spike/ evals/items.py evals/table_audit.py evals/sessions/gold_export.py evals/sessions/build_gold.py evals/judge_select.py evals/grade.py evals/prompts.py evals/split.py evals/make_sections.py evals/analysis.py evals/vidore.py evals/checker_select.py evals/retrieval_select.py evals/claims/ tests/manualqa/ tests/evals/
+        run: uv run black --check manualqa evals tests
       - name: isort
-        run: uv run isort --check --diff manualqa/ evals/spike/ evals/items.py evals/table_audit.py evals/sessions/gold_export.py evals/sessions/build_gold.py evals/judge_select.py evals/grade.py evals/prompts.py evals/split.py evals/make_sections.py evals/analysis.py evals/vidore.py evals/checker_select.py evals/retrieval_select.py evals/claims/ tests/manualqa/ tests/evals/
+        run: uv run isort --check --diff manualqa evals tests
       - name: Flake8
-        run: uv run flake8 manualqa/ evals/spike/ evals/items.py evals/table_audit.py evals/sessions/gold_export.py evals/sessions/build_gold.py evals/judge_select.py evals/grade.py evals/prompts.py evals/split.py evals/make_sections.py evals/analysis.py evals/vidore.py evals/checker_select.py evals/retrieval_select.py evals/claims/ tests/manualqa/ tests/evals/
+        run: uv run flake8 manualqa evals tests
       - name: Tests
         run: uv run pytest tests/ -q
 
