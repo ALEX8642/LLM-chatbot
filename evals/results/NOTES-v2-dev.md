@@ -248,3 +248,10 @@ setting and run-to-run variation. That is the noise to expect in the figures abo
 to the run before. Retrieval p50 4.7 s to 4.4 s, p95 unchanged at 8.0 s; total p50 12.4 s, p95 20.6 s. On these three
 manuals' small index the reload was cheap, so this fix matters for large collections (ViDoRe's 9,368 chunks), not here.
 
+
+**Checks tightened after the registered run (`e9a6160`, `4322f13`), measured on dev 2026-11-10.** Whole-token
+identifiers, figure claims checked against their page, "in"/"a" not read as units, row spans mapped to the displayed
+row, letter-spaced OCR joined. All 172 dev answers are identical to the run before, with the same 13 removals;
+primary 0.835 / 0.866 (phi4 / mistral) against 0.829 / 0.866. The phi4 change is in the grading, not the answers: this
+grading read the current ingest's source text, the earlier one an older copy. So the fixes close holes found by review
+without changing any dev answer.

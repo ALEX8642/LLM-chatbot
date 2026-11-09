@@ -72,8 +72,8 @@ This tests retrieval only. [Decision 005](docs/decisions/005-external-benchmark.
 - v1 is the only baseline, and it uses a smaller model (above).
 - The meaning check, which asks the model whether the source says what a claim says, removed nothing on test.
 - Highlights cover whole printed lines, so one can include a neighbouring word.
-- The checks were tightened after the registered run (a part-number prefix, figure claims, letter-spaced OCR); those
-  changes are measured on dev in [`NOTES-v2-dev.md`](evals/results/NOTES-v2-dev.md), not on test.
+- The checks were tightened after the registered run (a part-number prefix, figure claims, letter-spaced OCR). On dev
+  they changed no answer ([`NOTES-v2-dev.md`](evals/results/NOTES-v2-dev.md)); they have not been run on test.
 
 ## How it works
 
