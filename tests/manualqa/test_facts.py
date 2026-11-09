@@ -278,3 +278,15 @@ def test_in_and_a_before_a_word_are_not_units():
     ev = text_ev("Set the pressure to 15 psi")
     assert check_facts("Set it to 15 in accordance with the table.", "15 psi", ev).ok
     assert not check_facts("Set it to 15 in.", "15 psi", ev).ok
+
+
+def test_letter_spaced_ocr_digits_match():
+    src = "T O R Q U E  2 5  F T - L B\nnext line"
+    ev = text_ev(src)
+    assert check_facts("Torque to 25 ft-lb.", src, ev).ok
+
+
+def test_separate_digits_on_an_ordinary_line_stay_apart():
+    src = "Items 1 2 and 3 are shown"
+    ev = text_ev(src)
+    assert not check_facts("Item 12 is shown.", src, ev).ok

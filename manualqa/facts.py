@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass
 
 from rapidfuzz import fuzz
@@ -120,7 +121,23 @@ def _facts(text: str) -> list[tuple[int, str, str]]:
     return sorted(found)
 
 
+_SPACED_RUN = re.compile(r"(?<!\S)(?:\S )+\S(?!\S)")
+_SPACED_LETTERS = re.compile(r"(?<!\S)[a-z](?: [a-z]){2,}(?!\S)")
+
+
+def _despace(text: str) -> str:
+    """Join letter-spaced OCR ("r a d i a t o r", "2 5") back into words, only on lines
+    that are visibly letter-spaced, so a row of separate digits ("1 2") stays apart."""
+    lines = []
+    for line in text.split("\n"):
+        if _SPACED_LETTERS.search(line):
+            line = _SPACED_RUN.sub(lambda m: m.group(0).replace(" ", ""), line)
+        lines.append(line)
+    return "\n".join(lines)
+
+
 def _clean(text: str) -> str:
+    text = _despace(unicodedata.normalize("NFKC", text).casefold())
     text = _OCR_ZERO.sub("0", _SPACED_HYPHEN.sub("-", norm(text)))
     return _JOINED_UNIT.sub(r"\1 \2", text)
 
