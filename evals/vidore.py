@@ -101,7 +101,13 @@ def main(argv: list[str] | None = None) -> int:
     reranker = make_reranker(args.reranker, batch_size=2)
 
     rows = []
-    for q in queries.itertuples():
+    started = time.perf_counter()
+    for n, q in enumerate(queries.itertuples(), 1):
+        if n % 20 == 0:
+            print(
+                f"query {n}/{len(queries)} {time.perf_counter() - started:.0f}s",
+                flush=True,
+            )
         g = gains.get(q.query_id, {})
         if not g:
             continue

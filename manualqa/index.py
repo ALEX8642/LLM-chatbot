@@ -129,9 +129,27 @@ def _client(path: Path | str):
     return QdrantClient(path=str(path))
 
 
+_OPEN: dict[str, object] = {}  # one search client per index, kept open
+
+
+def _search_client(path: Path | str):
+    """Opening a local index loads it from disk, which took seconds a query; keep it open."""
+    key = str(Path(path).resolve())
+    if key not in _OPEN:
+        _OPEN[key] = _client(path)
+    return _OPEN[key]
+
+
+def _forget(path: Path | str) -> None:
+    client = _OPEN.pop(str(Path(path).resolve()), None)
+    if client is not None:
+        client.close()
+
+
 def build_index(chunks: list[Chunk], path: Path | str, embedder: Embedder) -> None:
     from qdrant_client import models
 
+    _forget(path)  # the open search client would hold the index's lock
     client = _client(path)
     try:
         if client.collection_exists(COLLECTION):
@@ -191,28 +209,25 @@ def search(
         else None
     )
     ids, vals = _query_sparse(query)
-    client = _client(path)
-    try:
-        result = client.query_points(
-            COLLECTION,
-            prefetch=[
-                models.Prefetch(
-                    query=embedder.embed([query], query=True)[0],
-                    using="dense",
-                    limit=pool,
-                    filter=flt,
-                ),
-                models.Prefetch(
-                    query=models.SparseVector(indices=ids, values=vals),
-                    using="bm25",
-                    limit=pool,
-                    filter=flt,
-                ),
-            ],
-            query=models.FusionQuery(fusion=models.Fusion.RRF),
-            limit=k,
-            with_payload=True,
-        )
-    finally:
-        client.close()
+    client = _search_client(path)
+    result = client.query_points(
+        COLLECTION,
+        prefetch=[
+            models.Prefetch(
+                query=embedder.embed([query], query=True)[0],
+                using="dense",
+                limit=pool,
+                filter=flt,
+            ),
+            models.Prefetch(
+                query=models.SparseVector(indices=ids, values=vals),
+                using="bm25",
+                limit=pool,
+                filter=flt,
+            ),
+        ],
+        query=models.FusionQuery(fusion=models.Fusion.RRF),
+        limit=k,
+        with_payload=True,
+    )
     return [(Chunk(**p.payload), p.score) for p in result.points]

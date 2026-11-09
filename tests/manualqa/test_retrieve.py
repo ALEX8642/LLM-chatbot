@@ -162,3 +162,28 @@ def test_gpu_allocator_setting_is_a_default_not_an_override():
         [sys.executable, "-c", code], env=env, capture_output=True, text=True
     )
     assert out.stdout.strip() == "max_split_size_mb:64"
+
+
+def test_search_reuses_its_client_and_a_rebuild_releases_it(tmp_path, monkeypatch):
+    from fakes import FakeEmbedder
+
+    from manualqa import index
+    from manualqa.chunks import Chunk
+
+    chunks = [
+        Chunk("c1", "m", [1], "text", "", "fuel filter element"),
+        Chunk("c2", "m", [2], "text", "", "oil pressure"),
+    ]
+    opened = []
+    real = index._client
+    monkeypatch.setattr(index, "_client", lambda p: opened.append(p) or real(p))
+    monkeypatch.setattr(index, "_OPEN", {})
+    emb = FakeEmbedder()
+    index.build_index(chunks, tmp_path / "q", emb)
+    first = index.search("fuel filter", tmp_path / "q", emb, k=1)
+    index.search("oil pressure", tmp_path / "q", emb, k=1)
+    assert len(opened) == 2  # one for the build, one kept for every search
+    index.build_index(chunks, tmp_path / "q", emb)  # must not hit the lock
+    assert (
+        index.search("fuel filter", tmp_path / "q", emb, k=1)[0][0].id == first[0][0].id
+    )
