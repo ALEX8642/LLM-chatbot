@@ -100,7 +100,7 @@ a minimum credible version first, planned as a
 | Plan 5: eval set and judge | done: dev 172, test 169 frozen at tag `eval-test-frozen`, judge phi4 ([decision 003](docs/decisions/003-judge.md)) |
 | Plan 6: component selection | done: Qwen3-Reranker-4B, tested on 16 and 32 GB ([decision 004](docs/decisions/004-retrieval.md)) |
 | Plan 7: pre-registration and test run | done: [`evals/results/TEST.md`](evals/results/TEST.md) |
-| Plan 8: presentation | in progress: this README, `EVAL.md`, demo GIF, external benchmark ([proposal](docs/decisions/005-external-benchmark.md)) |
+| Plan 8: presentation | done: this README, [`EVAL.md`](EVAL.md), demo GIF, public benchmark ([decision 005](docs/decisions/005-external-benchmark.md)), cold-clone check; M4 review pending |
 
 ## Repository layout
 
