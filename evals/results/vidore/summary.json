@@ -1,0 +1,13 @@
+{
+ "corpus": "vidore/vidore_v3_industrial",
+ "queries": 283,
+ "pages": 5244,
+ "chunks": 9368,
+ "embedder": "st:Qwen/Qwen3-Embedding-0.6B",
+ "reranker": "qwen:Qwen/Qwen3-Reranker-4B",
+ "ndcg10": 0.5674600785902484,
+ "recall10": 0.5856875742968981,
+ "first_stage_ndcg10": 0.49737893520469134,
+ "index_s": 604.7,
+ "seconds_per_query": 6.3808127208480565
+}

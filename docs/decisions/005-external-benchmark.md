@@ -1,6 +1,6 @@
 # 005: An external benchmark beside the held-out test (proposed, 2026-11-08)
 
-**Status: step 1 protocol fixed (below); not yet run.** The registered result (`evals/results/TEST.md`) stands on the held-out test set.
+**Status: step 1 run 2026-11-08; results below.** The registered result (`evals/results/TEST.md`) stands on the held-out test set.
 An external benchmark would add a number outsiders recognise, reported as exploratory and kept apart from it.
 
 ## Candidates
@@ -56,3 +56,32 @@ too, so it is out.
 
 **Not decided:** an end-to-end answer run judged locally (phi4) would be free but not comparable with the published
 answer scores; the queries are partly machine-generated (`query_generator` "sdg"), which the report must say.
+
+## Step 1 result (2026-11-08)
+
+283 English queries over all 5,244 pages, the registered v2 retrieval, `evals/results/vidore/`. Intervals are 95%
+bootstrap over queries.
+
+| Retriever, on the corpus's page markdown | NDCG@10 (0–1) |
+|---|---|
+| **v2: Qwen3-Embedding-0.6B + BM25, fused** | **0.497** (0.454 to 0.540) |
+| **v2, then Qwen3-Reranker-4B (the system as registered)** | **0.567** (0.525 to 0.610) |
+| BM25 alone, published | 0.456 |
+| Qwen3-Embedding-8B alone, published | 0.447 |
+| Mixedbread embedding, published | 0.533 |
+| Mixedbread embedding + its reranker, published | 0.639 |
+
+Published figures: [Mixedbread's text evals](https://www.mixedbread.com/evals/vidore-v3-text), Industrial (EN), "documents
+pre-parsed to markdown", tested September 2026. Mixedbread is a vendor reporting its own models, and its runs were not
+reproduced here.
+
+- v2's fused first stage beats both published single retrievers it is built from, and the reranker adds 7 points.
+- The best published text pipeline is about 7 points ahead, outside v2's interval. On this corpus v2's retrieval is good
+  but not the best available.
+- Recall@10 is 0.586. Time per query on the laptop GPU: p50 6.2 s, p95 7.8 s, almost all of it the 4B reranker.
+- This measures retrieval only, on someone else's text extraction. v2's parser, table store, checks and answers are not
+  tested by it.
+
+**A defect found along the way.** The first full attempt timed out: v2's search reopened its index from disk for every
+query, which took tens of seconds on 9,368 chunks. Fixed in `81fd5da` (speed only), after the registered test run, so it
+is a labelled deviation from the registered system. The step 1 result above is from the fixed code.

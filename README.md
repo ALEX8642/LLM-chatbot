@@ -35,9 +35,13 @@ remove a true claim. About 6 failures look like judge errors. Every miss is labe
 
 **What it costs:** about 13 s an answer (p95 22 s) on a 16 GB laptop GPU, against v1's 2-3 s.
 
-**Not yet tested:** a manual neither system has seen; a public benchmark
-([proposal](docs/decisions/005-external-benchmark.md)); whether the meaning check, which removed nothing on test, earns
-its place.
+**On a public benchmark:** on ViDoRe V3's industrial manuals (5,244 pages of US Air Force technical orders, 283 queries),
+v2's retrieval scores NDCG@10 0.567 (0.525 to 0.610), above published text retrievers alone (0.45 to 0.53) and below the
+best published text pipeline with a reranker (0.639). Retrieval only, on the corpus's own text:
+[decision 005](docs/decisions/005-external-benchmark.md).
+
+**Not yet tested:** answers on a public benchmark without a paid judge; a manual neither system has seen; whether the
+meaning check, which removed nothing on test, earns its place.
 
 ## Why v2
 
