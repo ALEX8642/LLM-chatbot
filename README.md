@@ -1,18 +1,43 @@
-# LLM-Chatbot v2 (in progress)
+# LLM-Chatbot v2
 
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A question-answering assistant for technical manuals whose core promise is that **the reader can
-check every claim against the source while reading the answer**. In v2 each claim is tied to a verbatim quote from a
-specific text line, table row or figure, highlighted on the page, and checked before it is shown.
-Every design choice is made by measurement, against an evaluation built before the rebuild started.
+check every claim against the source while reading the answer**. Each claim is tied to a verbatim quote from a
+specific text line, table row or figure, highlighted on the page, and checked before it is shown. A claim that fails
+its checks is removed; if none survive, the assistant says it could not find the answer.
 
-> **Status (2026-11-03): this branch is a rebuild in progress, not a working app yet.** The shipped
-> v1 app (Haystack 2.x, Ollama, Qdrant + OpenSearch, React UI) is preserved at tag
-> [`v1`](https://github.com/ALEX8642/LLM-chatbot/tree/v1); its README there describes how to run
-> it. Its code is still on this branch only because the v1 baseline is scored from it; v2 replaces it.
+![A parts-list answer with its table row highlighted on the page](frontend/e2e/out/parts-row-highlight.png)
+
+## Result
+
+On 169 held-out questions over three public manuals, registered before the run
+([`docs/prereg.md`](docs/prereg.md), tag `prereg`):
+
+| Correct, with the key facts in the cited source | v2 | v1 |
+|---|---|---|
+| Judge (phi4, majority of 3 repeats) | **0.805** | 0.420 |
+| Difference, 95% clustered bootstrap interval | **+0.385** (0.21 to 0.52) | |
+| Exact McNemar | 72 items only v2 gets right, 7 only v1; p = 1e-14 | |
+| Blind human grading, 50 of those items | 42 of 50 | 31 of 50 |
+
+**The judge is harder on v1 than on v2.** In blind grading it wrongly failed 19 of 50 v1 answers against 7 of v2's,
+which triggers the registered warning. Most of those were picked because the judge had already rejected them; on the
+items drawn at random it agreed with the human grader on 52 of 58. Allowing for those misses, the gap is about 33 points
+rather than 38. v2 leads on every reading. Method, repeats, judges and limits: [`evals/results/TEST.md`](evals/results/TEST.md).
+
+**Where v2 still fails** (33 of 169): it declines when the answer is there (11; 4 because its own checks removed every
+claim), gives right but incomplete answers (6), answers questions the manuals do not cover (4), and twice its checks
+remove a true claim. About 6 failures look like judge errors. Every miss is labelled in
+[`evals/results/test/v2-misses.jsonl`](evals/results/test/v2-misses.jsonl).
+
+**What it costs:** about 13 s an answer (p95 22 s) on a 16 GB laptop GPU, against v1's 2-3 s.
+
+**Not yet tested:** a manual neither system has seen; a public benchmark
+([proposal](docs/decisions/005-external-benchmark.md)); whether the meaning check, which removed nothing on test, earns
+its place.
 
 ## Why v2
 
@@ -63,14 +88,11 @@ a minimum credible version first, planned as a
 
 | Step | State |
 |---|---|
-| Eval harness, 42 dev questions, v1 baseline | done ([`evals/`](evals/)) |
-| Design (revision 4) | done |
-| Plan 1: coordinate spike (parsers, OCR detection, overlays) | done: PaddleOCR-VL chosen over Docling ([decision 001](docs/decisions/001-parser-and-coordinates.md)) |
-| Plan 2: ingestion (hybrid text layer + Paddle, tables, chunks, index) | done: 363 pages, 92% of table cells boxed ([decision 002](docs/decisions/002-ingestion.md)) |
-| Plan 3: answer path (checked claims, removal reasons, abstention) | done: exploratory dev runs in [`evals/results/NOTES-v2-dev.md`](evals/results/NOTES-v2-dev.md) |
-| Plan 4: overlay UI (server, replay, frontend) | done: [M1 package](docs/m1/README.md), review pending |
-| Plan 5: eval set and judge | in progress: 344 items split dev 172 / test 172, judge chosen ([decision 003](docs/decisions/003-judge.md)), v1 re-graded on dev; gold-answer session and test freeze next |
-| Plans 6–8: component selection, pre-registered final run, presentation | not started |
+| Plans 1–4: coordinate spike, ingestion, answer path, overlay UI | done ([decisions 001](docs/decisions/001-parser-and-coordinates.md), [002](docs/decisions/002-ingestion.md); [M1](docs/m1/README.md)) |
+| Plan 5: eval set and judge | done: dev 172, test 169 frozen at tag `eval-test-frozen`, judge phi4 ([decision 003](docs/decisions/003-judge.md)) |
+| Plan 6: component selection | done: Qwen3-Reranker-4B, tested on 16 and 32 GB ([decision 004](docs/decisions/004-retrieval.md)) |
+| Plan 7: pre-registration and test run | done: [`evals/results/TEST.md`](evals/results/TEST.md) |
+| Plan 8: presentation | in progress: this README, `EVAL.md`, demo GIF, external benchmark ([proposal](docs/decisions/005-external-benchmark.md)) |
 
 ## Repository layout
 
