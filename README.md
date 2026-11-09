@@ -124,9 +124,10 @@ docs/
   prereg.md            the registration
   superpowers/         the design and the plans
 manuals/               three public manuals (sources and licences in manuals/SOURCES.md)
-api.py, backend/, docker-compose.yaml, scripts/
-                       v1 code, kept because v1 is scored from it
 ```
+
+v1 (Haystack, Ollama, Qdrant + OpenSearch) is preserved at tag [`v1`](https://github.com/ALEX8642/LLM-chatbot/tree/v1);
+`evals/baseline_v1.sh` scores it from a checkout of that tag.
 
 ## Running it
 

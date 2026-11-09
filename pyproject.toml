@@ -1,7 +1,7 @@
 [project]
 name = "llm-chatbot"
-version = "0.1.0"
-description = "A Haystack 2.x Ollama based chatbot for user assistance interpreting manuals"
+version = "2.0.0"
+description = "Question answering over technical manuals in which every claim is checked against, and highlighted on, its source page"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 license = "MIT"
@@ -9,34 +9,26 @@ authors = [
     {name = "Alex8642"}
 ]
 
-# Core dependencies required for the application
 dependencies = [
-    # API and Server
+    # server
     "fastapi>=0.112.0",
     "uvicorn[standard]>=0.30.3",
-    "python-dotenv>=1.1.1",
     "requests>=2.32.3",
-    # Haystack and Vector Search
-    "haystack-ai>=2.16.0",
-    "ollama-haystack==5.1.0",
-    "qdrant-haystack==9.2.0",
+    # retrieval: embedder, reranker, index
     "qdrant-client>=1.12.0",
-    "opensearch-haystack==4.2.0",
-    "opensearch-py==2.6.0",
-    # Machine Learning and NLP
     "sentence-transformers>=3.0.0",
     "torch>=2.3.1",
     "transformers[sentencepiece]>=4.40.0",
-    "scikit-learn>=1.5.1",
+    "accelerate>=1.12.0",
     "numpy>=1.26.4",
-    "pandas==2.2.2",
-    # Document Processing
+    # documents and matching
     "pymupdf>=1.24.10",
-    # v2 (manualqa)
     "pillow>=10.0",
     "rapidfuzz>=3.0",
-    "unstructured>=0.15.9",
-    "accelerate>=1.12.0",
+    # public benchmark (evals/vidore.py)
+    "pandas==2.2.2",
+    "pyarrow>=17.0.0",
+    "huggingface-hub>=0.24",
 ]
 
 [project.optional-dependencies]
@@ -47,6 +39,7 @@ dev = [
     "isort>=5.13.2",
     "flake8>=7.0.0",
     "pytest>=8.0.0",
+    "httpx>=0.27",
 ]
 
 # Parser candidates for the v2 spike (GPU, laptop). Conflicting stacks: install one at a time.
@@ -84,9 +77,3 @@ testpaths = ["tests"]
 markers = [
     "parsers: needs a GPU parser extra (docling or paddle); run with MANUALQA_PARSERS=1",
 ]
-
-# Removing unused dependencies:
-# - elasticsearch-haystack (using opensearch instead)
-# - milvus-haystack (using qdrant instead)
-# - weaviate-haystack (using qdrant instead)
-# - npm (frontend has its own package.json)

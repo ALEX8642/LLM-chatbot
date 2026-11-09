@@ -7,32 +7,38 @@ on:
     branches: [main]
 
 jobs:
-  test:
-    name: Lint & Test
+  python:
+    name: Lint & test (Python)
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
     steps:
       - uses: actions/checkout@v4
-
       - name: Install uv
         uses: astral-sh/setup-uv@v4
         with:
           version: "latest"
           python-version: "3.12"
-
       - name: Install dependencies
         run: uv sync --extra dev
+      - name: Black
+        run: uv run black --check manualqa/ evals/spike/ evals/items.py evals/table_audit.py evals/sessions/gold_export.py evals/sessions/build_gold.py evals/judge_select.py evals/grade.py evals/prompts.py evals/split.py evals/make_sections.py evals/analysis.py evals/vidore.py evals/checker_select.py evals/retrieval_select.py evals/claims/ tests/manualqa/ tests/evals/
+      - name: isort
+        run: uv run isort --check --diff manualqa/ evals/spike/ evals/items.py evals/table_audit.py evals/sessions/gold_export.py evals/sessions/build_gold.py evals/judge_select.py evals/grade.py evals/prompts.py evals/split.py evals/make_sections.py evals/analysis.py evals/vidore.py evals/checker_select.py evals/retrieval_select.py evals/claims/ tests/manualqa/ tests/evals/
+      - name: Flake8
+        run: uv run flake8 manualqa/ evals/spike/ evals/items.py evals/table_audit.py evals/sessions/gold_export.py evals/sessions/build_gold.py evals/judge_select.py evals/grade.py evals/prompts.py evals/split.py evals/make_sections.py evals/analysis.py evals/vidore.py evals/checker_select.py evals/retrieval_select.py evals/claims/ tests/manualqa/ tests/evals/
+      - name: Tests
+        run: uv run pytest tests/ -q
 
-      - name: Black (format check)
-        run: uv run black --check api.py backend/ manualqa/ evals/spike/ tests/manualqa/
-
-      - name: isort (import order)
-        run: uv run isort --check --diff api.py backend/ manualqa/ evals/spike/ tests/manualqa/
-
-      - name: Flake8 (lint)
-        run: uv run flake8 api.py backend/ manualqa/ evals/spike/ tests/manualqa/
-
-      - name: Run tests
-        run: uv run pytest tests/ -v --tb=short
+  frontend:
+    name: Build & test (interface)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run build
+      - run: npx vitest run

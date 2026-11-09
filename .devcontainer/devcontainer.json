@@ -1,7 +1,7 @@
 {
   "name": "llm-chatbot",
   "image": "ghcr.io/astral-sh/uv:python3.12-bookworm-slim",
-  "postCreateCommand": "uv sync --all-extras",
+  "postCreateCommand": "uv sync --extra dev",
   "forwardPorts": [8000],
   "portsAttributes": {
     "8000": { "label": "FastAPI" }
