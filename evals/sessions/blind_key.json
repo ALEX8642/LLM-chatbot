@@ -1,0 +1,493 @@
+{
+ "seed": 20261107,
+ "items": [
+  "faa-ch10-01",
+  "faa-ch10-04",
+  "faa-ch2-03",
+  "faa-ch6-03",
+  "faa-ch9-14",
+  "faa-ch9-15",
+  "faa-ch9-29",
+  "op-2-1-02",
+  "op-2-2-02",
+  "op-2-3-05",
+  "op-2-4-04",
+  "op-2-4-05",
+  "op-2-4-06",
+  "parts-g04-04",
+  "parts-intro-06",
+  "faa-ch9-22",
+  "op-2-1-10",
+  "op-2-3-04",
+  "op-2-4-08",
+  "parts-g03-07",
+  "faa-ch4-04",
+  "parts-intro-04",
+  "parts-g03-09",
+  "parts-g08-03",
+  "faa-ch3-10",
+  "faa-ch9-19",
+  "op-2-4-01",
+  "op-2-2-03",
+  "op-2-1-01",
+  "faa-ch6-04",
+  "parts-intro-02",
+  "faa-ch6-01",
+  "parts-intro-03",
+  "op-1-2-11",
+  "parts-g04-06",
+  "faa-ch6-05",
+  "op-2-3-02",
+  "faa-ch9-30",
+  "op-2-4-10",
+  "faa-ch9-24",
+  "op-2-1-09",
+  "op-2-3-03",
+  "op-app-02",
+  "parts-g04-03",
+  "faa-ch6-08",
+  "parts-g14-02",
+  "parts-g07-03",
+  "op-2-4-02",
+  "op-2-4-09",
+  "parts-g04-05"
+ ],
+ "groups": {
+  "v1 correct, rejected on support": [
+   "faa-ch10-01",
+   "faa-ch10-04",
+   "faa-ch2-03",
+   "faa-ch6-03",
+   "faa-ch9-14",
+   "faa-ch9-15",
+   "faa-ch9-29",
+   "op-2-1-02",
+   "op-2-2-02",
+   "op-2-3-05",
+   "op-2-4-04",
+   "op-2-4-05",
+   "op-2-4-06",
+   "parts-g04-04",
+   "parts-intro-06"
+  ],
+  "judges disagree on v2": [
+   "faa-ch2-03",
+   "faa-ch9-22",
+   "op-2-1-02",
+   "op-2-1-10",
+   "op-2-3-04",
+   "op-2-4-08",
+   "parts-g03-07",
+   "parts-g04-04"
+  ],
+  "v2 correct, rejected on support": [
+   "faa-ch4-04",
+   "op-2-1-02",
+   "op-2-4-08",
+   "parts-g03-07",
+   "parts-g04-04"
+  ]
+ },
+ "screens": {
+  "b98cac20": {
+   "item": "faa-ch10-01",
+   "system": "v1"
+  },
+  "8fdbe981": {
+   "item": "faa-ch10-01",
+   "system": "v2"
+  },
+  "1ef80075": {
+   "item": "faa-ch10-04",
+   "system": "v1"
+  },
+  "30865ba7": {
+   "item": "faa-ch10-04",
+   "system": "v2"
+  },
+  "3806a54b": {
+   "item": "faa-ch2-03",
+   "system": "v1"
+  },
+  "1a432750": {
+   "item": "faa-ch2-03",
+   "system": "v2"
+  },
+  "dd3ee9a4": {
+   "item": "faa-ch6-03",
+   "system": "v1"
+  },
+  "69995e1f": {
+   "item": "faa-ch6-03",
+   "system": "v2"
+  },
+  "e0434caf": {
+   "item": "faa-ch9-14",
+   "system": "v1"
+  },
+  "c8173741": {
+   "item": "faa-ch9-14",
+   "system": "v2"
+  },
+  "cbd6fd24": {
+   "item": "faa-ch9-15",
+   "system": "v1"
+  },
+  "125f033a": {
+   "item": "faa-ch9-15",
+   "system": "v2"
+  },
+  "1b6bb187": {
+   "item": "faa-ch9-29",
+   "system": "v1"
+  },
+  "1f0e99a7": {
+   "item": "faa-ch9-29",
+   "system": "v2"
+  },
+  "4dc15aeb": {
+   "item": "op-2-1-02",
+   "system": "v1"
+  },
+  "69afa135": {
+   "item": "op-2-1-02",
+   "system": "v2"
+  },
+  "081fd699": {
+   "item": "op-2-2-02",
+   "system": "v1"
+  },
+  "1514e2f4": {
+   "item": "op-2-2-02",
+   "system": "v2"
+  },
+  "91586dc6": {
+   "item": "op-2-3-05",
+   "system": "v1"
+  },
+  "ac7685fd": {
+   "item": "op-2-3-05",
+   "system": "v2"
+  },
+  "037ea79f": {
+   "item": "op-2-4-04",
+   "system": "v1"
+  },
+  "698fb49c": {
+   "item": "op-2-4-04",
+   "system": "v2"
+  },
+  "b4a167d7": {
+   "item": "op-2-4-05",
+   "system": "v1"
+  },
+  "be76f9ea": {
+   "item": "op-2-4-05",
+   "system": "v2"
+  },
+  "e7f77235": {
+   "item": "op-2-4-06",
+   "system": "v1"
+  },
+  "413eeb52": {
+   "item": "op-2-4-06",
+   "system": "v2"
+  },
+  "8bce2743": {
+   "item": "parts-g04-04",
+   "system": "v1"
+  },
+  "7a5502ac": {
+   "item": "parts-g04-04",
+   "system": "v2"
+  },
+  "b1ed9afe": {
+   "item": "parts-intro-06",
+   "system": "v1"
+  },
+  "31a208b0": {
+   "item": "parts-intro-06",
+   "system": "v2"
+  },
+  "28a28f0f": {
+   "item": "faa-ch9-22",
+   "system": "v1"
+  },
+  "262ade78": {
+   "item": "faa-ch9-22",
+   "system": "v2"
+  },
+  "8e826c30": {
+   "item": "op-2-1-10",
+   "system": "v1"
+  },
+  "7ce12e9f": {
+   "item": "op-2-1-10",
+   "system": "v2"
+  },
+  "0b2b7efa": {
+   "item": "op-2-3-04",
+   "system": "v1"
+  },
+  "ad1ab582": {
+   "item": "op-2-3-04",
+   "system": "v2"
+  },
+  "453cba8b": {
+   "item": "op-2-4-08",
+   "system": "v1"
+  },
+  "7995e35e": {
+   "item": "op-2-4-08",
+   "system": "v2"
+  },
+  "647ccc67": {
+   "item": "parts-g03-07",
+   "system": "v1"
+  },
+  "2c1ff2aa": {
+   "item": "parts-g03-07",
+   "system": "v2"
+  },
+  "9a801b92": {
+   "item": "faa-ch4-04",
+   "system": "v1"
+  },
+  "8f61e7d5": {
+   "item": "faa-ch4-04",
+   "system": "v2"
+  },
+  "31ccb2d7": {
+   "item": "parts-intro-04",
+   "system": "v1"
+  },
+  "1d99f35d": {
+   "item": "parts-intro-04",
+   "system": "v2"
+  },
+  "d7c41809": {
+   "item": "parts-g03-09",
+   "system": "v1"
+  },
+  "623e33ee": {
+   "item": "parts-g03-09",
+   "system": "v2"
+  },
+  "e2b504b9": {
+   "item": "parts-g08-03",
+   "system": "v1"
+  },
+  "b3b7c938": {
+   "item": "parts-g08-03",
+   "system": "v2"
+  },
+  "480ec7b5": {
+   "item": "faa-ch3-10",
+   "system": "v1"
+  },
+  "736c6c59": {
+   "item": "faa-ch3-10",
+   "system": "v2"
+  },
+  "e61c1a67": {
+   "item": "faa-ch9-19",
+   "system": "v1"
+  },
+  "db55cc24": {
+   "item": "faa-ch9-19",
+   "system": "v2"
+  },
+  "c75c7fb6": {
+   "item": "op-2-4-01",
+   "system": "v1"
+  },
+  "5ed44796": {
+   "item": "op-2-4-01",
+   "system": "v2"
+  },
+  "5370d7a8": {
+   "item": "op-2-2-03",
+   "system": "v1"
+  },
+  "2c77dfeb": {
+   "item": "op-2-2-03",
+   "system": "v2"
+  },
+  "090156d6": {
+   "item": "op-2-1-01",
+   "system": "v1"
+  },
+  "b222eb0b": {
+   "item": "op-2-1-01",
+   "system": "v2"
+  },
+  "9a677cd0": {
+   "item": "faa-ch6-04",
+   "system": "v1"
+  },
+  "c1fb3482": {
+   "item": "faa-ch6-04",
+   "system": "v2"
+  },
+  "c3d5d85c": {
+   "item": "parts-intro-02",
+   "system": "v1"
+  },
+  "5e0f5fe6": {
+   "item": "parts-intro-02",
+   "system": "v2"
+  },
+  "f1f18a11": {
+   "item": "faa-ch6-01",
+   "system": "v1"
+  },
+  "093bdcc5": {
+   "item": "faa-ch6-01",
+   "system": "v2"
+  },
+  "44cb7472": {
+   "item": "parts-intro-03",
+   "system": "v1"
+  },
+  "0ddc6ebc": {
+   "item": "parts-intro-03",
+   "system": "v2"
+  },
+  "2511097d": {
+   "item": "op-1-2-11",
+   "system": "v1"
+  },
+  "e32de64f": {
+   "item": "op-1-2-11",
+   "system": "v2"
+  },
+  "344d1842": {
+   "item": "parts-g04-06",
+   "system": "v1"
+  },
+  "b081edb4": {
+   "item": "parts-g04-06",
+   "system": "v2"
+  },
+  "a730c9f3": {
+   "item": "faa-ch6-05",
+   "system": "v1"
+  },
+  "81114a1b": {
+   "item": "faa-ch6-05",
+   "system": "v2"
+  },
+  "59757882": {
+   "item": "op-2-3-02",
+   "system": "v1"
+  },
+  "32587992": {
+   "item": "op-2-3-02",
+   "system": "v2"
+  },
+  "c413e7cd": {
+   "item": "faa-ch9-30",
+   "system": "v1"
+  },
+  "001e73aa": {
+   "item": "faa-ch9-30",
+   "system": "v2"
+  },
+  "96032e3e": {
+   "item": "op-2-4-10",
+   "system": "v1"
+  },
+  "383b1278": {
+   "item": "op-2-4-10",
+   "system": "v2"
+  },
+  "dd1f3988": {
+   "item": "faa-ch9-24",
+   "system": "v1"
+  },
+  "8dd6759f": {
+   "item": "faa-ch9-24",
+   "system": "v2"
+  },
+  "cddbc049": {
+   "item": "op-2-1-09",
+   "system": "v1"
+  },
+  "2dcb1455": {
+   "item": "op-2-1-09",
+   "system": "v2"
+  },
+  "7000ef41": {
+   "item": "op-2-3-03",
+   "system": "v1"
+  },
+  "8ce8ecdf": {
+   "item": "op-2-3-03",
+   "system": "v2"
+  },
+  "e168826b": {
+   "item": "op-app-02",
+   "system": "v1"
+  },
+  "74ad35aa": {
+   "item": "op-app-02",
+   "system": "v2"
+  },
+  "777c19f2": {
+   "item": "parts-g04-03",
+   "system": "v1"
+  },
+  "f7300dac": {
+   "item": "parts-g04-03",
+   "system": "v2"
+  },
+  "a0ea8b76": {
+   "item": "faa-ch6-08",
+   "system": "v1"
+  },
+  "59484af6": {
+   "item": "faa-ch6-08",
+   "system": "v2"
+  },
+  "cbc34d4f": {
+   "item": "parts-g14-02",
+   "system": "v1"
+  },
+  "f6bf0f59": {
+   "item": "parts-g14-02",
+   "system": "v2"
+  },
+  "3aa51a4e": {
+   "item": "parts-g07-03",
+   "system": "v1"
+  },
+  "8567f554": {
+   "item": "parts-g07-03",
+   "system": "v2"
+  },
+  "c20e42c1": {
+   "item": "op-2-4-02",
+   "system": "v1"
+  },
+  "d28f1fb7": {
+   "item": "op-2-4-02",
+   "system": "v2"
+  },
+  "ded05a49": {
+   "item": "op-2-4-09",
+   "system": "v1"
+  },
+  "e385d63c": {
+   "item": "op-2-4-09",
+   "system": "v2"
+  },
+  "6568eed7": {
+   "item": "parts-g04-05",
+   "system": "v1"
+  },
+  "3d4b7481": {
+   "item": "parts-g04-05",
+   "system": "v2"
+  }
+ }
+}

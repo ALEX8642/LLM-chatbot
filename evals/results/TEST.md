@@ -75,7 +75,32 @@ answer matches the reference); the blind grading should show whether they are. *
 true claims removed outright, and four abstentions where every claim was removed, not all of them read yet. The checks
 are what make a citation trustworthy, so this is their price, now measured.
 
-## Still to do (registered)
+## Blind grading (registered check)
 
-- Blind grading by Alexander (session published), and judge agreement per system with the 10-point rule.
+Alexander graded 100 answers, v1's and v2's first-repeat answers to 50 test items, with the system hidden and the order
+shuffled (`evals/sessions/blind_grades.jsonl`, key `evals/sessions/blind_key.json`). He is not a subject expert and
+found it hard; his grades are one careful reader's, not an expert's. A pass is "correct" with the cited pages showing it,
+or a decline on an unanswerable item.
+
+| | v2 | v1 | v2 only / v1 only | McNemar p |
+|---|---|---|---|---|
+| Alexander, 50 items | 42 (0.84) | 31 (0.62) | 15 / 4 | 0.019 |
+| phi4 on the same answers | 36 | 15 | | |
+
+**The registered judge-validity rule is triggered.** On the whole sample phi4 wrongly fails 19 of 50 v1 answers (38%)
+against 7 of 50 v2 answers (14%), more than the 10-point limit, so the headline carries this warning and the blind
+contrast stands beside it.
+
+The rule did not allow for how the sample was drawn, and that matters here. 21 items were chosen because the judge had
+already rejected them: 15 correct v1 answers rejected on source support, and 8 v2 items where the judges disagreed. On
+those Alexander passed 14 of the 15 v1 answers and 12 of v2's 13 targeted answers. On the 29 items drawn at random, phi4
+agrees with him on 24 of 29 v1 answers and 28 of 29 v2 answers, wrongly failing 2 v1 and 1 v2: no clear bias there.
+
+So the judge does miss support in v1's answers more than in v2's, in the specific way the M2 review predicted: v1 cites
+whole retrieved pages, and the judge often does not find the fact among them. Counting those 14 v1 answers as passes
+would lift v1 by about 8 points on the first repeat, and v2's 5 by about 3, leaving a gap near 33 points rather than 38.
+That correction is an estimate from one repeat, not a registered figure. **Every reading still has v2 clearly ahead.**
+
+## Still to do
+
 - The misses in the README.
