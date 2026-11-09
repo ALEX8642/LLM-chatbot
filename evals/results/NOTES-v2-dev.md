@@ -243,3 +243,8 @@ Batching by length (`310c7df`) showed no clear gain, and a prompt limit does not
 
 The final run answers 165 of 172 items as the run before it did, and ranks 162 the same, from nothing but a memory
 setting and run-to-run variation. That is the noise to expect in the figures above.
+
+**Search index kept open (`81fd5da`), measured on dev 2026-11-09.** All 172 answers and their ranked pages are identical
+to the run before. Retrieval p50 4.7 s to 4.4 s, p95 unchanged at 8.0 s; total p50 12.4 s, p95 20.6 s. On these three
+manuals' small index the reload was cheap, so this fix matters for large collections (ViDoRe's 9,368 chunks), not here.
+

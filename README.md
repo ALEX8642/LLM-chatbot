@@ -9,7 +9,9 @@ check every claim against the source while reading the answer**. Each claim is t
 specific text line, table row or figure, highlighted on the page, and checked before it is shown. A claim that fails
 its checks is removed; if none survive, the assistant says it could not find the answer.
 
-![A parts-list answer with its table row highlighted on the page](frontend/e2e/out/parts-row-highlight.png)
+![Three answers replayed: a part number with its table row highlighted, an engine-cranking limit with its caution highlighted, and a question the manual does not answer, declined](docs/demo.gif)
+
+*Three live answers recorded on 2026-11-09 and replayed. Highlights are per printed line, so one also covers the next word ("Allow").*
 
 ## Result
 
