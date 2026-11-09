@@ -23,6 +23,8 @@ On 169 held-out questions over three public manuals, registered before the run
 | Exact McNemar | 72 items only v2 gets right, 7 only v1; p = 1e-14 | |
 | Blind human grading, 50 of those items | 42 of 50 | 31 of 50 |
 
+These questions were written for this project, so there is no outside ranking for this table.
+
 **The judge is harder on v1 than on v2.** In blind grading it wrongly failed 19 of 50 v1 answers against 7 of v2's,
 which triggers the registered warning. Most of those were picked because the judge had already rejected them; on the
 items drawn at random it agreed with the human grader on 52 of 58. Allowing for those misses, the gap is about 33 points
@@ -36,8 +38,8 @@ remove a true claim. About 6 failures look like judge errors. Every miss is labe
 **What it costs:** about 13 s an answer (p95 22 s) on a 16 GB laptop GPU, against v1's 2-3 s.
 
 **On a public benchmark:** on ViDoRe V3's industrial manuals (5,244 pages of US Air Force technical orders, 283 queries),
-v2's retrieval scores NDCG@10 0.567 (0.525 to 0.610), above published text retrievers alone (0.45 to 0.53) and below the
-best published text pipeline with a reranker (0.639). Retrieval only, on the corpus's own text:
+v2's retrieval scores NDCG@10 0.567 (0.525 to 0.610): **2nd of 9** in the published text-retrieval table for this corpus
+when checked on 2026-11-09, above the text retrievers alone (0.45 to 0.53) and 0.072 behind the best pipeline (0.639). Retrieval only, on the corpus's own text:
 [decision 005](docs/decisions/005-external-benchmark.md).
 
 **Not yet tested:** answers on a public benchmark without a paid judge; a manual neither system has seen; whether the

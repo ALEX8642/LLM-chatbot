@@ -75,6 +75,10 @@ Published figures: [Mixedbread's text evals](https://www.mixedbread.com/evals/vi
 pre-parsed to markdown", tested September 2026. Mixedbread is a vendor reporting its own models, and its runs were not
 reproduced here.
 
+- **Standing, checked 2026-11-09:** 2nd of 9 in Mixedbread's text-retrieval table for this corpus, 0.072 behind the first.
+  That table lists only what Mixedbread chose to run, so the rank is a snapshot, not a leaderboard position. Image-based
+  retrievers, which lead the official [ViDoRe leaderboard](https://huggingface.co/blog/nvidia/nemotron-colembed-v2), read
+  page images and publish no industrial-only figures that were found, so they are not ranked against here.
 - v2's fused first stage beats both published single retrievers it is built from, and the reranker adds 7 points.
 - The best published text pipeline is about 7 points ahead, outside v2's interval. On this corpus v2's retrieval is good
   but not the best available.
