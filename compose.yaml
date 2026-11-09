@@ -1,6 +1,6 @@
 # docker compose --profile replay up   recorded answers, no GPU or model (open localhost:8000)
 # docker compose --profile live up     live answers on an NVIDIA GPU; copy .env.example to .env first
-# docker compose --profile cpu up      live answers without a GPU (slow unless the reranker is remote)
+# docker compose --profile cpu up      live answers without a GPU; the reranker on an endpoint (.env)
 
 x-app: &app
   build: .

@@ -22,7 +22,8 @@ survive, the assistant says it could not find the answer.
   retrievers in one vendor's published table when checked on 2026-11-09 (details below).
 - **Try it:** [in the browser](https://alex8642.github.io/LLM-chatbot/), replaying 14 recorded answers in the real
   interface; or from a fresh clone, with no GPU or model (see [Running it](#running-it)).
-- **Needs, to run live:** an NVIDIA GPU with 16 GB, and an OpenAI-compatible endpoint serving a vision-capable model.
+- **Needs, to run live:** Docker or Python, an NVIDIA GPU with 16 GB, and an OpenAI-compatible endpoint serving a
+  vision-capable model.
 
 ## Result
 
@@ -97,6 +98,7 @@ manualqa/              v2: parsing, ingestion, retrieval, answer path with check
   index.py, retrieve.py  dense + BM25 index, fusion, reranker, evidence
   answer.py            claims, quote match, facts.py, claimcheck.py, abstention
   server.py            FastAPI with streaming answers and replay
+  static_demo.py       the browser demo's files
 frontend/              React interface: claims with page highlights
 evals/
   pool/, qa.jsonl, test.jsonl   items; dev and the frozen test set
@@ -109,7 +111,8 @@ docs/
   prereg.md            the registration
   superpowers/         the design and the build plans (written for and by the coding agents)
   HISTORY.md           why v2, the design in brief, the plans as delivered
-manuals/               three public manuals (sources and licences in manuals/SOURCES.md)
+manuals/               three public manuals and their parses (sources and licences in manuals/SOURCES.md)
+docker/, compose.yaml  the image's start script and the replay, live and cpu profiles
 ```
 
 v1 (Haystack, Ollama, Qdrant + OpenSearch) is preserved at tag [`v1`](https://github.com/ALEX8642/LLM-chatbot/tree/v1).
@@ -118,32 +121,49 @@ The harness that ran it for the registered comparison is at tag
 
 ## Running it
 
-**Replay, no GPU or model needed:** recorded answers in the real interface, with Python 3.12, [uv](https://docs.astral.sh/uv/)
-and Node 20+.
+**In the browser:** [the replay demo](https://alex8642.github.io/LLM-chatbot/), nothing to install.
+
+**With Docker:** the interface, server, manuals and their parses in one image. Open
+<http://localhost:8000> once it is running.
 
 ```bash
+git clone https://github.com/ALEX8642/LLM-chatbot && cd LLM-chatbot
+
+# Replay: the recorded answers, no GPU or model needed
+docker compose --profile replay up --build
+
+# Live: copy the settings file and set your chat endpoint in it, then
+cp .env.example .env
+docker compose --profile live up --build    # NVIDIA GPU
+docker compose --profile cpu up --build     # no GPU: set a rerank endpoint in .env
+```
+
+Live answers need an OpenAI-compatible chat endpoint serving a model that accepts images (vLLM, LiteLLM, Ollama, LM
+Studio or a hosted API); `.env.example` explains each setting. The `live` profile needs an NVIDIA GPU with 16 GB of
+memory and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
+The first start downloads the embedder and reranker (about 9 GB) and builds the index from the bundled parses (about
+5 minutes in all on a 16 GB laptop GPU, plus the download); later starts take about 40 seconds, and answers 10-20
+seconds. The image is about 12 GB. The `cpu` profile runs the embedder on the processor and expects the reranker on a
+rerank endpoint (`.env.example`); it has been tested only in parts. Scores here were measured with Qwen3.8 as the
+generator; other models will behave differently. The server has no login, so compose publishes it on this machine only.
+
+**From source:** Python 3.12, [uv](https://docs.astral.sh/uv/) and Node 20+.
+
+```bash
+# Replay
 uv sync --extra dev
 uv run python -m manualqa.server --replay docs/demo/replay.jsonl --port 8000
 cd frontend && npm install && npm run build && npx vite preview   # open the printed address
-```
 
-**Live:** needs an NVIDIA GPU with 16 GB of memory (embedder and reranker; parsing with PaddleOCR-VL needs a recent
-NVIDIA driver for CUDA 12.9), and an OpenAI-compatible chat endpoint serving a model that accepts images. Scores here
-were measured with Qwen3.8; other models will behave differently.
-
-```bash
-# 1. Parse every page (several hours; it can hang, so rerun with --resume)
-uv sync --extra paddle
-uv run python -m evals.spike.run_spike --parser paddle --pages all --resume
-
-# 2. Ingest: pages, table store, chunks, page renders, index (minutes)
-uv sync --extra dev
-uv run python -m manualqa.ingest --raw spike-out/paddle/parses.jsonl --out data/ingest
-
-# 3. Serve, then start the interface as above
+# Live: ingest the bundled parses (minutes), then serve and start the interface as above
+uv run python -m manualqa.ingest --raw manuals/paddle-parses.jsonl.gz --out data/ingest
 export GEN_BASE_URL=https://your-endpoint GEN_MODEL=your-model GEN_API_KEY=...
 uv run python -m manualqa.server --ingest data/ingest --port 8000
 ```
+
+Parsing the manuals again with PaddleOCR-VL takes several hours and a recent NVIDIA driver for CUDA 12.9
+(`uv sync --extra paddle`, then `uv run python -m evals.spike.run_spike --parser paddle --pages all --resume`; rerun
+with `--resume` if it hangs); the bundled parses are its output.
 
 The browser demo is the same interface built with `--mode demo`, reading the recordings as static files
 (`.github/workflows/pages.yml`, `manualqa/static_demo.py`).
