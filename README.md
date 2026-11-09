@@ -126,8 +126,9 @@ docs/
 manuals/               three public manuals (sources and licences in manuals/SOURCES.md)
 ```
 
-v1 (Haystack, Ollama, Qdrant + OpenSearch) is preserved at tag [`v1`](https://github.com/ALEX8642/LLM-chatbot/tree/v1);
-`evals/baseline_v1.sh` scores it from a checkout of that tag.
+v1 (Haystack, Ollama, Qdrant + OpenSearch) is preserved at tag [`v1`](https://github.com/ALEX8642/LLM-chatbot/tree/v1).
+The harness that ran it for the registered comparison is at tag
+[`prereg`](https://github.com/ALEX8642/LLM-chatbot/tree/prereg); its answers and grades are kept here in `evals/results/`.
 
 ## Running it
 
