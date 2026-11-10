@@ -46,8 +46,8 @@ export default function App() {
   return (
     <div className="md:grid md:h-dvh md:grid-cols-2">
       <div className={`flex flex-col md:min-h-0 md:border-r ${line}`}>
-        <header className={`flex flex-wrap items-center gap-x-3 gap-y-2 border-b ${line} px-4 py-3`}>
-          <div className="mr-auto flex items-center gap-2">
+        <header className={`flex flex-wrap items-center gap-x-3 gap-y-2 border-b ${line} px-4 py-3 sm:flex-nowrap`}>
+          <div className="mr-auto flex shrink-0 items-center gap-2">
             <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="h-7 w-7" />
             <div>
               <h1 className="text-lg font-semibold leading-tight">Manual Q&amp;A</h1>
@@ -62,7 +62,7 @@ export default function App() {
               setSelected(null)
               setPage(null)
             }}
-            className={`order-last w-full min-w-0 rounded-md border ${line} bg-white px-2 py-1.5 text-sm sm:order-none sm:w-auto sm:max-w-xs dark:bg-slate-900`}
+            className={`order-last w-full min-w-0 rounded-md border ${line} bg-white px-2 py-1.5 text-sm sm:order-none sm:w-auto sm:min-w-0 sm:max-w-xs sm:flex-1 dark:bg-slate-900`}
           >
             {manuals.map((m) => (
               <option key={m.file} value={m.file}>

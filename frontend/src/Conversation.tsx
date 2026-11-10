@@ -61,18 +61,20 @@ export default function Conversation({ manual, selected, onSelect, onPage, onRem
                 <p className="text-slate-700 dark:text-slate-300">
                   {t.done.text}
                   {t.pages.length > 0 && !t.done.replay_miss && (
-                    <span className="ml-1">
+                    <span className="mt-1 block text-sm text-slate-500 dark:text-slate-400">
+                      Open a page it searched:
                       {t.pages.map((p) => (
                         <a
                           key={p}
                           href={`#page-${p}`}
+                          aria-label={`page ${p}`}
                           onClick={(e) => {
                             e.preventDefault()
                             onPage(p)
                           }}
                           className="ml-2 text-blue-700 underline dark:text-blue-400"
                         >
-                          page {p}
+                          {p}
                         </a>
                       ))}
                     </span>
