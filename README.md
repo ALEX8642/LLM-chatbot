@@ -116,7 +116,7 @@ docs/
   superpowers/         the design and the build plans (written for and by the coding agents)
   HISTORY.md           why v2, the design in brief, the plans as delivered
 manuals/               three public manuals and their parses (sources and licences in manuals/SOURCES.md)
-docker/, compose.yaml  the image's start script and the replay, live and cpu profiles
+docker/, compose.yaml  the image's start script and the replay, live and cpu profiles (image.yml publishes it)
 ```
 
 v1 (Haystack, Ollama, Qdrant + OpenSearch) is preserved at tag [`v1`](https://github.com/ALEX8642/LLM-chatbot/tree/v1).
@@ -127,19 +127,20 @@ The harness that ran it for the registered comparison is at tag
 
 **In the browser:** [the replay demo](https://alex8642.github.io/LLM-chatbot/), nothing to install.
 
-**With Docker:** the interface, server, manuals and their parses in one image. Open
-<http://localhost:8000> once it is running.
+**With Docker:** the interface, server, manuals and their parses in one image, pulled from GitHub's registry
+(`ghcr.io/alex8642/llm-chatbot`; add `--build` to build it from the checkout instead). Open <http://localhost:8000>
+once it is running.
 
 ```bash
 git clone https://github.com/ALEX8642/LLM-chatbot && cd LLM-chatbot
 
 # Replay: the recorded answers, no GPU or model needed
-docker compose --profile replay up --build
+docker compose --profile replay up
 
 # Live: copy the settings file and set your chat endpoint in it, then
 cp .env.example .env
-docker compose --profile live up --build    # NVIDIA GPU
-docker compose --profile cpu up --build     # no GPU: set a rerank endpoint in .env
+docker compose --profile live up    # NVIDIA GPU
+docker compose --profile cpu up     # no GPU: set a rerank endpoint in .env
 ```
 
 Live answers need an OpenAI-compatible chat endpoint serving a model that accepts images (vLLM, LiteLLM, Ollama, LM

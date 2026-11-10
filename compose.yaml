@@ -1,10 +1,12 @@
+# The image is pulled from GitHub's registry; add --build to build it from this checkout instead.
 # docker compose --profile replay up   recorded answers, no GPU or model (open localhost:8000)
 # docker compose --profile live up     live answers on an NVIDIA GPU; copy .env.example to .env first
 # docker compose --profile cpu up      live answers without a GPU; the reranker on an endpoint (.env)
 
 x-app: &app
   build: .
-  image: llm-chatbot:2
+  image: ghcr.io/alex8642/llm-chatbot:2
+  pull_policy: missing  # pull once; --build makes it here
   ports: ["127.0.0.1:${PORT:-8000}:8000"]  # this machine only: the server has no login
   volumes: [data:/data, models:/models, deps:/deps]  # index, model weights, PyTorch
   extra_hosts: ["host.docker.internal:host-gateway"]  # an endpoint on this machine
