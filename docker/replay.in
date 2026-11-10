@@ -1,0 +1,6 @@
+# What the replay server needs; installed in the image at the versions in uv.lock.
+fastapi
+uvicorn[standard]
+pymupdf
+pillow
+rapidfuzz

@@ -6,7 +6,7 @@ x-app: &app
   build: .
   image: llm-chatbot:2
   ports: ["127.0.0.1:${PORT:-8000}:8000"]  # this machine only: the server has no login
-  volumes: [data:/data, models:/models]
+  volumes: [data:/data, models:/models, deps:/deps]  # index, model weights, PyTorch
   extra_hosts: ["host.docker.internal:host-gateway"]  # an endpoint on this machine
 
 services:
@@ -28,7 +28,9 @@ services:
     <<: *app
     profiles: [cpu]
     env_file: .env
+    environment: { DEVICE: cpu }
 
 volumes:
   data:
   models:
+  deps:
