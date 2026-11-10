@@ -33,8 +33,10 @@ ANTHROPIC = (
     os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com").rstrip("/")
     + "/v1"
 )
-VERSION = "2023-06-01"
+VERSION = "2026-10-21"  # as in the Message Batches docs
 MAX_TOKENS = 2048
+# A batch may hold 256 MB; page images make requests large, so batches are cut well below it
+BATCH_BYTES = 150_000_000
 
 
 class Pending(Exception):
@@ -160,12 +162,18 @@ class Anthropic:
     def batch(
         self, pending: dict[str, list[dict]], poll_s: int = 60
     ) -> dict[str, dict]:
-        requests_ = [
-            {"custom_id": key, "params": anthropic_params(m, self.model)}
-            for key, m in pending.items()
-        ]
-        created = self._post("/messages/batches", {"requests": requests_})
-        bid = created["id"]
+        out: dict[str, dict] = {}
+        for chunk in split_by_size(
+            [
+                {"custom_id": key, "params": anthropic_params(m, self.model)}
+                for key, m in pending.items()
+            ]
+        ):
+            out.update(self._one_batch(chunk, poll_s))
+        return out
+
+    def _one_batch(self, requests_: list[dict], poll_s: int) -> dict[str, dict]:
+        bid = self._post("/messages/batches", {"requests": requests_})["id"]
         print(f"  batch {bid}: {len(requests_)} requests submitted", flush=True)
         while True:
             r = self.http.get(f"{ANTHROPIC}/messages/batches/{bid}", timeout=60)
@@ -177,7 +185,7 @@ class Anthropic:
             time.sleep(poll_s)
         res = self.http.get(status["results_url"], timeout=300)
         res.raise_for_status()
-        out = {}
+        out, invalid = {}, []
         for line in res.text.splitlines():
             if not line.strip():
                 continue
@@ -190,11 +198,29 @@ class Anthropic:
                     "usage": msg.get("usage"),
                     "stop": msg.get("stop_reason"),
                 }
-            else:  # errored, canceled or expired: left out, so the next round asks again
-                print(
-                    f"  {row['custom_id'][:12]}: {result['type']} {result.get('error')}"
-                )
-        return out
+                continue
+            error = (
+                (result.get("error") or {}).get("error") or result.get("error") or {}
+            )
+            print(f"  {row['custom_id'][:12]}: {result['type']} {error}", flush=True)
+            if error.get("type") == "invalid_request_error":
+                invalid.append(error.get("message", ""))
+        if invalid:  # the same request would fail again: stop rather than resend it
+            sys.exit(f"{len(invalid)} invalid requests, first: {invalid[0]}")
+        return out  # server errors, cancels and expiries are left out and asked again
+
+
+def split_by_size(requests_: list[dict], limit: int = BATCH_BYTES) -> list[list[dict]]:
+    """Requests in batches under the size limit, in order."""
+    chunks, current, size = [], [], 0
+    for req in requests_:
+        n = len(json.dumps(req))
+        if current and size + n > limit:
+            chunks.append(current)
+            current, size = [], 0
+        current.append(req)
+        size += n
+    return chunks + ([current] if current else [])
 
 
 def openai_live(pending: dict[str, list[dict]]) -> dict[str, dict]:

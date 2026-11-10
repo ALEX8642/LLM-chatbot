@@ -4,6 +4,7 @@ from evals.batch_run import (
     load_cache,
     request_key,
     run_rounds,
+    split_by_size,
     to_anthropic,
 )
 
@@ -108,3 +109,11 @@ def test_count_only_prices_the_first_round_and_sends_nothing(tmp_path):
         count=lambda p: 123,
     )
     assert rows is None and sent == []
+
+
+def test_batches_are_cut_under_the_size_limit_in_order():
+    reqs = [{"custom_id": str(i), "params": {"x": "y" * 40}} for i in range(10)]
+    chunks = split_by_size(reqs, limit=200)
+    assert [r for c in chunks for r in c] == reqs
+    assert len(chunks) > 1 and all(len(c) >= 1 for c in chunks)
+    assert split_by_size([], limit=10) == []
