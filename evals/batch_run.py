@@ -210,6 +210,16 @@ class Anthropic:
         return out  # server errors, cancels and expiries are left out and asked again
 
 
+def hybrid(batch, live, below: int):
+    """Batches for the bulk; a round's last few calls live, so one long answer's claim checks
+    (one per round) do not each wait for a batch."""
+
+    def fill(pending: dict[str, list[dict]]) -> dict[str, dict]:
+        return live(pending) if len(pending) < below else batch(pending)
+
+    return fill
+
+
 def split_by_size(requests_: list[dict], limit: int = BATCH_BYTES) -> list[list[dict]]:
     """Requests in batches under the size limit, in order."""
     chunks, current, size = [], [], 0
@@ -257,7 +267,7 @@ def run_rounds(
     gen: CachedGenerator,
     fill: Callable[[dict], dict],
     cache_path: Path,
-    max_rounds: int = 8,
+    max_rounds: int = 60,
     count: Callable[[dict], int] | None = None,
 ) -> list[dict] | None:
     """Rows in question order once every question finishes; None if only counting."""
@@ -306,6 +316,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--model", default="claude-opus-5-5")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--count-only", action="store_true")
+    ap.add_argument(
+        "--live-below",
+        type=int,
+        default=10,
+        help="answer rounds with fewer queued calls live instead of as a batch",
+    )
     args = ap.parse_args(argv)
 
     qa = load_qa(args.qa)[: args.limit] if args.limit else load_qa(args.qa)
@@ -319,7 +335,10 @@ def main(argv: list[str] | None = None) -> int:
         fill = openai_live
     else:
         client = Anthropic(model)
-        fill = client.batch if args.backend == "anthropic-batch" else client.live
+        if args.backend == "anthropic-batch":
+            fill = hybrid(client.batch, client.live, args.live_below)
+        else:
+            fill = client.live
         count = client.count if args.count_only else None
     rows = run_rounds(qa, run, gen, fill, args.cache, count=count)
     if rows is None:

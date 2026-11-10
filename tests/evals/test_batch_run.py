@@ -3,6 +3,7 @@ from evals.batch_run import (
     Pending,
     load_cache,
     request_key,
+    hybrid,
     run_rounds,
     split_by_size,
     to_anthropic,
@@ -117,3 +118,13 @@ def test_batches_are_cut_under_the_size_limit_in_order():
     assert [r for c in chunks for r in c] == reqs
     assert len(chunks) > 1 and all(len(c) >= 1 for c in chunks)
     assert split_by_size([], limit=10) == []
+
+
+def test_small_rounds_go_live_and_large_ones_batch():
+    used = []
+    fill = hybrid(
+        lambda p: used.append("batch") or {}, lambda p: used.append("live") or {}, 3
+    )
+    fill({"a": [], "b": [], "c": []})
+    fill({"a": []})
+    assert used == ["batch", "live"]
