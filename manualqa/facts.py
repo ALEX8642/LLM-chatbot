@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from collections import Counter
 from dataclasses import dataclass
 
 from rapidfuzz import fuzz
@@ -230,6 +231,42 @@ def _label_spans(claim: str, header: list[str]) -> list[tuple[int, int, int]]:
                 out.append((found.dest_start, found.dest_end, col))
                 break
     return sorted(out)
+
+
+# Words that decide what a sentence permits, requires or forbids. A quote is matched with some
+# tolerance for extraction noise, but these, and its numbers, must be as printed.
+_DECIDING = {
+    "may", "might", "must", "shall", "should", "can", "could", "will", "would", "need",
+    "required", "not", "never", "no", "unless", "except", "without", "only", "minimum",
+    "maximum", "more", "less", "fewer", "above", "below", "exceed", "exceeds",
+}  # fmt: skip
+_WORDING_TOKEN = re.compile(r"\d+(?:[.,/]\d+)*|[a-z]+")
+_NEGATED = re.compile(r"\b(?:not|never|cannot)\b|n['’]t\b", re.I)
+_SENTENCE_END = re.compile(r"[.!?:;\n]")
+_LIST_MARKER = re.compile(r"^\s*\(?\d+[.)]\s+")  # "7. Engine knocks": the list's number
+
+
+def _wording(text: str) -> Counter:
+    text = re.sub(r"n['’]t\b", " not", text, flags=re.I)
+    text = re.sub(r"\bcannot\b", "can not", text, flags=re.I)
+    return Counter(
+        t
+        for t in _WORDING_TOKEN.findall(_clean(text))
+        if t in _DECIDING or t[0].isdigit()
+    )
+
+
+def check_wording(quote: str, source: str, before: str = "") -> FactResult:
+    """The quote keeps the source's numbers and deciding words, and does not start just after
+    a negation it leaves out ("Do not | crank the engine for more than 30 seconds")."""
+    q, s = _wording(_LIST_MARKER.sub("", quote)), _wording(_LIST_MARKER.sub("", source))
+    changed = sorted((q - s) + (s - q))
+    if changed:
+        return FactResult(False, f"the quote changes the source's {', '.join(changed)}")
+    sentence = _SENTENCE_END.split(before)[-1]
+    if _NEGATED.search(" ".join(sentence.split()[-3:])) and not q["not"] + q["never"]:
+        return FactResult(False, "the quote leaves out a negation just before it")
+    return FactResult(True)
 
 
 def check_facts(

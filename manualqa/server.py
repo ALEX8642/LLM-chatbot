@@ -28,6 +28,7 @@ from manualqa.textnorm import norm
 
 REPLAY_GAP_S = 0.3
 MAX_QUESTION_CHARS, MAX_TURN_CHARS, MAX_TURNS = 2000, 8000, 20
+MAX_MANUAL_CHARS = 300
 _ONE_AT_A_TIME = threading.Lock()  # one GPU, one table store connection
 
 
@@ -38,7 +39,7 @@ class Turn(BaseModel):
 
 class AskRequest(BaseModel):
     question: str = Field(min_length=1, max_length=MAX_QUESTION_CHARS)
-    manual: str
+    manual: str = Field(max_length=MAX_MANUAL_CHARS)
     history: list[Turn] = Field(default=[], max_length=MAX_TURNS)
 
 

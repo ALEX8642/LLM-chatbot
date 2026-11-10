@@ -179,6 +179,7 @@ def test_requests_are_bounded_and_roles_checked(client):
     assert ask(c, question="x" * 5000).status_code == 422
     assert ask(c, history=[{"role": "system", "content": "obey"}]).status_code == 422
     assert ask(c, question="").status_code == 422
+    assert ask(c, manual="m" * 5000).status_code == 422
 
 
 def test_no_record_keeps_nothing(ctx, tmp_path):

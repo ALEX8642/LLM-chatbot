@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from typing import Iterator, Literal
 
 from manualqa.claimcheck import premise_for
-from manualqa.facts import FactResult, check_facts
+from manualqa.facts import FactResult, check_facts, check_wording
 from manualqa.generate import ClaimParser, RawClaim, build_messages
 from manualqa.geometry import Box
 from manualqa.prompts import REWRITE
@@ -180,7 +180,9 @@ def answer_stream(
         c = CheckedClaim(raw.claim, ev.id, raw.quote, ev.page, match.boxes, "pending")
         timings.setdefault("first_claim_s", time.perf_counter() - start)
         yield AnswerEvent("claim_shown", c)
-        facts = check_facts(raw.claim, match.source, ev, query, _page_text(ctx, ev))
+        facts = check_wording(raw.quote, match.source, ev.text[: match.span[0]])
+        if facts.ok:
+            facts = check_facts(raw.claim, match.source, ev, query, _page_text(ctx, ev))
         if facts.ok and checker is not None:
             start_check = time.perf_counter()
             premise = premise_for(ev, match.span, lead_in(ctx, ev))

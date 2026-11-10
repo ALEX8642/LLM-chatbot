@@ -7,11 +7,12 @@
     <title>Manual Q&amp;A</title>
     <script>
       // the saved theme, else the system's, before the first paint (src/theme.ts)
+      var t = null
       try {
-        var t = localStorage.getItem('theme')
-        if (t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches))
-          document.documentElement.classList.add('dark')
+        t = localStorage.getItem('theme')
       } catch (e) {}
+      if (t === 'dark' || (t !== 'light' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches))
+        document.documentElement.classList.add('dark')
     </script>
   </head>
   <body>

@@ -76,6 +76,10 @@ This tests retrieval only. [Decision 005](docs/decisions/005-external-benchmark.
 - Highlights cover whole printed lines, so one can include a neighbouring word.
 - The checks were tightened after the registered run (a part-number prefix, figure claims, letter-spaced OCR). On dev
   they changed no answer ([`NOTES-v2-dev.md`](evals/results/NOTES-v2-dev.md)); they have not been run on test.
+- A review found the quote match could pass a quote that changed its source's number, swapped "may" for "must", or
+  started just after a "Do not" it left out; the fact checks and the model's meaning check were the only guard. A
+  wording check now refuses those. Re-run offline on every claim v2 verified, it removes none of the 711 on test or the
+  290 on dev.
 
 ## How it works
 
@@ -85,8 +89,8 @@ This tests retrieval only. [Decision 005](docs/decisions/005-external-benchmark.
 3. **Retrieve:** dense and keyword search fused, then a reranker picks the passages and table rows; the model also sees
    page images.
 4. **Answer claim by claim:** the model writes one claim per line with a quote. A claim is shown only if its quote
-   matches the source, its numbers and part numbers are in the right column and unit, and the source says what the
-   claim says.
+   matches the source and keeps its numbers and words such as "may", "must" and "not", its numbers and part numbers
+   are in the right column and unit, and the source says what the claim says.
 
 ## Repository layout
 
@@ -150,7 +154,7 @@ generator; other models will behave differently. The server has no login, so com
 **From source:** Python 3.12, [uv](https://docs.astral.sh/uv/) and Node 20+.
 
 ```bash
-# Replay
+# Replay (installs the full dependencies, several GB with PyTorch; the browser demo needs none)
 uv sync --extra dev
 uv run python -m manualqa.server --replay docs/demo/replay.jsonl --port 8000
 cd frontend && npm install && npm run build && npx vite preview   # open the printed address

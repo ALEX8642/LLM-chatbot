@@ -30,6 +30,9 @@ items, and the design could only reliably detect a difference of about 28 points
 | v2 against v1 at temperature 0, phi4 | 0.805 | 0.426 | +0.379 | 0.222 to 0.488 | 70 / 6 | 1e-14 |
 | v2 against v1, mistral, first repeat | 0.805 | 0.467 | +0.337 | 0.146 to 0.491 | 66 / 9 | 8e-12 |
 
+Holm p: `python -m evals.analysis holm evals/results/test/analysis-v2-vs-v1-t0-phi4.json
+evals/results/test/analysis-v2-vs-v1-mistral.json` (1.3e-14 and 7.7e-12, rounded above).
+
 ## Exploratory
 
 Intervals here are 95% bootstraps over items (phi4, majority scores), so they ignore clustering and are narrower than

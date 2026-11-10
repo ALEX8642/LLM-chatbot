@@ -49,6 +49,10 @@ contrasts, the exploratory list and the analysis code ([`evals/analysis.py`](eva
 - v2's first test attempt hung with a GPU driver event and was rerun whole, as registered.
 - After the run, v2's search was changed to keep its index open (speed only); the registered results come from the code
   at `prereg`.
+- After the run, a wording check was added (a quote must keep its source's numbers and words such as may, must and not,
+  and not start just after a negation it leaves out). Applied offline to every claim v2 verified, it removes none on test
+  (711) or dev (290); the registered results are unchanged and come from `prereg`. The check script:
+  `evals/wording_audit.py`.
 
 ## What this does not show
 

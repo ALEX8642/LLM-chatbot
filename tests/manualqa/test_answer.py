@@ -197,3 +197,16 @@ def test_figure_claims_are_checked_against_their_page(ctx):
     )
     assert len(checker.seen) == 1 and not ans.claims
     assert ans.removed[0].reason == "the page does not say this"
+
+
+def test_a_quote_that_changes_a_number_of_its_source_is_removed(ctx):
+    ev = next(
+        e
+        for e in retrieve(Q, PARTS, ctx).evidence
+        if e.kind == "row" and "P14-8969" in e.cells
+    )
+    quote = ev.text.replace("18265", "18266")  # close enough for the fuzzy match
+    gen = FakeGen([claim("The part number is P14-8969.", ev.id, quote)])
+    ans = answer(Q, PARTS, ctx, gen)
+    assert ans.abstained
+    assert ans.removed[0].reason == "the quote changes the source's 18265, 18266"

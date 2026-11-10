@@ -163,7 +163,19 @@ def _load(path: Path) -> dict:
     return json.loads(Path(path).read_text())
 
 
+def holm_files(paths: list[Path], mode: str = "primary") -> dict[str, float]:
+    """Holm-adjusted p values for the contrasts in analysis files written by ``main``."""
+    return holm({str(p): _load(p)[mode]["mcnemar_p"] for p in paths})
+
+
 def main(argv: list[str] | None = None) -> int:
+    if argv is None:
+        import sys
+
+        argv = sys.argv[1:]
+    if argv[:1] == ["holm"]:  # python -m evals.analysis holm FILE...
+        print(json.dumps(holm_files([Path(p) for p in argv[1:]]), indent=1))
+        return 0
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--items", type=Path, required=True)
     ap.add_argument(

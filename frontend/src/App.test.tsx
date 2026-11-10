@@ -150,3 +150,11 @@ it('the theme button switches to dark and back, and remembers the choice', async
   expect(document.documentElement.classList.contains('dark')).toBe(false)
   expect(localStorage.getItem('theme')).toBe('light')
 })
+
+it('the button starts from the theme the page already shows', async () => {
+  document.documentElement.classList.add('dark')
+  render(<App />)
+  expect(screen.getByRole('button', { name: 'Switch to light mode' })).toBeTruthy()
+  await userEvent.click(screen.getByRole('button', { name: 'Switch to light mode' }))
+  expect(document.documentElement.classList.contains('dark')).toBe(false)
+})

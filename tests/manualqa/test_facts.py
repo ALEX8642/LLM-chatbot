@@ -290,3 +290,54 @@ def test_separate_digits_on_an_ordinary_line_stay_apart():
     src = "Items 1 2 and 3 are shown"
     ev = text_ev(src)
     assert not check_facts("Item 12 is shown.", src, ev).ok
+
+
+def test_wording_keeps_numbers_and_deciding_words():
+    from manualqa.facts import check_wording
+
+    src = "crank the engine for more than 20 seconds."
+    assert not check_wording("crank the engine for more than 30 seconds", src).ok
+    assert not check_wording(
+        "The operator must check the oil level before each start",
+        "The operator may check the oil level before each start,",
+    ).ok
+    assert check_wording("must not exceed 225 F", "mustn't exceed 225 F").ok
+
+
+def test_wording_refuses_a_quote_that_starts_after_a_negation():
+    from manualqa.facts import check_wording
+
+    quote = "crank the engine for more than 30 seconds"
+    src = "crank the engine for more than 30 seconds."
+    assert not check_wording(quote, src, "CAUTION\nDo not ").ok
+    assert check_wording(quote, src, "Never mind.\n").ok  # another sentence
+    assert check_wording("Do not " + quote, "Do not " + src, "CAUTION\n").ok
+
+
+def test_wording_tolerates_ocr_spacing_and_a_list_number():
+    from manualqa.facts import check_wording
+
+    spaced = "t h e  e n g i n e  s h o u l d  n o t  b e  c r a n k e d"
+    assert check_wording("the engine should not be cranked", spaced).ok
+    assert check_wording(
+        "7. Engine knocks. Step 1. Check", "Engine knocks.\nStep 1. Check"
+    ).ok
+
+
+def test_reviewed_cases_fail_end_to_end_through_quote_and_wording():
+    from manualqa.facts import check_wording
+    from manualqa.quotes import match_quote
+
+    cases = [  # (block text, quote): each matches the fuzzy quote check
+        ("Do not crank the engine for more than 20 seconds.", "crank the engine for more than 30 seconds"),
+        ("Do not crank the engine for more than 30 seconds.", "crank the engine for more than 30 seconds"),
+        (
+            "The operator may check the oil level before each start, and must stop if it is low.",
+            "The operator must check the oil level before each start",
+        ),
+    ]  # fmt: skip
+    for text, quote in cases:
+        ev = text_ev(text)
+        m = match_quote(quote, ev)
+        assert m is not None
+        assert not check_wording(quote, m.source, ev.text[: m.span[0]]).ok, quote
