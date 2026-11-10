@@ -28,7 +28,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
-ANTHROPIC = "https://api.anthropic.com/v1"
+# ANTHROPIC_BASE_URL can point at evals/anthropic_stub.py for a free dry run
+ANTHROPIC = (
+    os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com").rstrip("/")
+    + "/v1"
+)
 VERSION = "2023-06-01"
 MAX_TOKENS = 2048
 
