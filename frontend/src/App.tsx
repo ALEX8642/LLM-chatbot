@@ -36,11 +36,24 @@ export default function App() {
   const boxes = selected?.boxes ?? []
   const questions = recorded?.filter((r) => r.manual === manual).map((r) => r.question)
 
+  // on a phone the page sits below the answer: bring it into view when a claim is picked
+  const reveal = () => {
+    if (window.matchMedia?.('(max-width: 767px)').matches)
+      document.getElementById('page')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+  const line = 'border-slate-200 dark:border-slate-800'
+
   return (
-    <div className="grid h-screen grid-cols-1 md:grid-cols-2">
-      <div className="flex min-h-0 flex-col border-r border-slate-200 dark:border-slate-700">
-        <header className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 p-3">
-          <h1 className="text-lg font-semibold">Manual Q&amp;A</h1>
+    <div className="md:grid md:h-dvh md:grid-cols-2">
+      <div className={`flex flex-col md:min-h-0 md:border-r ${line}`}>
+        <header className={`flex flex-wrap items-center gap-x-3 gap-y-2 border-b ${line} px-4 py-3`}>
+          <div className="mr-auto flex items-center gap-2">
+            <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="h-7 w-7" />
+            <div>
+              <h1 className="text-lg font-semibold leading-tight">Manual Q&amp;A</h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Every claim quoted and checked against its page</p>
+            </div>
+          </div>
           <select
             aria-label="manual"
             value={manual}
@@ -49,7 +62,7 @@ export default function App() {
               setSelected(null)
               setPage(null)
             }}
-            className="ml-auto min-w-0 max-w-xs rounded border border-slate-200 dark:border-slate-700 bg-white px-2 py-1 dark:bg-slate-800"
+            className={`order-last w-full min-w-0 rounded-md border ${line} bg-white px-2 py-1.5 text-sm sm:order-none sm:w-auto sm:max-w-xs dark:bg-slate-900`}
           >
             {manuals.map((m) => (
               <option key={m.file} value={m.file}>
@@ -62,25 +75,31 @@ export default function App() {
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
-            className="rounded border border-slate-200 px-2 py-1 text-lg leading-none hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+            className={`rounded-md border ${line} px-2.5 py-1.5 leading-none hover:bg-slate-100 dark:hover:bg-slate-800`}
           >
             {theme === 'dark' ? '☀' : '☾'}
           </button>
         </header>
         {recorded && <DemoNote recorded={recorded} />}
-        <div className="min-h-0 flex-1">
+        <div className="flex min-h-0 flex-1 flex-col">
           <Conversation
             key={manual}
             manual={manual}
             selected={selected}
-            onSelect={select}
-            onPage={showPage}
+            onSelect={(c) => {
+              select(c)
+              reveal()
+            }}
+            onPage={(p) => {
+              showPage(p)
+              reveal()
+            }}
             onRemoved={removed}
             questions={questions}
           />
         </div>
       </div>
-      <div className="overflow-y-auto bg-slate-100 p-4 dark:bg-slate-950">
+      <div id="page" className="scroll-mt-2 bg-slate-100 p-4 md:overflow-y-auto dark:bg-slate-950">
         {manual && <PageViewer manual={manual} page={page} boxes={boxes} />}
       </div>
     </div>
@@ -94,7 +113,7 @@ function DemoNote({ recorded }: { recorded: Recording[] }) {
   const seconds = recorded.map((r) => r.events.at(-1)?.t ?? 0).filter((t) => t > 0)
   const span = seconds.length ? `${Math.floor(Math.min(...seconds))}–${Math.ceil(Math.max(...seconds))} s` : null
   return (
-    <p className="border-b border-slate-200 dark:border-slate-700 bg-amber-50 px-3 py-2 text-sm text-slate-700 dark:bg-amber-950/40 dark:text-slate-300">
+    <p className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-sm text-slate-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-slate-300">
       A replay of {recorded.length} answers recorded from the running system, on questions from the development set
       (not the held-out test). They play back faster than live{span && `; each took ${span} on a 16 GB GPU`}. To ask your
       own questions,{' '}

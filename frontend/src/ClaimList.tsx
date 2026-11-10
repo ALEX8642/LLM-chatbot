@@ -27,7 +27,7 @@ export default function ClaimList({ claims, removed, selected, onSelect }: Props
                 type="button"
                 onClick={() => onSelect(c)}
                 onMouseEnter={() => onSelect(c)}
-                className={`text-left rounded px-1 hover:bg-amber-100 dark:hover:bg-amber-900/40 ${selected && same(selected, c) ? 'bg-amber-100 dark:bg-amber-900/40' : ''}`}
+                className={`text-left rounded px-1 hover:bg-amber-100 dark:hover:bg-amber-400/15 ${selected && same(selected, c) ? 'bg-amber-100 dark:bg-amber-400/15' : ''}`}
               >
                 <span>{c.claim}</span>
                 {c.status === 'figure' && <span className="ml-2 text-xs text-slate-500">read from figure</span>}
