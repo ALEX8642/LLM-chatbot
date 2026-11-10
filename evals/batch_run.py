@@ -103,12 +103,8 @@ def to_anthropic(messages: list[dict]) -> tuple[str, list[dict]]:
 
 def anthropic_params(messages: list[dict], model: str) -> dict:
     system, msgs = to_anthropic(messages)
-    params = {
-        "model": model,
-        "max_tokens": MAX_TOKENS,
-        "temperature": 0,
-        "messages": msgs,
-    }
+    # no temperature: Opus 5.5 rejects it ("Extra inputs are not permitted")
+    params = {"model": model, "max_tokens": MAX_TOKENS, "messages": msgs}
     if system:
         params["system"] = system
     return params
@@ -151,7 +147,7 @@ class Anthropic:
         total = 0
         for messages in pending.values():
             p = anthropic_params(messages, self.model)
-            p.pop("max_tokens"), p.pop("temperature")
+            p.pop("max_tokens")
             total += self._post("/messages/count_tokens", p)["input_tokens"]
             time.sleep(0.7)  # the counter allows 100 requests a minute
         return total

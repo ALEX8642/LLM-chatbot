@@ -43,8 +43,10 @@ def _to_openai(params: dict) -> list[dict]:
 def _answer(params: dict) -> dict:
     from manualqa.generate import Generator
 
-    if params.get("temperature") != 0 or not params.get("max_tokens"):
-        raise ValueError("expected temperature 0 and max_tokens")
+    if "temperature" in params or not params.get("max_tokens"):  # as Opus 5.5 does
+        raise ValueError(
+            "temperature: Extra inputs are not permitted; max_tokens required"
+        )
     text = Generator.from_env().complete(_to_openai(params))
     chars = sum(len(str(m)) for m in params["messages"])
     return {
