@@ -13,7 +13,7 @@ FROM python:3.12-slim
 COPY --from=ghcr.io/astral-sh/uv:0.13.6 /uv /usr/local/bin/uv
 WORKDIR /app
 ENV UV_PYTHON_DOWNLOADS=never UV_LINK_MODE=copy UV_PROJECT_ENVIRONMENT=/deps/venv \
-    HF_HOME=/models PYTHONUNBUFFERED=1
+    HF_HOME=/models HF_XET_CHUNK_CACHE_SIZE_BYTES=0 PYTHONUNBUFFERED=1
 COPY pyproject.toml uv.lock README.md ./
 COPY docker/replay.in docker/replay.in
 RUN uv export --frozen --no-dev --no-hashes --no-emit-project -o /tmp/lock.txt \
