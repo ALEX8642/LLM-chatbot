@@ -121,10 +121,10 @@ def _text(message: dict) -> str:
 
 
 class Anthropic:
-    def __init__(self, model: str, session=None):
+    def __init__(self, model: str, session=None, ledger: Path | None = None):
         import requests
 
-        self.model = model
+        self.model, self.ledger = model, ledger
         self.http = session or requests.Session()
         self.http.headers.update(
             {
@@ -180,9 +180,34 @@ class Anthropic:
             out.update(self._one_batch(chunk, poll_s))
         return out
 
+    def _note(self, entry: dict) -> None:
+        if self.ledger is not None:
+            with self.ledger.open("a") as f:
+                f.write(json.dumps(entry) + "\n")
+
+    def uncollected(self) -> list[str]:
+        """Batches submitted by an earlier run whose results were never collected."""
+        if self.ledger is None or not self.ledger.exists():
+            return []
+        entries = [json.loads(x) for x in self.ledger.read_text().splitlines() if x]
+        done = {e["id"] for e in entries if e.get("collected")}
+        return [e["id"] for e in entries if "submitted" in e and e["id"] not in done]
+
+    def recover(self, poll_s: int = 60) -> dict[str, dict]:
+        """Collect batches an interrupted run paid for, so they are never sent twice."""
+        out: dict[str, dict] = {}
+        for bid in self.uncollected():
+            print(f"  collecting batch {bid} from an earlier run", flush=True)
+            out.update(self._collect(bid, poll_s))
+        return out
+
     def _one_batch(self, requests_: list[dict], poll_s: int) -> dict[str, dict]:
         bid = self._post("/messages/batches", {"requests": requests_})["id"]
+        self._note({"id": bid, "submitted": len(requests_)})
         print(f"  batch {bid}: {len(requests_)} requests submitted", flush=True)
+        return self._collect(bid, poll_s)
+
+    def _collect(self, bid: str, poll_s: int) -> dict[str, dict]:
         while True:
             r = self.http.get(f"{ANTHROPIC}/messages/batches/{bid}", timeout=60)
             r.raise_for_status()
@@ -213,6 +238,7 @@ class Anthropic:
             print(f"  {row['custom_id'][:12]}: {result['type']} {error}", flush=True)
             if error.get("type") == "invalid_request_error":
                 invalid.append(error.get("message", ""))
+        self._note({"id": bid, "collected": True})
         if invalid:  # the same request would fail again: stop rather than resend it
             sys.exit(f"{len(invalid)} invalid requests, first: {invalid[0]}")
         return out  # server errors, cancels and expiries are left out and asked again
@@ -342,7 +368,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.backend == "openai-live":
         fill = openai_live
     else:
-        client = Anthropic(model)
+        client = Anthropic(model, ledger=args.cache.with_suffix(".batches.jsonl"))
+        recovered = client.recover()
+        if recovered:
+            gen.cache.update(recovered)
+            append_cache(args.cache, model, recovered)
         if args.backend == "anthropic-batch":
             fill = hybrid(client.batch, client.live, args.live_below)
         else:

@@ -1,4 +1,5 @@
 from evals.batch_run import (
+    Anthropic,
     CachedGenerator,
     Pending,
     load_cache,
@@ -128,3 +129,22 @@ def test_small_rounds_go_live_and_large_ones_batch():
     fill({"a": [], "b": [], "c": []})
     fill({"a": []})
     assert used == ["batch", "live"]
+
+
+def test_a_batch_left_uncollected_is_collected_before_anything_is_resent(
+    tmp_path, monkeypatch
+):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test")
+    ledger = tmp_path / "c.batches.jsonl"
+    ledger.write_text(
+        '{"id": "b1", "submitted": 2}\n{"id": "b1", "collected": true}\n{"id": "b2", "submitted": 3}\n'
+    )
+    client = Anthropic("m", ledger=ledger)
+    assert client.uncollected() == ["b2"]
+    collected = []
+    monkeypatch.setattr(
+        client,
+        "_collect",
+        lambda bid, poll_s: collected.append(bid) or {"k": {"text": "t"}},
+    )
+    assert client.recover() == {"k": {"text": "t"}} and collected == ["b2"]
