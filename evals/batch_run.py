@@ -134,11 +134,18 @@ class Anthropic:
             }
         )
 
-    def _post(self, path: str, body: dict) -> dict:
-        r = self.http.post(f"{ANTHROPIC}{path}", json=body, timeout=300)
-        if r.status_code >= 400:
-            raise RuntimeError(f"{path}: HTTP {r.status_code}: {r.text[:500]}")
-        return r.json()
+    def _post(self, path: str, body: dict, tries: int = 8) -> dict:
+        """POST, waiting out rate limits (429) and overload (529) with backoff."""
+        for attempt in range(tries):
+            r = self.http.post(f"{ANTHROPIC}{path}", json=body, timeout=300)
+            if r.status_code in (429, 529) and attempt < tries - 1:
+                wait = float(r.headers.get("retry-after") or 2 ** (attempt + 1))
+                time.sleep(min(wait, 120))
+                continue
+            if r.status_code >= 400:
+                raise RuntimeError(f"{path}: HTTP {r.status_code}: {r.text[:300]}")
+            return r.json()
+        raise RuntimeError(f"{path}: still rate limited after {tries} tries")
 
     def count(self, pending: dict[str, list[dict]]) -> int:
         total = 0
@@ -146,6 +153,7 @@ class Anthropic:
             p = anthropic_params(messages, self.model)
             p.pop("max_tokens"), p.pop("temperature")
             total += self._post("/messages/count_tokens", p)["input_tokens"]
+            time.sleep(0.7)  # the counter allows 100 requests a minute
         return total
 
     def live(self, pending: dict[str, list[dict]]) -> dict[str, dict]:
