@@ -23,6 +23,7 @@ _MARKUP = re.compile(r"[*`%]")
 BOOTSTRAP = 1000
 SUPPORT_CHARS = 3000  # a cited source longer than this is checked fact by fact
 PASSAGE_CHARS, PASSAGES = 800, 3
+_VULGAR = re.compile(r"(?<=\d)(?=[\u00bc-\u00be\u2150-\u215e])")  # "7¾" -> "7 3/4"
 _STOP = set("the and for with that this from are was were has have not but its".split())
 
 
@@ -70,6 +71,7 @@ def _facts_list(item: Item) -> str:
 
 
 def _terms(text: str) -> set[str]:
+    text = unicodedata.normalize("NFKC", _VULGAR.sub(" ", text)).replace("\u2044", "/")
     return {
         t
         for t in normalise(text).split()
@@ -79,7 +81,8 @@ def _terms(text: str) -> set[str]:
 
 def passages(source: str, fact: str, answer: str) -> str:
     """The PASSAGES windows of the source (about PASSAGE_CHARS each, whole lines, in source
-    order) that share the most terms with the fact, then with the answer."""
+    order) that share the most terms with the fact; the answer's terms only break ties, so a
+    long answer cannot outvote the fact."""
     lines = source.split("\n")
     want, also = _terms(fact), _terms(answer)
     windows = []  # (score, first line, last line + 1)
@@ -89,9 +92,9 @@ def passages(source: str, fact: str, answer: str) -> str:
             size += len(lines[j]) + 1
             j += 1
         have = _terms("\n".join(lines[i:j]))
-        windows.append((2 * len(want & have) + len(also & have), i, j))
+        windows.append(((len(want & have), len(also & have)), i, j))
     chosen: list[tuple[int, int]] = []
-    for _, i, j in sorted(windows, key=lambda w: (-w[0], w[1])):
+    for _, i, j in sorted(windows, key=lambda w: (-w[0][0], -w[0][1], w[1])):
         if all(j <= a or i >= b for a, b in chosen):
             chosen.append((i, j))
         if len(chosen) == PASSAGES:
