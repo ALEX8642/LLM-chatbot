@@ -1,0 +1,115 @@
+# Unseen manual: results
+
+Neither system had seen FIST 3-30 (Reclamation, transformer maintenance, 87 pages) before this run. The plan is
+`docs/prereg-unseen.md` (tag `prereg-unseen`); the items are `fist.jsonl` (104: 92 answerable, 12 unanswerable).
+Raw outputs are in `results/raw/`, judged files and analyses in `results/`.
+
+**In short:** the registered test came out in v2's favour, but Alexander's blind check shows that result came from the
+judge. phi4 rejects correct v1 answers far more often than correct v2 answers. With his grades in place of the judges'
+on the answers he checked, v2 and v1 are level on this manual: +3.9 points, interval −4 to +13, p 0.48.
+
+## Registered result
+
+The endpoint is correct and supported, phi4, majority of 3 repeats. The test is paired, with page clusters.
+
+| | v2 (Qwen3.8) | v1 (Command R7B) | Difference | 95% interval | McNemar p |
+|---|---|---|---|---|---|
+| phi4 (primary) | 0.804 | 0.647 | +0.157 | 0.031 to 0.284 | 0.014 |
+| mistral (secondary) | 0.817 | 0.856 | −0.038 | n.s. | |
+
+The primary met the registered rule (p < 0.05 and the interval above zero). The secondary judge disagreed. Both systems
+beat the registered guesses (v2 0.60-0.75, v1 0.30-0.45).
+
+## Blind check by Alexander
+
+There were 62 screens, with the system hidden and the order shuffled. The selection was fixed before grading
+(`evals/sessions/build_blind_unseen.py`, `results/blind_selection.json`):
+- all 24 v1 answers that phi4 judged correct but unsupported while mistral passed them;
+- all 22 v2 answers phi4 failed;
+- 8 controls per system, drawn from answers both judges passed.
+
+To pass, an answer had to be right and its cited pages had to show it, which is the judges' rule. A decline passes only
+on an unanswerable item. Grades are in `results/blind_grades.jsonl`. Alexander is not a transformer expert. He graded
+against the reference answer and the page images. Writing style can give the system away, since v2 writes short
+quote-backed claims, so the blinding is weak.
+
+| Answers checked | Alexander passed | Judges agree with him |
+|---|---|---|
+| v1, the judge split (24) | 23 (one cited a page that does not show it) | phi4 on 1, mistral on 23 |
+| v2, phi4 failures (22) | 12 | phi4 on 10 (it gave no grade on 2), mistral on 15 |
+| controls (16) | 16 | both on all 16 |
+
+**Judge validity rule** (registered: a gap over 10 points between systems in how often the judge wrongly fails them):
+
+| Judge | Wrongly fails v1 | Wrongly fails v2 | Gap | Wrong passes |
+|---|---|---|---|---|
+| phi4 | 23 of 31 (74%) | 10 of 18 (56%) | 18 points against v1 | 0 |
+| mistral | 0 of 31 (0%) | 7 of 20 (35%) | 35 points against v2 | 1 (v1 fist-70) |
+
+The rule is triggered for both judges, in opposite directions. The sample was chosen where the judges fail answers, so
+these rates describe the disputed answers, not the whole run. The 16 controls found no wrong passes.
+
+## Human-corrected result
+
+For the 62 checked answers, Alexander's grade replaces the judge's. The other answers keep phi4's (or mistral's) grade.
+(`results/analysis-human-corrected.json`)
+
+| | v2 | v1 | Difference | 95% interval | McNemar p |
+|---|---|---|---|---|---|
+| phi4 + Alexander | 0.903 | 0.864 | +0.039 | −0.041 to 0.125 | 0.48 |
+| mistral + Alexander | 0.885 | 0.846 | +0.038 | −0.044 to 0.128 | 0.50 |
+
+The two judges agree once corrected. On this manual v2 is not shown to be better than v1. The registered result is
+reported above, unchanged, and this one stands beside it.
+
+Caveats:
+- The answers he did not check keep the judge's grade.
+- v1 answers that both judges failed were not checked.
+- v1 with Command R7B is not fully deterministic across repeats; his grade is of the first repeat.
+
+## Why v2 failed (`results/v2-misses.jsonl`)
+
+All 22 of v2's phi4 failures:
+
+| Label | Items |
+|---|---|
+| Judge miss (Alexander: right and supported) | 12 |
+| True claims removed by v2's own checks (5 left the answer incomplete, 2 left a decline) | 7 |
+| Wrong claim removed, leaving a decline (fist-73: the check was right) | 1 |
+| Incomplete answer from the generator | 1 |
+| Answered an unanswerable item (fist-96) | 1 |
+
+fist-96 gave the 250 ppb investigate threshold and claimed no end-of-life point. Alexander graded it correct, but the
+registered rule fails it because it did not decline.
+
+The seven true claims that v2 removed were all caught by checks written on the development manuals:
+- the number check: "900 not in source" for a value taken from the question; "7 not in source" for 7¾;
+- the table-column check: it misread three rows of this manual's gasket and TDCG tables;
+- the wording check: once;
+- the quote-block check: once.
+
+On the main test, v2's checks removed true claims on 2 of 33 failures; here they did on 7 of 10. The checks overfit
+the manuals they were built on. Fixing them is a change after registration and will be reported as one.
+
+## Other generators (not human-checked)
+
+Correct and supported, phi4 / mistral:
+
+| | v1 R7B | v1 Qwen3.8 | v2 Qwen3.8 | v2 Opus 5.5 |
+|---|---|---|---|---|
+| Main test | 0.420 / 0.467 | 0.556 / 0.645 | 0.805 / 0.805 | 0.849 / 0.870 |
+| FIST | 0.641 / 0.856 | 0.686 / 0.923 | 0.804 / 0.817 | 0.860 / 0.837 |
+
+- v1 with Qwen3.8 (`evals/v1_generator_swap.py`) is the like-for-like comparison, with the same generator in both
+  pipelines.
+- Opus 5.5 was run through the Batch API (`evals/batch_run.py`, about $14 in total).
+- Opus over Qwen3.8 in v2: +5 / +7 points on the main test and +6 / +2 on FIST, none significant.
+- Opus wrote claims that v2's checks removed 41 times, against 11 for Qwen3.8, so its score is a floor.
+- On FIST, phi4's bias against v1's citations affects these columns as it did the registered one. Judged correct alone,
+  regardless of support: v1 R7B 0.875, v1 Qwen 0.952, v2 0.808, Opus 0.856.
+
+## Deviations
+
+- The registration was written after the manual had been parsed.
+- The raw files do not record the commit they were run from. They were run at tag `prereg-unseen` for v2, and v1 at tag `v1` through the harness at `prereg`.
+- The blind check's selection was written after the judged results were seen. It was fixed before grading.

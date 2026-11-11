@@ -16,3 +16,7 @@ PaddleOCR-VL parsed all 87 pages (`docs/prereg-unseen.md` describes the run). In
 dependencies, the composed source text the judge reads has sha256
 `34d32e5762363872e45b6f12708221a03bf277d634c46e5553f292d5158890e3`: 24 tables, 237 rows. Every anchor of every
 answerable item appears verbatim on its gold pages in that text.
+
+## Results
+
+`RESULTS.md`: the registered result, Alexander's blind check and the human-corrected result.
