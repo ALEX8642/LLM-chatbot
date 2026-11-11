@@ -43,7 +43,7 @@ quote-backed claims, so the blinding is weak.
 
 | Judge | Wrongly fails v1 | Wrongly fails v2 | Gap | Wrong passes |
 |---|---|---|---|---|
-| phi4 | 23 of 31 (74%) | 10 of 18 (56%) | 18 points against v1 | 0 |
+| phi4 | 23 of 31 (74%) | 10 of 18 (56%) | 19 points against v1 | 0 |
 | mistral | 0 of 31 (0%) | 7 of 20 (35%) | 35 points against v2 | 1 (v1 fist-70) |
 
 The rule is triggered for both judges, in opposite directions. The sample was chosen where the judges fail answers, so
@@ -121,3 +121,10 @@ Correct and supported, phi4 / mistral:
 - The registration was written after the manual had been parsed.
 - The raw files do not record the commit they were run from. They were run at tag `prereg-unseen` for v2, and v1 at tag `v1` through the harness at `prereg`.
 - The blind check's selection was written after the judged results were seen. It was fixed before grading.
+
+## Judge prompt version 3
+
+A later judge prompt, tuned on these grades and checked on the main test's, cuts phi4's wrong fails on good v1 answers
+here from 23 of 31 to 2. It still fails the 10-point rule on both sets, so the registered judges stay as they are:
+[`evals/results/judge-v3/README.md`](../results/judge-v3/README.md).
+

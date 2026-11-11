@@ -1,0 +1,2691 @@
+{
+ "judge": {
+  "model": "mistral-small3.2:24b",
+  "prompt_version": 3
+ },
+ "summary": {
+  "v1": {
+   "graded": 50,
+   "ungraded": 0,
+   "agree": 37,
+   "wrongly_fails": 9,
+   "human_passes": 31,
+   "wrongly_passes": 4,
+   "human_fails": 19
+  },
+  "v2": {
+   "graded": 50,
+   "ungraded": 0,
+   "agree": 45,
+   "wrongly_fails": 5,
+   "human_passes": 42,
+   "wrongly_passes": 0,
+   "human_fails": 8
+  },
+  "wrong_fail_gap_points": 17.1
+ },
+ "rows": [
+  {
+   "system": "v2",
+   "item": "faa-ch9-30",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch9-30",
+    "category": "unanswerable",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 81,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-4-04",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-4-04",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 1140,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Connect a NATO slave cable from a fully charged 24 VDC system to the NATO slave receptacle.",
+      "present": true
+     },
+     {
+      "fact": "Remove the cable after the set starts.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-2-02",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-2-02",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 1237,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Operation is allowable with Class I or II leaks.",
+      "present": true
+     },
+     {
+      "fact": "Continue to check fluid levels.",
+      "present": true
+     },
+     {
+      "fact": "Report all leaks to the next higher level of maintenance.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-1-01",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "op-2-1-01",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 2137,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "The BATTLE SHORT switch bypasses protective devices.",
+      "present": false
+     },
+     {
+      "fact": "An amber light indicates it is on.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch6-01",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch6-01",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 156,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Loaded weight 5,064 lb.",
+      "present": false
+     },
+     {
+      "fact": "CG 42.47 inches aft of the datum.",
+      "present": false
+     },
+     {
+      "fact": "36.3 percent MAC.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-3-04",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "op-2-3-04",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 193,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Terminals L3 and L1.",
+      "present": false
+     },
+     {
+      "fact": "L3-L1 reads 240 volts.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-intro-03",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "parts-intro-03",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 77,
+    "correct": false,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "XD items are not stocked.",
+      "present": false
+     },
+     {
+      "fact": "Order through normal supply channels using the FSCM and part number when no NSN is available.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch9-15",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch9-15",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 195,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "182,000 lb.",
+      "present": true
+     },
+     {
+      "fact": "Maximum landing weight plus trip fuel.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-2-02",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "op-2-2-02",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 127,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Operation is allowable with Class I or II leaks.",
+      "present": true
+     },
+     {
+      "fact": "Continue to check fluid levels.",
+      "present": false
+     },
+     {
+      "fact": "Report all leaks to the next higher level of maintenance.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch2-03",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch2-03",
+    "category": "table",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 204,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Total weight 400 pounds.",
+      "present": true
+     },
+     {
+      "fact": "Total moment 44,000 lb-in.",
+      "present": true
+     },
+     {
+      "fact": "Balance point 110 inches from the datum.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch9-29",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch9-29",
+    "category": "figure",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 135,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "12 first class seats at 36-inch pitch.",
+      "present": true
+     },
+     {
+      "fact": "148 economy class seats at 32-inch pitch.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-intro-04",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-intro-04",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 119,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "V means the quantity is variable.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch10-04",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch10-04",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 702,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch9-29",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch9-29",
+    "category": "figure",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 376,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "12 first class seats at 36-inch pitch.",
+      "present": true
+     },
+     {
+      "fact": "148 economy class seats at 32-inch pitch.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-1-2-11",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-1-2-11",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 146,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch9-22",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch9-22",
+    "category": "multi_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 272,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "The CG moves aft 7.8 inches.",
+      "present": true
+     },
+     {
+      "fact": "The new CG is station 300.7.",
+      "present": true
+     },
+     {
+      "fact": "Total weight is unchanged.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch9-22",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch9-22",
+    "category": "multi_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 1266,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "The CG moves aft 7.8 inches.",
+      "present": true
+     },
+     {
+      "fact": "The new CG is station 300.7.",
+      "present": false
+     },
+     {
+      "fact": "Total weight is unchanged.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-g03-07",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-g03-07",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 172,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "60 Hz: 88-20032.",
+      "present": true
+     },
+     {
+      "fact": "400 Hz: 88-20034.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-2-03",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-2-03",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 606,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "It occurs at loads below 25% of set rating.",
+      "present": true
+     },
+     {
+      "fact": "Operation at rated load burns it off.",
+      "present": true
+     },
+     {
+      "fact": "Increasing the electrical load prevents it.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-1-09",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-1-09",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 72,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "FU1 protects the battery charging alternator.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch10-04",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch10-04",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 50,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-intro-06",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-intro-06",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 98,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "TM 9-2815-252-24",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-intro-04",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-intro-04",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 176,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "V means the quantity is variable.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-3-02",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-3-02",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 150,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Do not connect load cables to the convenience receptacle.",
+      "present": true
+     },
+     {
+      "fact": "Never connect or disconnect load cables while the set is running.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-g04-06",
+   "human": false,
+   "judge": true,
+   "grade": {
+    "id": "parts-g04-06",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 590,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch2-03",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch2-03",
+    "category": "table",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 598,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Total weight 400 pounds.",
+      "present": true
+     },
+     {
+      "fact": "Total moment 44,000 lb-in.",
+      "present": true
+     },
+     {
+      "fact": "Balance point 110 inches from the datum.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-4-10",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-4-10",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 80,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-g07-03",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "parts-g07-03",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 71,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-g04-05",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-g04-05",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 52,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-4-06",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-4-06",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 213,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Short circuit devices and EMERGENCY STOP stay active.",
+      "present": true
+     },
+     {
+      "fact": "The switch must be OFF to start the set.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-intro-03",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-intro-03",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 241,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "XD items are not stocked.",
+      "present": true
+     },
+     {
+      "fact": "Order through normal supply channels using the FSCM and part number when no NSN is available.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-4-08",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-4-08",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 1104,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Ensure the load does not exceed 10 amps.",
+      "present": true
+     },
+     {
+      "fact": "Reset the Ground Fault Circuit Interrupter before plugging in.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch3-10",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch3-10",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 2917,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Nose-heavy: harder to take off and gain altitude.",
+      "present": true
+     },
+     {
+      "fact": "Nose-heavy needs a higher speed to land.",
+      "present": true
+     },
+     {
+      "fact": "Tail-heavy: more susceptible to stalling at low speed.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-1-02",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "op-2-1-02",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 356,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "PRIME & RUN AUX FUEL activates the auxiliary fuel pump system.",
+      "present": true
+     },
+     {
+      "fact": "PRIME & RUN leaves the auxiliary fuel system deenergized.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-2-03",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-2-03",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 640,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "It occurs at loads below 25% of set rating.",
+      "present": true
+     },
+     {
+      "fact": "Operation at rated load burns it off.",
+      "present": true
+     },
+     {
+      "fact": "Increasing the electrical load prevents it.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch6-08",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch6-08",
+    "category": "unanswerable",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 126,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-3-02",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-3-02",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 1172,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Do not connect load cables to the convenience receptacle.",
+      "present": true
+     },
+     {
+      "fact": "Never connect or disconnect load cables while the set is running.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-intro-02",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-intro-02",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 119,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Do not requisition an XA item.",
+      "present": true
+     },
+     {
+      "fact": "Order its next higher assembly.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-4-01",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-4-01",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 671,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "As low as -25 \u00b0F (-31 \u00b0C) without winterization equipment.",
+      "present": true
+     },
+     {
+      "fact": "Keep the fuel tank full.",
+      "present": true
+     },
+     {
+      "fact": "Keep batteries well charged and free of corrosion.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-g03-09",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-g03-09",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 80,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-g03-07",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "parts-g03-07",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 494,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "60 Hz: 88-20032.",
+      "present": false
+     },
+     {
+      "fact": "400 Hz: 88-20034.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-g04-05",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "parts-g04-05",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 52,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-4-04",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-4-04",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 373,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Connect a NATO slave cable from a fully charged 24 VDC system to the NATO slave receptacle.",
+      "present": true
+     },
+     {
+      "fact": "Remove the cable after the set starts.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch6-03",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch6-03",
+    "category": "table",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 63,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Takeoff 3,781 lb.",
+      "present": true
+     },
+     {
+      "fact": "Landing 3,571 lb.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-1-02",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-1-02",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 328,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "PRIME & RUN AUX FUEL activates the auxiliary fuel pump system.",
+      "present": true
+     },
+     {
+      "fact": "PRIME & RUN leaves the auxiliary fuel system deenergized.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-3-03",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "op-2-3-03",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 896,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Balance loads between terminals.",
+      "present": false
+     },
+     {
+      "fact": "Do not connect all loads between one terminal and LO.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch3-10",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch3-10",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 797,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Nose-heavy: harder to take off and gain altitude.",
+      "present": true
+     },
+     {
+      "fact": "Nose-heavy needs a higher speed to land.",
+      "present": true
+     },
+     {
+      "fact": "Tail-heavy: more susceptible to stalling at low speed.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-app-02",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-app-02",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 72,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-g04-03",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "parts-g04-03",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 632,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "40.0 inches of wire.",
+      "present": true
+     },
+     {
+      "fact": "Made from M5086/2-6-9.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-4-08",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-4-08",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 292,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Ensure the load does not exceed 10 amps.",
+      "present": true
+     },
+     {
+      "fact": "Reset the Ground Fault Circuit Interrupter before plugging in.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-g04-04",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-g04-04",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 90,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "41 contacts",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-1-10",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "op-2-1-10",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 186,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch6-05",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch6-05",
+    "category": "table",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 93,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "80 gallons: 562.",
+      "present": true
+     },
+     {
+      "fact": "90 pounds of baggage: 150.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-g07-03",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "parts-g07-03",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 97,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-g04-04",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-g04-04",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 309,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "41 contacts",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-3-03",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-3-03",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 143,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Balance loads between terminals.",
+      "present": true
+     },
+     {
+      "fact": "Do not connect all loads between one terminal and LO.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch9-24",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch9-24",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 603,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Crew and flight attendants moving.",
+      "present": true
+     },
+     {
+      "fact": "Service carts moving.",
+      "present": true
+     },
+     {
+      "fact": "Passengers moving through the cabin or to the lavatory.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-1-10",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-1-10",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 1280,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch4-04",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch4-04",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 177,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "WSC: moved aft.",
+      "present": true
+     },
+     {
+      "fact": "Powered parachute: moved forward.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch10-01",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch10-01",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 192,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "A simple electronic calculator.",
+      "present": true
+     },
+     {
+      "fact": "An E6-B flight computer.",
+      "present": true
+     },
+     {
+      "fact": "A dedicated electronic flight computer.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-3-05",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-3-05",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 154,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-4-10",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "op-2-4-10",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 533,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch6-04",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch6-04",
+    "category": "table",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 213,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "24 pounds.",
+      "present": true
+     },
+     {
+      "fact": "Moment index 28.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch4-04",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch4-04",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 582,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "WSC: moved aft.",
+      "present": false
+     },
+     {
+      "fact": "Powered parachute: moved forward.",
+      "present": true
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch6-08",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch6-08",
+    "category": "unanswerable",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 257,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch6-05",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch6-05",
+    "category": "table",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 1242,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "80 gallons: 562.",
+      "present": false
+     },
+     {
+      "fact": "90 pounds of baggage: 150.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-3-05",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "op-2-3-05",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 80,
+    "correct": false,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-3-04",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "op-2-3-04",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 101,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Terminals L3 and L1.",
+      "present": false
+     },
+     {
+      "fact": "L3-L1 reads 240 volts.",
+      "present": true
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-g04-06",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-g04-06",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 79,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-intro-06",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-intro-06",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 198,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "TM 9-2815-252-24",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-1-01",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-1-01",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 113,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "The BATTLE SHORT switch bypasses protective devices.",
+      "present": true
+     },
+     {
+      "fact": "An amber light indicates it is on.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-g08-03",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-g08-03",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 79,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-4-05",
+   "human": false,
+   "judge": true,
+   "grade": {
+    "id": "op-2-4-05",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 445,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Reset the EMERGENCY STOP pushbutton.",
+      "present": true
+     },
+     {
+      "fact": "Turn the MASTER SWITCH to OFF.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch10-01",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch10-01",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 475,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "A simple electronic calculator.",
+      "present": true
+     },
+     {
+      "fact": "An E6-B flight computer.",
+      "present": true
+     },
+     {
+      "fact": "A dedicated electronic flight computer.",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-4-05",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-4-05",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 136,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Reset the EMERGENCY STOP pushbutton.",
+      "present": true
+     },
+     {
+      "fact": "Turn the MASTER SWITCH to OFF.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch6-04",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch6-04",
+    "category": "table",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 80,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "24 pounds.",
+      "present": true
+     },
+     {
+      "fact": "Moment index 28.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-4-02",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "op-2-4-02",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 1541,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Check vents and radiator passages for obstructions.",
+      "present": false
+     },
+     {
+      "fact": "Watch the coolant temperature indicator.",
+      "present": false
+     },
+     {
+      "fact": "Allow space for fuel expansion when filling.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-intro-02",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-intro-02",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 484,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Do not requisition an XA item.",
+      "present": true
+     },
+     {
+      "fact": "Order its next higher assembly.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch9-30",
+   "human": false,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch9-30",
+    "category": "unanswerable",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 790,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-4-01",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "op-2-4-01",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 1862,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "As low as -25 \u00b0F (-31 \u00b0C) without winterization equipment.",
+      "present": false
+     },
+     {
+      "fact": "Keep the fuel tank full.",
+      "present": false
+     },
+     {
+      "fact": "Keep batteries well charged and free of corrosion.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch9-14",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch9-14",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 101,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "76.0 pounds per square foot",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-g14-02",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "parts-g14-02",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 368,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Section III Special Tools List is not applicable.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch9-15",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch9-15",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 860,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "182,000 lb.",
+      "present": true
+     },
+     {
+      "fact": "Maximum landing weight plus trip fuel.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-1-09",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "op-2-1-09",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 1050,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "FU1 protects the battery charging alternator.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-4-02",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "op-2-4-02",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 403,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Check vents and radiator passages for obstructions.",
+      "present": false
+     },
+     {
+      "fact": "Watch the coolant temperature indicator.",
+      "present": true
+     },
+     {
+      "fact": "Allow space for fuel expansion when filling.",
+      "present": true
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-g03-09",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "parts-g03-09",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 49,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "faa-ch9-19",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch9-19",
+    "category": "table",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 71,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch9-24",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch9-24",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 1901,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Crew and flight attendants moving.",
+      "present": false
+     },
+     {
+      "fact": "Service carts moving.",
+      "present": false
+     },
+     {
+      "fact": "Passengers moving through the cabin or to the lavatory.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch6-03",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch6-03",
+    "category": "table",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 296,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Takeoff 3,781 lb.",
+      "present": true
+     },
+     {
+      "fact": "Landing 3,571 lb.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-4-09",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "op-2-4-09",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 285,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch9-14",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "faa-ch9-14",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 1296,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "76.0 pounds per square foot",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-app-02",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "op-app-02",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 103,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "parts-g08-03",
+   "human": false,
+   "judge": true,
+   "grade": {
+    "id": "parts-g08-03",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 679,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-1-2-11",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-1-2-11",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 79,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "op-2-4-09",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "op-2-4-09",
+    "category": "unanswerable",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 140,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch9-19",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch9-19",
+    "category": "table",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 416,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "op-2-4-06",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "op-2-4-06",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Operator_Manual.pdf",
+    "answer_chars": 540,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Short circuit devices and EMERGENCY STOP stay active.",
+      "present": true
+     },
+     {
+      "fact": "The switch must be OFF to start the set.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "faa-ch6-01",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "faa-ch6-01",
+    "category": "single_page",
+    "manual": "FAA_Weight_and_Balance_Handbook.pdf",
+    "answer_chars": 390,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Loaded weight 5,064 lb.",
+      "present": false
+     },
+     {
+      "fact": "CG 42.47 inches aft of the datum.",
+      "present": false
+     },
+     {
+      "fact": "36.3 percent MAC.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-g14-02",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "parts-g14-02",
+    "category": "single_page",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 181,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Section III Special Tools List is not applicable.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "parts-g04-03",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "parts-g04-03",
+    "category": "table",
+    "manual": "Army_5kW_Generator_Parts_Manual.pdf",
+    "answer_chars": 137,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "40.0 inches of wire.",
+      "present": true
+     },
+     {
+      "fact": "Made from M5086/2-6-9.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  }
+ ]
+}

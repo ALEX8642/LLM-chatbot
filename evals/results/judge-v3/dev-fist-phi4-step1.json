@@ -1,0 +1,1762 @@
+{
+ "judge": {
+  "model": "phi4:14b",
+  "prompt_version": 3
+ },
+ "summary": {
+  "v1": {
+   "graded": 32,
+   "ungraded": 0,
+   "agree": 21,
+   "wrongly_fails": 10,
+   "human_passes": 31,
+   "wrongly_passes": 1,
+   "human_fails": 1
+  },
+  "v2": {
+   "graded": 30,
+   "ungraded": 0,
+   "agree": 20,
+   "wrongly_fails": 10,
+   "human_passes": 20,
+   "wrongly_passes": 0,
+   "human_fails": 10
+  },
+  "wrong_fail_gap_points": 17.7
+ },
+ "rows": [
+  {
+   "system": "v1",
+   "item": "fist-12",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-12",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 751,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "15 \u00b0C to 20 \u00b0C lower than actual.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-24",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-24",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 173,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Around 500 psi.",
+      "present": true
+     },
+     {
+      "fact": "2,400 psi when full.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-41",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-41",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 1537,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Cork-neoprene",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-51",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-51",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 392,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Ethane at about 250 \u00b0C.",
+      "present": true
+     },
+     {
+      "fact": "Ethylene at about 350 \u00b0C.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-61",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-61",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 289,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Use the detection limit of that gas as the denominator.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-69",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-69",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 814,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "0.3% by weight.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-75",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-75",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 375,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Reclaim at 25 dynes/cm.",
+      "present": true
+     },
+     {
+      "fact": "Sludging begins around 22 dynes/cm.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-89",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-89",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 258,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Wheatstone bridge for 1 ohm or above.",
+      "present": true
+     },
+     {
+      "fact": "Micro-ohmmeter or Kelvin bridge under 1 ohm.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-23",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-23",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 108,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Between 0.5 and 5 psi.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-30",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-30",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 52,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "About 2 years.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-51",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-51",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 104,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Ethane at about 250 \u00b0C.",
+      "present": true
+     },
+     {
+      "fact": "Ethylene at about 350 \u00b0C.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-52",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-52",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 149,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Cellulose insulation starts to decompose at about 100 \u00b0C or less.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-60",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-60",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 73,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "C2H2/C2H4",
+      "present": true
+     },
+     {
+      "fact": "CH4/H2",
+      "present": true
+     },
+     {
+      "fact": "C2H4/C2H6",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-85",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-85",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 68,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Doble 95% norm: 511.",
+      "present": true
+     },
+     {
+      "fact": "IEEE limit: 200.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-88",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-88",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 178,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Within 5%.",
+      "present": true
+     },
+     {
+      "fact": "234.5 \u00b0C for copper.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-94",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-94",
+    "category": "unanswerable",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 80,
+    "correct": true,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-02",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-02",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 286,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": false,
+    "facts": [],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-04",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-04",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 347,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "Self-cooled, non-ventilated.",
+      "present": true
+     },
+     {
+      "fact": "No ventilation ports or fans.",
+      "present": true
+     },
+     {
+      "fact": "Cooled by natural circulation of air around the enclosure.",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-07",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-07",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 843,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "Before welding.",
+      "present": true
+     },
+     {
+      "fact": "24 hours after re-energizing.",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-11",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-11",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 860,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Replace if more than 5 \u00b0C different.",
+      "present": true
+     },
+     {
+      "fact": "Every 3 to 5 years.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-17",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-17",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 1446,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Top contacts mean the transformer is gassing.",
+      "present": true
+     },
+     {
+      "fact": "Bottom contacts mean very low oil level or a pressure wave.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-21",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-21",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 451,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Every 3 to 5 years.",
+      "present": true
+     },
+     {
+      "fact": "Reduce to 1 year as bushings age.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-37",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-37",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 1012,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "Outer diameter 7\u00be inches.",
+      "present": true
+     },
+     {
+      "fact": "Inner diameter 6\u00bc inches.",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-39",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-39",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 391,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "Lawson Rubber Bonder No. 92081.",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-46",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-46",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 946,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Weekly.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-56",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-56",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 324,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "Within 24 hours.",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-57",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-57",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 371,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Almost constant with temperature.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-63",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-63",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 1138,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Below 3: paper involved in an electrical fault.",
+      "present": true
+     },
+     {
+      "fact": "Normal is around 7.",
+      "present": true
+     },
+     {
+      "fact": "Above 10: thermal fault involving cellulose.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-64",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-64",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 1247,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "About 70 ppm or more per month.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-68",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-68",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 234,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "1,000 times.",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-70",
+   "human": false,
+   "judge": true,
+   "grade": {
+    "id": "fist-70",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 249,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Above 4% M/DW.",
+      "present": true
+     },
+     {
+      "fact": "If the temperature rises to 90 \u00b0C.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-73",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-73",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 665,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-74",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-74",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 253,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "40 to 50 dynes per centimeter",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-76",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-76",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 706,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "Reclaim at 0.20 mg KOH/gm.",
+      "present": true
+     },
+     {
+      "fact": "Sludging begins at 0.40.",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-78",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-78",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 532,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Limit less than 0.5% at 25 \u00b0C.",
+      "present": true
+     },
+     {
+      "fact": "Above 1.0%: replacement or reclaiming required.",
+      "present": true
+     },
+     {
+      "fact": "Above 2%: remove the oil from service.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-82",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-82",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 675,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "About 2.9 feet of oil per psi.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-84",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-84",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 800,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "CO above 3,000 ppm.",
+      "present": true
+     },
+     {
+      "fact": "G1 generation rate met or exceeded.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-85",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-85",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 112,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "Doble 95% norm: 511.",
+      "present": true
+     },
+     {
+      "fact": "IEEE limit: 200.",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-88",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-88",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 968,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Within 5%.",
+      "present": true
+     },
+     {
+      "fact": "234.5 \u00b0C for copper.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v1",
+   "item": "fist-92",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-92",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 268,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": null,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "Contact pressure and continuity",
+      "present": true
+     },
+     {
+      "fact": "Turns ratio at all positions",
+      "present": true
+     },
+     {
+      "fact": "Timing",
+      "present": true
+     },
+     {
+      "fact": "Motor load current",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-08",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-08",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 247,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Minerals deposit on the radiators.",
+      "present": true
+     },
+     {
+      "fact": "The deposits are almost impossible to remove and reduce cooling efficiency.",
+      "present": true
+     },
+     {
+      "fact": "Additional fans are a better alternative.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-10",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "fist-10",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 80,
+    "correct": false,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Reverse two phase leads.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-14",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "fist-14",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 76,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "The yellow (or blue) button/rod is visible.",
+      "present": false
+     },
+     {
+      "fact": "About 2 inches of the colored rod is visible.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-28",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-28",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 366,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Not necessarily: an alarm within 2 to 3 months is expected from trapped air.",
+      "present": true
+     },
+     {
+      "fact": "Recommission the relay with pressure or vacuum.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-33",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-33",
+    "category": "multi_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 87,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "About 0.15 inch.",
+      "present": false
+     },
+     {
+      "fact": "Compressed about 0.10 inch (43 to 45%).",
+      "present": true
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-35",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "fist-35",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 67,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "3/8 inch thick.",
+      "present": false
+     },
+     {
+      "fact": "1/8 inch available to compress.",
+      "present": false
+     },
+     {
+      "fact": "33% compression.",
+      "present": true
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-36",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-36",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 80,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "About 75 to 85% of the groove width.",
+      "present": true
+     },
+     {
+      "fact": "About 15 to 25% left for expansion.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-37",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "fist-37",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 104,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Outer diameter 7\u00be inches.",
+      "present": false
+     },
+     {
+      "fact": "Inner diameter 6\u00bc inches.",
+      "present": true
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-40",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "fist-40",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 98,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "3/8-inch ribbon width.",
+      "present": true
+     },
+     {
+      "fact": "1/4-inch thickness.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-44",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-44",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 219,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Carbon monoxide",
+      "present": true
+     },
+     {
+      "fact": "Carbon dioxide",
+      "present": false
+     },
+     {
+      "fact": "Oxygen",
+      "present": true
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-45",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "fist-45",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 80,
+    "correct": false,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Condition 3.",
+      "present": false
+     },
+     {
+      "fact": "The Condition 3 hydrogen range is 701 to 1,800 ppm.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-47",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "fist-47",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 141,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Sample monthly.",
+      "present": false
+     },
+     {
+      "fact": "Exercise caution.",
+      "present": true
+     },
+     {
+      "fact": "Analyze individual gases to find the cause and determine load dependence.",
+      "present": true
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-48",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-48",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 138,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "Daily sampling.",
+      "present": false
+     },
+     {
+      "fact": "Consider removal from service.",
+      "present": true
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-58",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-58",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 163,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "400% by volume",
+      "present": true
+     },
+     {
+      "fact": "4,000,000 ppm",
+      "present": false
+     },
+     {
+      "fact": "Arcing in oil",
+      "present": true
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-59",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-59",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 723,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "When either gas is below 10 times its detection limit.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-62",
+   "human": true,
+   "judge": true,
+   "grade": {
+    "id": "fist-62",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 80,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": true,
+    "facts": [
+     {
+      "fact": "Thermal fault, 300-700 \u00b0C.",
+      "present": true
+     }
+    ],
+    "supported_in_source": true,
+    "primary": true,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-68",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-68",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 67,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "1,000 times.",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-73",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "fist-73",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 80,
+    "correct": false,
+    "abstained": true,
+    "recorded_abstained": true,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-77",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "fist-77",
+    "category": "single_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 106,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "10 pounds of DBPC.",
+      "present": true
+     },
+     {
+      "fact": "To bring it to 0.3% by weight.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-90",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-90",
+    "category": "multi_page",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 122,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [
+     {
+      "fact": "New transformer above 1,000 megohms.",
+      "present": true
+     },
+     {
+      "fact": "Service-aged above 100 megohms.",
+      "present": true
+     },
+     {
+      "fact": "Below 10 megohms must be investigated.",
+      "present": false
+     }
+    ],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-92",
+   "human": true,
+   "judge": false,
+   "grade": {
+    "id": "fist-92",
+    "category": "table",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 829,
+    "correct": true,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": false,
+    "facts": [
+     {
+      "fact": "Contact pressure and continuity",
+      "present": true
+     },
+     {
+      "fact": "Turns ratio at all positions",
+      "present": true
+     },
+     {
+      "fact": "Timing",
+      "present": true
+     },
+     {
+      "fact": "Motor load current",
+      "present": true
+     }
+    ],
+    "supported_in_source": false,
+    "primary": false,
+    "judge_error": null
+   }
+  },
+  {
+   "system": "v2",
+   "item": "fist-96",
+   "human": false,
+   "judge": false,
+   "grade": {
+    "id": "fist-96",
+    "category": "unanswerable",
+    "manual": "Reclamation_FIST_3-30_Transformer_Maintenance.pdf",
+    "answer_chars": 125,
+    "correct": false,
+    "abstained": false,
+    "recorded_abstained": false,
+    "supported_in_pages": null,
+    "facts": [],
+    "supported_in_source": null,
+    "primary": false,
+    "judge_error": null
+   }
+  }
+ ]
+}
