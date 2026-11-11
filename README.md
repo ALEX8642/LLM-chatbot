@@ -16,8 +16,12 @@ survive, the assistant says it could not find the answer.
 ## In one minute
 
 - **Result:** on 169 questions held out from development, over three public manuals, **80% of v2's answers are correct
-  and supported by what they cite, against 42% for v1**, a conventional retrieval-augmented pipeline. v2 also uses a
-  much larger generator than v1, so the gain is the pipeline and the model together.
+  and supported by what they cite, against 42% for v1**, a conventional retrieval-augmented pipeline. With the same
+  generator in both, v1 reaches 56%, so about 25 points of the gain is the pipeline (16 by the second judge).
+- **On a manual neither system had seen** (FIST 3-30, 104 questions), the registered test favoured v2 (+16 points), but
+  blind human grading showed the judge was harder on v1's answers. Corrected, the two are level (+4, not significant).
+  v2's checks, tuned on the first three manuals, removed true claims there. Details: [unseen manual](#unseen-manual).
+- **With a frontier generator** (Claude Opus 5.5) v2 scores 85% on test, 5 points above Qwen3.8; not significant.
 - **Public benchmark:** v2's retrieval scores NDCG@10 0.567 on ViDoRe V3's industrial manuals, placed 2nd of the 9 text
   retrievers in one vendor's published table when checked on 2026-11-09 (details below).
 - **Try it:** [in the browser](https://alex8642.github.io/LLM-chatbot/), replaying 14 recorded answers in the real
@@ -38,8 +42,9 @@ measure, the comparison and the statistics were fixed first, and the result is r
 | Blind human grading of 50 items (21 of them picked where the judge had failed an answer) | 42 of 50 | 31 of 50 |
 
 - **The systems:** v1 is a hybrid-search pipeline with Command R7B, a 7B model run locally. v2 is this pipeline with
-  Qwen3.8 behind an OpenAI-compatible endpoint. A run of v2's pipeline with v1's model, planned in the design, was not
-  done, so how much of the gain is the pipeline alone is not measured.
+  Qwen3.8 behind an OpenAI-compatible endpoint. Run after registration with Qwen3.8 as its generator
+  (`evals/v1_generator_swap.py`), v1 scores 0.556 (phi4) and 0.645 (mistral): v2 leads it by +0.249 (p < 0.001) and
+  +0.160 (interval lower bound 0). So most of the gain is the pipeline, not the model.
 - **The judge is harder on v1.** In blind grading it wrongly failed 19 of 50 v1 answers against 7 of v2's, which
   triggered the registered warning: it often misses support in v1's whole-page citations. On the items drawn at random
   it agreed with the human grader on 52 of 58. Allowing for its misses puts the gap at 31 to 33 points rather than 38.
@@ -65,13 +70,37 @@ be 2nd, 0.072 behind their best pipeline; those runs are a vendor's own and were
 official ViDoRe board read page images instead, and are not compared. Some benchmark questions are machine-generated.
 This tests retrieval only. [Decision 005](docs/decisions/005-external-benchmark.md).
 
+## Unseen manual
+
+A fourth public manual, FIST 3-30 (Reclamation, transformer maintenance), with 104 questions written before either system
+ran on it, registered in [`docs/prereg-unseen.md`](docs/prereg-unseen.md). Full report:
+[`evals/unseen/RESULTS.md`](evals/unseen/RESULTS.md).
+
+| Correct and supported | v2 | v1 | Difference (95% interval) |
+|---|---|---|---|
+| phi4 judge (registered primary) | 0.804 | 0.647 | +0.157 (0.031 to 0.284), p 0.014 |
+| mistral judge (secondary) | 0.817 | 0.856 | −0.038, n.s. |
+| phi4, with Alexander's blind grades on the 62 answers he checked | 0.903 | 0.864 | +0.039 (−0.041 to 0.125), p 0.48 |
+
+- **The registered win does not hold up.** phi4 wrongly failed 23 of 31 good v1 answers in the blind check against 10 of
+  18 good v2 answers; mistral erred the other way (0 of 31 against 7 of 20). Both trip the registered judge warning.
+  Corrected with the human grades, both judges give the same answer: level.
+- **v2's checks overfit the development manuals.** In 7 of its 10 real failures a check removed a true claim (a number
+  taken from the question, a fraction written differently, misread table columns). On the main test that was 2 of 33.
+- **Frontier generator:** v2 with Opus 5.5 scores 0.860 / 0.837 (phi4 / mistral) here against Qwen3.8's 0.804 / 0.817,
+  and 0.849 / 0.870 on the main test against 0.805 / 0.805. None of the differences is significant. Opus's claims were
+  removed by the checks 41 times against Qwen3.8's 11, so its score is a floor. Run with the Batch API
+  (`evals/batch_run.py`) for about $14.
+
 ## Limits
 
-- Test and development questions come from the same three manuals, though from different sections. A manual neither
-  system has seen is the next test.
+- The main test and development questions come from the same three manuals, though from different sections. On the one
+  unseen manual (above), v2 was not shown to be better than v1.
+- The local judges are biased by citation style, in opposite directions, by up to 35 points on disputed answers. Every
+  headline here has been checked against blind human grades, but those cover only the answers sampled.
 - Claude wrote the questions, the code and the failure labels. The registration, the section split and the human checks
   guard against that; the human checks are by one person, who is not a subject expert.
-- v1 is the only baseline, and it uses a smaller model (above).
+- v1 is the only baseline. Its registered run uses a smaller model; the run with v2's generator came after registration.
 - The meaning check, which asks the model whether the source says what a claim says, removed nothing on test.
 - Highlights cover whole printed lines, so one can include a neighbouring word.
 - The checks were tightened after the registered run (a part-number prefix, figure claims, letter-spaced OCR). On dev

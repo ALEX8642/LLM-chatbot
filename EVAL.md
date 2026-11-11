@@ -46,6 +46,8 @@ contrasts, the exploratory list and the analysis code ([`evals/analysis.py`](eva
 
 ## Deviations
 
+Unseen-manual deviations are listed in [`evals/unseen/RESULTS.md`](evals/unseen/RESULTS.md#deviations).
+
 - v2's first test attempt hung with a GPU driver event and was rerun whole, as registered.
 - After the run, v2's search was changed to keep its index open (speed only); the registered results come from the code
   at `prereg`.
@@ -56,9 +58,10 @@ contrasts, the exploratory list and the analysis code ([`evals/analysis.py`](eva
 
 ## What this does not show
 
-- The pipeline's effect alone: v1 uses Command R7B (7B, local) and v2 Qwen3.8 (larger, behind an OpenAI-compatible
-  endpoint). A run of v2's pipeline with v1's model was planned and not done.
-- Any manual neither system was tuned near: test and dev share manuals.
+- The pipeline's effect alone, as registered: v1 uses Command R7B and v2 Qwen3.8. A later, unregistered run of v1 with
+  Qwen3.8 puts the pipeline's share at about 25 points on test (phi4; 16 with mistral).
+- That v2 is better on a manual it was not tuned on: on FIST 3-30 the registered result favoured v2, but blind grading
+  showed it came from judge bias; corrected, the two are level ([`evals/unseen/RESULTS.md`](evals/unseen/RESULTS.md)).
 - Expert agreement: the human checks are by one non-expert.
 - Answer quality on a public benchmark: the published answer scores use a paid judge.
 - That the meaning check helps: it removed nothing on test.
