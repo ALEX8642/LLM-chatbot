@@ -104,13 +104,19 @@ def passages(source: str, fact: str, answer: str) -> str:
 
 def supported(item: Item, source: str, answer: str, judge) -> bool:
     if len(source) <= SUPPORT_CHARS:
-        reply = judge.ask(SOURCE_SUPPORT.format(facts=_facts_list(item), source=source))
+        reply = judge.ask(
+            SOURCE_SUPPORT.format(
+                question=item.question, facts=_facts_list(item), source=source
+            )
+        )
         return bool(reply["supported"])
     return all(
         bool(
             judge.ask(
                 SOURCE_SUPPORT.format(
-                    facts=f"- {fact}", source=passages(source, fact, answer)
+                    question=item.question,
+                    facts=f"- {fact}",
+                    source=passages(source, fact, answer),
                 )
             )["supported"]
         )

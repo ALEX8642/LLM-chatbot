@@ -2,7 +2,8 @@
 
 PROMPT_VERSION = 3  # 2: an off-topic answer is not an abstention (ABSTAINED only)
 # 3: a long cited source is checked one key fact at a time, on its passages nearest that fact
-#    (evals/grade.py); a reply with the wrong number of facts is asked again
+#    (evals/grade.py); a reply with the wrong number of facts is asked again; the source check
+#    is given the question, since a fact alone ("life is cut by 50%") reads as a general claim
 
 KEY_FACTS = """KEY FACTS CHECK. You grade an answer from a technical-manual assistant.
 
@@ -31,7 +32,9 @@ fact, in the order given, even if a fact is not stated."""
 
 SOURCE_SUPPORT = """SOURCE CHECK. You check whether a cited source supports key facts.
 
-Key facts:
+Question: {question}
+
+Key facts (parts of the answer to the question):
 {facts}
 
 Cited source (extracted from a PDF; tables may be flattened):
@@ -39,7 +42,8 @@ Cited source (extracted from a PDF; tables may be flattened):
 {source}
 >>>
 
-"supported" is true only if every key fact can be found in the cited source.
+"supported" is true only if every key fact can be found in the cited source, stated for what the
+question asks about. Equivalent wording and units count; a different value does not.
 
 Reply with JSON only: {{"supported": true|false, "missing": ["<fact not found>"]}}"""
 

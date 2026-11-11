@@ -63,12 +63,18 @@ def evaluate(
             supported = wrong = None
             if labels["supported"] is not None:
                 supported = judge.ask(
-                    SOURCE_SUPPORT.format(facts=facts_text, source=source_of(r, item))
+                    SOURCE_SUPPORT.format(
+                        question=item.question,
+                        facts=facts_text,
+                        source=source_of(r, item),
+                    )
                 )["supported"]
                 if wrong_source_of and labels["supported"]:
                     wrong = judge.ask(
                         SOURCE_SUPPORT.format(
-                            facts=facts_text, source=wrong_source_of(r, item)
+                            question=item.question,
+                            facts=facts_text,
+                            source=wrong_source_of(r, item),
                         )
                     )["supported"]
         except (ValueError, KeyError):
