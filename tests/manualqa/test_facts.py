@@ -403,3 +403,42 @@ def test_a_footnote_reference_is_not_a_number_of_the_source():
         "Reverse two phase leads within 5 minutes.",
         "Reverse two phase leads within 4 minutes.",
     ).ok
+
+
+# Parse and notation cases the checks misread: glued table cells, "4112 x2176", "10-tap".
+
+
+def test_a_dimension_written_without_a_space_is_two_numbers():
+    src = "Full Resolution: M4060 4112 x2176"
+    assert check_facts("The resolution is 4112 x 2176.", src, text_ev(src)).ok
+    assert not check_facts("The resolution is 4112 x 2178.", src, text_ev(src)).ok
+    hex_src = "Write 0x0010 to the register."
+    assert not check_facts(
+        "Write 0x0011 to the register.", hex_src, text_ev(hex_src)
+    ).ok
+
+
+def test_a_hyphenated_count_is_its_number():
+    src = 'This "ten tap" configuration outputs 8-bit/pixel.'
+    q = "How many bits per pixel in 10-tap mode?"
+    claim = "In 10-tap mode the camera outputs 8 bits per pixel."
+    assert check_facts(claim, src, text_ev(src), question=q, page_text=src).ok
+    assert not check_facts(
+        claim.replace("10-tap", "12-tap"), src, text_ev(src), q, src
+    ).ok
+
+
+def test_a_quote_is_not_widened_into_a_cell_the_parse_glued_on():
+    from manualqa.facts import check_wording
+    from manualqa.quotes import match_quote
+
+    for text, quote in [
+        ("Mass; Medium Case: 72gXL Case: ~ 163g", "XL Case: ~ 163g"),
+        ("Input; +10 to +36 Volts DC (+10%/- 10%)+9 to +56 Volts", "+10 to +36 Volts DC (+10%/- 10%)"),
+    ]:  # fmt: skip
+        ev = text_ev(text)
+        m = match_quote(quote, ev)
+        assert m is not None and check_wording(quote, m.source, ev.text[: m.span[0]]).ok
+    ev = text_ev("The limit is 300 psi.")
+    m = match_quote("The limit is 30", ev)
+    assert m is None or not check_wording("The limit is 30", m.source).ok

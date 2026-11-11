@@ -85,10 +85,21 @@ def _line_ranges(ev: Evidence) -> list[tuple[int, int, Box]]:
     return ranges
 
 
+def _glued(a: str, b: str) -> bool:
+    """Two table cells the parse ran together: "72g|XL Case", "10%)|+9 to +56"."""
+    return (a.islower() and b.isupper()) or (a in ")%]" and (b.isalnum() or b in "+-"))
+
+
 def _whole_words(text: str, start: int, end: int) -> str:
+    """The match widened to whole words, so a quote of "30" is checked as the "300" it sits in,
+    but not into the next cell where the parse left no space between them."""
     while start > 0 and not text[start - 1].isspace():
+        if _glued(text[start - 1], text[start]):
+            break
         start -= 1
     while end < len(text) and not text[end].isspace():
+        if _glued(text[end - 1], text[end]):
+            break
         end += 1
     return text[start:end]
 

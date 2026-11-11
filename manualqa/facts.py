@@ -42,6 +42,11 @@ _RANGE = re.compile(
     r"(?<![\w.])(\d[\d,]*(?:\.\d+)?)\s*(?:-|\u2013|to)\s*(\d[\d,]*(?:\.\d+)?)(?![\w])"
 )
 # "7¾": a vulgar fraction becomes "7 3/4", not NFKC's "73⁄4"
+# "4112 x2176": two numbers (not a hex code such as 0x0010)
+_TIMES = re.compile(r"(?<=\d)(?<!\b0)\s*[x\u00d7]\s*(?=\d)")
+_NUMBER_WORD_ID = re.compile(
+    r"^(\d+)-[a-z]+$"
+)  # "10-tap", "80-bit": a count, not a code
 _VULGAR = re.compile(r"(?<=\d)(?=[\u00bc-\u00be\u2150-\u215e])")
 _SPACED_HYPHEN = re.compile(r"(?<=\d)\s*-\s+(?=\d)")
 _WORDS = (
@@ -118,7 +123,12 @@ def _facts(text: str) -> list[tuple[int, str, str]]:
     """(position, kind, value) for identifiers and numbers, in order."""
     found, taken = [], []
     for m in _IDENT.finditer(text):
-        found.append((m.start(), "id", m.group(0)))
+        count = _NUMBER_WORD_ID.match(m.group(0))
+        found.append(
+            (m.start(), "num", count.group(1))
+            if count
+            else (m.start(), "id", m.group(0))
+        )
         taken.append((m.start(), m.end()))
     for m in _NUMBER.finditer(text):
         if not any(ch.isdigit() for ch in m.group(0)):
@@ -150,7 +160,7 @@ def _despace(text: str) -> str:
 
 def _clean(text: str) -> str:
     text = unicodedata.normalize("NFKC", _VULGAR.sub(" ", text)).replace("\u2044", "/")
-    text = _despace(text.casefold())
+    text = _TIMES.sub(" x ", _despace(text.casefold()))
     text = _OCR_ZERO.sub("0", _SPACED_HYPHEN.sub("-", norm(text)))
     return _JOINED_UNIT.sub(r"\1 \2", text)
 
