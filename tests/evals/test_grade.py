@@ -200,3 +200,42 @@ def test_length_bias_finds_a_planted_slope():
     assert b["ci95"][0] > 0
     flat = [{"correct": i % 2 == 0, "answer_chars": 300} for i in range(50)]
     assert length_bias(flat)["slope_per_100_chars"] == 0.0
+
+
+def test_a_reply_with_the_wrong_fact_count_is_asked_again():
+    class Recount(FakeJudge):
+        def ask(self, prompt):
+            if "KEY FACTS CHECK" in prompt and "exactly 2 entries" in prompt:
+                self.calls.append("recount")
+                return {"abstained": False, "facts": [{"present": True}] * 2}
+            return super().ask(prompt)
+
+    judge = Recount([{"fact": "A and B", "present": True}])
+    g = grade_item(item(), out(), judge)
+    assert g["correct"] is True and judge.calls[:2] == ["facts", "recount"]
+
+
+def test_a_long_source_is_checked_fact_by_fact_on_its_nearest_passages():
+    from evals.grade import PASSAGE_CHARS, SUPPORT_CHARS, passages
+
+    filler = [f"line {i} about gaskets and grooves." for i in range(400)]
+    lines = filler[:150] + ["The relay alarms within 2 to 3 months."] + filler[150:]
+    source = "\n".join(lines)
+    assert len(source) > SUPPORT_CHARS
+    got = passages(source, "An alarm within 2 to 3 months is expected.", "")
+    assert "within 2 to 3 months" in got and len(got) < 4 * PASSAGE_CHARS
+
+    seen = []
+
+    class Reader(FakeJudge):
+        def ask(self, prompt):
+            if "SOURCE CHECK" in prompt:
+                seen.append(prompt)
+            return super().ask(prompt)
+
+    yes = [{"fact": "A", "present": True}, {"fact": "B", "present": True}]
+    grade_item(item(), out(cited_source=source), Reader(yes))
+    assert len(seen) == 2 and all(len(p) < len(source) for p in seen)
+    seen.clear()
+    grade_item(item(), out(cited_source="short source"), Reader(yes))
+    assert len(seen) == 1  # a short source is asked about once, as in prompt version 2

@@ -1,6 +1,8 @@
 """Prompts for the key-fact judge. Bump PROMPT_VERSION when any of them changes."""
 
-PROMPT_VERSION = 2  # 2: an off-topic answer is not an abstention (ABSTAINED only)
+PROMPT_VERSION = 3  # 2: an off-topic answer is not an abstention (ABSTAINED only)
+# 3: a long cited source is checked one key fact at a time, on its passages nearest that fact
+#    (evals/grade.py); a reply with the wrong number of facts is asked again
 
 KEY_FACTS = """KEY FACTS CHECK. You grade an answer from a technical-manual assistant.
 
@@ -21,6 +23,11 @@ manual does not contain the information.
 
 Reply with JSON only, one entry per key fact, in order:
 {{"abstained": true|false, "facts": [{{"fact": "<the key fact>", "present": true|false}}]}}"""
+
+FACT_COUNT = """
+
+There are exactly {n} key facts above. Reply with exactly {n} entries in "facts", one per key
+fact, in the order given, even if a fact is not stated."""
 
 SOURCE_SUPPORT = """SOURCE CHECK. You check whether a cited source supports key facts.
 

@@ -1,5 +1,10 @@
 """Grades answers: exact match for short answers, a key-fact checklist otherwise, and whether
-the judge finds the key facts in the cited source (the primary endpoint needs both)."""
+the judge finds the key facts in the cited source (the primary endpoint needs both).
+
+A long cited source (v1 cites whole pages) is checked one key fact at a time, on the passages
+of it nearest that fact and the answer, so the judge reads about as much for either system:
+in blind grading the local judges missed support in long sources far more often than in short
+ones (evals/unseen/RESULTS.md)."""
 
 from __future__ import annotations
 
@@ -8,7 +13,7 @@ import re
 import unicodedata
 
 from evals.items import Item
-from evals.prompts import ABSTAINED, KEY_FACTS, SOURCE_SUPPORT
+from evals.prompts import ABSTAINED, FACT_COUNT, KEY_FACTS, SOURCE_SUPPORT
 
 _DASHES = dict.fromkeys(map(ord, "‐‑‒–—−"), "-")
 _UNITS = {"lbs": "lb", "pound": "lb", "pounds": "lb"}
@@ -16,6 +21,9 @@ _THOUSANDS = re.compile(r"(?<=\d),(?=\d{3}(?!\d))")
 _TRAILING_ZEROS = re.compile(r"(?<![\d.])(\d*\.\d*?)0+(?!\d)")
 _MARKUP = re.compile(r"[*`%]")
 BOOTSTRAP = 1000
+SUPPORT_CHARS = 3000  # a cited source longer than this is checked fact by fact
+PASSAGE_CHARS, PASSAGES = 800, 3
+_STOP = set("the and for with that this from are was were has have not but its".split())
 
 
 def normalise(text: str) -> str:
@@ -61,6 +69,52 @@ def _facts_list(item: Item) -> str:
     return "\n".join(f"- {f}" for f in item.key_facts)
 
 
+def _terms(text: str) -> set[str]:
+    return {
+        t
+        for t in normalise(text).split()
+        if (len(t) >= 3 or any(c.isdigit() for c in t)) and t not in _STOP
+    }
+
+
+def passages(source: str, fact: str, answer: str) -> str:
+    """The PASSAGES windows of the source (about PASSAGE_CHARS each, whole lines, in source
+    order) that share the most terms with the fact, then with the answer."""
+    lines = source.split("\n")
+    want, also = _terms(fact), _terms(answer)
+    windows = []  # (score, first line, last line + 1)
+    for i in range(len(lines)):
+        j, size = i, 0
+        while j < len(lines) and (size < PASSAGE_CHARS or j == i):
+            size += len(lines[j]) + 1
+            j += 1
+        have = _terms("\n".join(lines[i:j]))
+        windows.append((2 * len(want & have) + len(also & have), i, j))
+    chosen: list[tuple[int, int]] = []
+    for _, i, j in sorted(windows, key=lambda w: (-w[0], w[1])):
+        if all(j <= a or i >= b for a, b in chosen):
+            chosen.append((i, j))
+        if len(chosen) == PASSAGES:
+            break
+    return "\n[...]\n".join("\n".join(lines[i:j]) for i, j in sorted(chosen))
+
+
+def supported(item: Item, source: str, answer: str, judge) -> bool:
+    if len(source) <= SUPPORT_CHARS:
+        reply = judge.ask(SOURCE_SUPPORT.format(facts=_facts_list(item), source=source))
+        return bool(reply["supported"])
+    return all(
+        bool(
+            judge.ask(
+                SOURCE_SUPPORT.format(
+                    facts=f"- {fact}", source=passages(source, fact, answer)
+                )
+            )["supported"]
+        )
+        for fact in item.key_facts
+    )
+
+
 def _judged_abstention(item: Item, out: dict, judge) -> bool:
     reply = judge.ask(ABSTAINED.format(question=item.question, answer=out["answer"]))
     return bool(reply["abstained"])
@@ -68,16 +122,17 @@ def _judged_abstention(item: Item, out: dict, judge) -> bool:
 
 def _judged_correct(item: Item, out: dict, judge) -> tuple[bool, bool, list[dict]]:
     """(correct, abstained, per-fact results) from the key-fact checklist."""
-    reply = judge.ask(
-        KEY_FACTS.format(
-            question=item.question, facts=_facts_list(item), answer=out["answer"]
-        )
+    prompt = KEY_FACTS.format(
+        question=item.question, facts=_facts_list(item), answer=out["answer"]
     )
+    n = len(item.key_facts)
+    reply = judge.ask(prompt)
     facts = reply.get("facts")
-    if not isinstance(facts, list) or len(facts) != len(item.key_facts):
-        raise ValueError(
-            f"judge returned {facts!r} for {len(item.key_facts)} key facts"
-        )
+    if not isinstance(facts, list) or len(facts) != n:
+        reply = judge.ask(prompt + FACT_COUNT.format(n=n))
+        facts = reply.get("facts")
+    if not isinstance(facts, list) or len(facts) != n:
+        raise ValueError(f"judge returned {facts!r} for {n} key facts")
     abstained = bool(reply.get("abstained"))
     correct = not abstained and all(bool(f.get("present")) for f in facts)
     return correct, abstained, facts
@@ -113,20 +168,12 @@ def grade_item(item: Item, out: dict, judge) -> dict:
         if not g["correct"]:
             g["primary"] = False
             return g
-        reply = judge.ask(
-            SOURCE_SUPPORT.format(facts=_facts_list(item), source=out["cited_source"])
-        )
-        g["supported_in_source"] = bool(reply["supported"])
+        answer = out["answer"]
+        g["supported_in_source"] = supported(item, out["cited_source"], answer, judge)
         g["primary"] = g["supported_in_source"]
         g["supported_in_pages"] = g["supported_in_source"]
         if out.get("page_source"):
-            g["supported_in_pages"] = bool(
-                judge.ask(
-                    SOURCE_SUPPORT.format(
-                        facts=_facts_list(item), source=out["page_source"]
-                    )
-                )["supported"]
-            )
+            g["supported_in_pages"] = supported(item, out["page_source"], answer, judge)
     except (ValueError, KeyError) as e:  # unjudged, never scored as wrong
         g.update(correct=None, primary=None, judge_error=str(e)[:300])
     return g
