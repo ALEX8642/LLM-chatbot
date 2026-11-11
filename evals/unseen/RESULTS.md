@@ -89,7 +89,15 @@ The seven true claims that v2 removed were all caught by checks written on the d
 - the quote-block check: once.
 
 On the main test, v2's checks removed true claims on 2 of 33 failures; here they did on 7 of 10. The checks overfit
-the manuals they were built on. Fixing them is a change after registration and will be reported as one.
+the manuals they were built on.
+
+**Fixed after the run** (a change after registration, not part of the registered result): footnote markers such as "[4]"
+no longer count as numbers; "7¾" reads as 7 3/4; a value taken from the question passes when it falls inside a range
+the source gives; a column heading's unit in brackets ("(in inches)") is not needed to name the column. Re-run offline
+on every claim recorded (`evals/check_audit.py`), the fix lets through 7 claims v2 removed on FIST (fist-10, 35, 37, 40,
+45, 47, 48) and 3 of Opus's. It changes no verdict on the main test or development runs. The one claim it does not
+rescue, fist-14, quotes a sentence that starts on the previous page. Those claims would still meet the meaning check, so
+what the fix does to the score needs a new run.
 
 ## Other generators (not human-checked)
 

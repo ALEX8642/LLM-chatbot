@@ -341,3 +341,65 @@ def test_reviewed_cases_fail_end_to_end_through_quote_and_wording():
         m = match_quote(quote, ev)
         assert m is not None
         assert not check_wording(quote, m.source, ev.text[: m.span[0]]).ok, quote
+
+
+# Claims v2's checks wrongly removed on the unseen manual (FIST 3-30), and the traps they must
+# still catch.
+
+
+def gasket_row():
+    hit = RowHit(
+        "fist:p37:b4",
+        "fist.pdf",
+        37,
+        "fist:p37:b4",
+        4,
+        ["Standard groove depth (in inches)", "Recommended gasket thickness (in inches)",
+         "Available to compress (in inches)", "Available compression (percent)"],
+        ["1/4", "3/8", "1/8", "33"],
+        [Box(0, 0, 0.1, 0.1)] * 4,
+        None,
+        None,
+        "",
+    )  # fmt: skip
+    return row_evidence(hit)
+
+
+def test_a_heading_unit_in_brackets_is_not_needed_to_name_the_column():
+    ev, quote = (
+        gasket_row(),
+        "Standard groove depth (in inches): 1/4; Recommended gasket thickness (in inches): 3/8",
+    )
+    claim = "For a standard groove depth of 1/4 inch, the recommended gasket thickness is 3/8 inch."
+    assert check_facts(claim, quote, ev).ok
+    bad = "For a standard groove depth of 3/8 inch, the recommended gasket thickness is 1/4 inch."
+    assert not check_facts(bad, quote, ev).ok
+
+
+def test_a_vulgar_fraction_after_a_whole_number():
+    src = "the outer diameter would be 8 inches minus ¼ inch, or 7¾ inches."
+    assert check_facts("Cut the outer diameter to 7 3/4 inches.", src, text_ev(src)).ok
+    assert not check_facts("Cut the outer diameter to 73 inches.", src, text_ev(src)).ok
+
+
+def test_a_value_from_the_question_inside_a_range_the_source_gives():
+    src = "Condition 3; 701-1,800"
+    q = "A transformer has 900 ppm of dissolved hydrogen. Which condition is it in?"
+    claim = "A hydrogen level of 900 ppm places the transformer in Condition 3."
+    assert check_facts(claim, src, text_ev(src), question=q).ok
+    assert not check_facts(claim, src, text_ev(src), question="Which condition?").ok
+    outside = "A hydrogen level of 2,000 ppm places the transformer in Condition 3."
+    assert not check_facts(
+        outside, src, text_ev(src), question=q.replace("900", "2,000")
+    ).ok
+
+
+def test_a_footnote_reference_is_not_a_number_of_the_source():
+    from manualqa.facts import check_wording
+
+    source = "Reverse two phase leads if this is encountered.[4]"
+    assert check_wording("Reverse two phase leads if this is encountered.", source).ok
+    assert not check_wording(
+        "Reverse two phase leads within 5 minutes.",
+        "Reverse two phase leads within 4 minutes.",
+    ).ok

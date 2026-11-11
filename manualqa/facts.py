@@ -4,12 +4,14 @@
    by value: "3,050" = "3050", "0.55" = ".55", "fifteen" = "15"). Two things count as context
    rather than a new fact: anything else in the same table row, a name in the headings the
    page sits under, and anything the question
-   itself mentions that is also on the cited page. A subject the page never mentions still
-   fails, so a figure borrowed from another aircraft's example is removed.
+   itself mentions that is also on the cited page or falls inside a range the source gives
+   ("900 ppm" against "701-1,800"). A subject the page never mentions still fails, so a figure
+   borrowed from another aircraft's example is removed.
 2. The same number must not have another unit or the opposite sign: "172 psi" fails on
    "172 kPa", and "-15" on "+15". A number printed with no unit takes the claim's.
 3. For a table row: a column name in the claim applies to the facts nearest it. If those
-   facts sit only in other columns of the row, the claim fails. This catches right row, wrong
+   facts sit only in other columns of the row, the claim fails. A heading's unit in brackets
+   ("(in inches)") is not needed to name it. This catches right row, wrong
    column, e.g. "the part number is 18265" when 18265 is the row's CAGE code (FSCM).
 """
 
@@ -32,6 +34,15 @@ _IDENT = re.compile(
 )
 _NUMBER = re.compile(r"(?<![\w.])(?:\d{1,3}(?:,\d{3})+|\d+)?(?:\.\d+)?(?![\w])")
 _COLUMN_NUMBER = re.compile(r"^\(\d+\)\s*")
+_BRACKETED = re.compile(r"\s*\([^)]*\)")  # "Standard groove depth (in inches)"
+_FOOTNOTE = re.compile(
+    r"\[\d+(?:\s*[,\u2013-]\s*\d+)*\]"
+)  # "encountered.[4]": a reference
+_RANGE = re.compile(
+    r"(?<![\w.])(\d[\d,]*(?:\.\d+)?)\s*(?:-|\u2013|to)\s*(\d[\d,]*(?:\.\d+)?)(?![\w])"
+)
+# "7¾": a vulgar fraction becomes "7 3/4", not NFKC's "73⁄4"
+_VULGAR = re.compile(r"(?<=\d)(?=[\u00bc-\u00be\u2150-\u215e])")
 _SPACED_HYPHEN = re.compile(r"(?<=\d)\s*-\s+(?=\d)")
 _WORDS = (
     "zero one two three four five six seven eight nine ten eleven twelve thirteen "
@@ -138,7 +149,8 @@ def _despace(text: str) -> str:
 
 
 def _clean(text: str) -> str:
-    text = _despace(unicodedata.normalize("NFKC", text).casefold())
+    text = unicodedata.normalize("NFKC", _VULGAR.sub(" ", text)).replace("\u2044", "/")
+    text = _despace(text.casefold())
     text = _OCR_ZERO.sub("0", _SPACED_HYPHEN.sub("-", norm(text)))
     return _JOINED_UNIT.sub(r"\1 \2", text)
 
@@ -160,6 +172,15 @@ def _occurrences(text: str) -> list[tuple[float, int, int]]:
 
 def _numbers(text: str) -> set[float]:
     return {value for value, _, _ in _occurrences(text)}
+
+
+def _in_range(text: str, value: float) -> bool:
+    """The text gives a range, such as "701-1,800", that holds the value."""
+    for m in _RANGE.finditer(_clean(text)):
+        low, high = (float(g.replace(",", "")) for g in m.groups())
+        if low < value < high:
+            return True
+    return False
 
 
 def _identifiers(text: str) -> set[str]:
@@ -222,6 +243,8 @@ def _label_spans(claim: str, header: list[str]) -> list[tuple[int, int, int]]:
     out = []
     for col, label in enumerate(header):
         core = norm(_COLUMN_NUMBER.sub("", label))
+        bare = _BRACKETED.sub("", core).strip()
+        core = bare if len(bare) >= 3 else core
         if len(core) < 3:
             continue
         names = next((n for k, n in _LABEL_NAMES.items() if k in core), (core,))
@@ -247,6 +270,7 @@ _LIST_MARKER = re.compile(r"^\s*\(?\d+[.)]\s+")  # "7. Engine knocks": the list'
 
 
 def _wording(text: str) -> Counter:
+    text = _FOOTNOTE.sub(" ", text)
     text = re.sub(r"n['’]t\b", " not", text, flags=re.I)
     text = re.sub(r"\bcannot\b", "can not", text, flags=re.I)
     return Counter(
@@ -284,7 +308,14 @@ def check_facts(
             continue
         if kind == "id" and any(_contains(t, kind, value) for t in titles):
             continue
-        if _contains(question, kind, value) and _contains(page_text, kind, value):
+        if _contains(question, kind, value) and (
+            _contains(page_text, kind, value)
+            or kind == "num"
+            and any(
+                _in_range(t, float(value.replace(",", "")))
+                for t in (source, *row_context)
+            )
+        ):
             continue
         return FactResult(False, f"{value} not in source")
     sources = [_clean(t) for t in (source, *row_context)]
