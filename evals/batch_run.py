@@ -13,6 +13,10 @@ pipeline gives with the same model responses.
 Backends: ``anthropic-batch`` (Message Batches API), ``anthropic-live`` (Messages API, for
 checks), ``openai-live`` (the GEN_* endpoint, to show the runner matches the live pipeline).
 ``--count-only`` prices the first round with Anthropic's free token counter and sends nothing.
+``--prompt-cache`` marks the shared prefix (the system prompt and any earlier turns) for
+Anthropic's prompt cache. Opus 5.5 caches only a prefix of 512 tokens or more, and v2's
+single-turn calls share a system prompt of about 300 tokens, so on the evals it saves
+nothing; it is there for multi-turn use, and the run's usage records what the cache did.
 ANTHROPIC_API_KEY is read from the environment and never written anywhere.
 """
 
@@ -101,12 +105,25 @@ def to_anthropic(messages: list[dict]) -> tuple[str, list[dict]]:
     return "\n\n".join(system), out
 
 
-def anthropic_params(messages: list[dict], model: str) -> dict:
+CACHE_MARK = {"type": "ephemeral"}
+
+
+def anthropic_params(messages: list[dict], model: str, cache: bool = False) -> dict:
+    """With ``cache``, the prefix every later call repeats is marked for the prompt cache: the
+    system prompt, and the earlier turns when there are any. The question turn is not.
+    """
     system, msgs = to_anthropic(messages)
     # no temperature: Opus 5.5 rejects it ("Extra inputs are not permitted")
     params = {"model": model, "max_tokens": MAX_TOKENS, "messages": msgs}
     if system:
         params["system"] = system
+    if cache:
+        if len(msgs) > 1:
+            msgs[-2]["content"][-1]["cache_control"] = CACHE_MARK
+        elif system:
+            params["system"] = [
+                {"type": "text", "text": system, "cache_control": CACHE_MARK}
+            ]
     return params
 
 
@@ -117,10 +134,16 @@ def _text(message: dict) -> str:
 
 
 class Anthropic:
-    def __init__(self, model: str, session=None, ledger: Path | None = None):
+    def __init__(
+        self,
+        model: str,
+        session=None,
+        ledger: Path | None = None,
+        prompt_cache: bool = False,
+    ):
         import requests
 
-        self.model, self.ledger = model, ledger
+        self.model, self.ledger, self.prompt_cache = model, ledger, prompt_cache
         self.http = session or requests.Session()
         self.http.headers.update(
             {
@@ -146,7 +169,7 @@ class Anthropic:
     def count(self, pending: dict[str, list[dict]]) -> int:
         total = 0
         for messages in pending.values():
-            p = anthropic_params(messages, self.model)
+            p = anthropic_params(messages, self.model, self.prompt_cache)
             p.pop("max_tokens")
             total += self._post("/messages/count_tokens", p)["input_tokens"]
             time.sleep(0.7)  # the counter allows 100 requests a minute
@@ -155,7 +178,9 @@ class Anthropic:
     def live(self, pending: dict[str, list[dict]]) -> dict[str, dict]:
         out = {}
         for key, messages in pending.items():
-            msg = self._post("/messages", anthropic_params(messages, self.model))
+            msg = self._post(
+                "/messages", anthropic_params(messages, self.model, self.prompt_cache)
+            )
             out[key] = {
                 "text": _text(msg),
                 "usage": msg.get("usage"),
@@ -169,7 +194,10 @@ class Anthropic:
         out: dict[str, dict] = {}
         for chunk in split_by_size(
             [
-                {"custom_id": key, "params": anthropic_params(m, self.model)}
+                {
+                    "custom_id": key,
+                    "params": anthropic_params(m, self.model, self.prompt_cache),
+                }
                 for key, m in pending.items()
             ]
         ):
@@ -347,6 +375,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--limit", type=int)
     ap.add_argument("--count-only", action="store_true")
     ap.add_argument(
+        "--prompt-cache",
+        action="store_true",
+        help="mark the shared prefix for Anthropic's prompt cache",
+    )
+    ap.add_argument(
         "--live-below",
         type=int,
         default=10,
@@ -364,7 +397,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.backend == "openai-live":
         fill = openai_live
     else:
-        client = Anthropic(model, ledger=args.cache.with_suffix(".batches.jsonl"))
+        client = Anthropic(
+            model,
+            ledger=args.cache.with_suffix(".batches.jsonl"),
+            prompt_cache=args.prompt_cache,
+        )
         recovered = client.recover()
         if recovered:
             gen.cache.update(recovered)
@@ -386,8 +423,15 @@ def main(argv: list[str] | None = None) -> int:
         "config": dict(run.config),
         "usage": {
             "calls": len(usage),
-            "input_tokens": sum(r["usage"].get("input_tokens", 0) for r in usage),
-            "output_tokens": sum(r["usage"].get("output_tokens", 0) for r in usage),
+            **{
+                k: sum(r["usage"].get(k) or 0 for r in usage)
+                for k in (
+                    "input_tokens",
+                    "output_tokens",
+                    "cache_creation_input_tokens",
+                    "cache_read_input_tokens",
+                )
+            },
         },
         "repeats": [rows],
     }

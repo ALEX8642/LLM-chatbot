@@ -148,3 +148,23 @@ def test_a_batch_left_uncollected_is_collected_before_anything_is_resent(
         lambda bid, poll_s: collected.append(bid) or {"k": {"text": "t"}},
     )
     assert client.recover() == {"k": {"text": "t"}} and collected == ["b2"]
+
+
+def test_prompt_cache_marks_only_the_shared_prefix():
+    from evals.batch_run import anthropic_params
+
+    one = [{"role": "system", "content": "S"}, {"role": "user", "content": "Q"}]
+    assert "cache_control" not in str(anthropic_params(one, "m"))
+    p = anthropic_params(one, "m", cache=True)
+    assert p["system"] == [
+        {"type": "text", "text": "S", "cache_control": {"type": "ephemeral"}}
+    ]
+    assert "cache_control" not in str(p["messages"])
+    turns = one[:1] + [
+        {"role": "user", "content": "Q1"},
+        {"role": "assistant", "content": "A1"},
+        {"role": "user", "content": "Q2"},
+    ]
+    p = anthropic_params(turns, "m", cache=True)
+    assert p["messages"][-2]["content"][-1]["cache_control"] == {"type": "ephemeral"}
+    assert "cache_control" not in str(p["messages"][-1]) and p["system"] == "S"

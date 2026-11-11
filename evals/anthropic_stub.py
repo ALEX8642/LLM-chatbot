@@ -22,11 +22,10 @@ _batches: dict[str, dict] = {}
 
 
 def _to_openai(params: dict) -> list[dict]:
-    messages = (
-        [{"role": "system", "content": params["system"]}]
-        if params.get("system")
-        else []
-    )
+    system = params.get("system")
+    if isinstance(system, list):  # text blocks, as sent with --prompt-cache
+        system = "".join(b["text"] for b in system)
+    messages = [{"role": "system", "content": system}] if system else []
     for m in params["messages"]:
         parts = []
         for b in m["content"]:
