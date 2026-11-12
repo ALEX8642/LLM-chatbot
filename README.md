@@ -21,6 +21,10 @@ survive, the assistant says it could not find the answer.
 - **On a manual neither system had seen** (FIST 3-30, 104 questions), the registered test favoured v2 (+16 points), but
   blind human grading showed the judge was harder on v1's answers. Corrected, the two are level (+4, not significant).
   v2's checks, tuned on the first three manuals, removed true claims there. Details: [unseen manual](#unseen-manual).
+- **Against a stock RAG pipeline with the same generator** (Open WebUI's built-in knowledge base: Docling, hybrid
+  search, reranker), v2 leads by 27 points on the main test (0.805 against 0.533, every judge and reading agrees),
+  mostly on tables. On the unseen manual the two are level (0.80 against 0.82).
+  [Details](evals/results/owui/RESULTS.md).
 - **With a frontier generator** (Claude Opus 5.5) v2 scores 85% on test, 5 points above Qwen3.8; not significant.
 - **Public benchmark:** v2's retrieval scores NDCG@10 0.567 on ViDoRe V3's industrial manuals, placed 2nd of the 9 text
   retrievers in one vendor's published table when checked on 2026-11-09 (details below).
