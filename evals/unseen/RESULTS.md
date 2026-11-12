@@ -49,6 +49,17 @@ quote-backed claims, so the blinding is weak.
 The rule is triggered for both judges, in opposite directions. The sample was chosen where the judges fail answers, so
 these rates describe the disputed answers, not the whole run. The 16 controls found no wrong passes.
 
+**A second grader.** Claude Opus 5.5 graded the same 62 screens later, blind, from the same page images and with
+the same instructions (`results/opus_blind_grades.jsonl`). It agrees with Alexander's pass/fail on 55 of 62, with no
+lean towards either system: on v1 they pass the same number, and on v2 Opus passes 3 fewer. Of the 7 disagreements,
+Opus fails three v2 answers whose problems a reading confirms:
+- fist-33 gives the compression (0.10 in) as the thickness (0.15 in);
+- fist-48 leaves out the daily sampling the question asks for;
+- fist-90 leaves out the reading to investigate.
+
+On the same screens phi4 agreed with him on 27 of 60 and mistral on 54 of 62. Opus is not independent of the author
+(Claude wrote the items and the systems), so it is a check on the grading, not a replacement for a person.
+
 ## Human-corrected result
 
 For the 62 checked answers, Alexander's grade replaces the judge's. The other answers keep phi4's (or mistral's) grade.

@@ -1,0 +1,62 @@
+{"code": "2b46e739", "correct": "correct", "support": "yes", "note": "States 50% life reduction, quoted verbatim from page 7 (manual p.1)."}
+{"code": "09a48d42", "correct": "partly", "support": "yes", "note": "Gives the 6 1/4 in inner diameter but omits the 7 3/4 in outer diameter that was asked."}
+{"code": "14e912b0", "correct": "correct", "support": "yes", "note": "Gives OD 7.75 in and ID 6.25 in, matching page 38 text and Figure 14."}
+{"code": "be55f67e", "correct": "correct", "support": "yes", "note": "Names cork-neoprene with folded conductive shim stock as on page 40; extra procedural steps are loosely added but don't contradict the answer."}
+{"code": "ac78fefd", "correct": "correct", "support": "yes", "note": "States the 10x detection-limit rule shown in bold on page 54."}
+{"code": "65be1ecd", "correct": "correct", "support": "no", "note": "Weekly matches the reference, but no cited page states weekly sampling after acetylene is found (p49 only mentions monthly or weekly for G2 limits)."}
+{"code": "63d3c3ad", "correct": "correct", "support": "yes", "note": "Wheatstone bridge for 1 ohm and above, micro-ohmmeter or Kelvin bridge below, as on page 83."}
+{"code": "666e390b", "correct": "correct", "support": "yes", "note": "Answers no, citing entrapped air and the 2-3 month window from page 33; leaves out the recommissioning step, which the question did not ask for."}
+{"code": "7b7afe98", "correct": "correct", "support": "yes", "note": "Gives more than 5 C difference and every 3 to 5 years, as on page 18."}
+{"code": "e7753fb1", "correct": "correct", "support": "yes", "note": "70 ppm/month per IEC 60599 is on page 59, though the answer wrongly links the figure to the IEEE 3,000 ppm limit as well."}
+{"code": "c0d56eb1", "correct": "correct", "support": "yes", "note": "All three ratios match page 55."}
+{"code": "77e62e3a", "correct": "correct", "support": "yes", "note": "40 to 50 dynes/cm is stated on page 67."}
+{"code": "805e3ee5", "correct": "correct", "support": "yes", "note": "Top contacts mean gassing; bottom contacts mean low oil or a pressure wave, per page 24; some added explanation goes beyond the manual."}
+{"code": "7a7cc9af", "correct": "correct", "support": "yes", "note": "400% by volume and arcing in oil, from Table 8 on page 53."}
+{"code": "0c438cd7", "correct": "partly", "support": "yes", "note": "Gives 33% compression but omits the recommended 3/8 in gasket thickness that was asked."}
+{"code": "183bc53a", "correct": "correct", "support": "yes", "note": "0.5 to 5 psi as stated on page 28."}
+{"code": "f7ce4394", "correct": "correct", "support": "yes", "note": "10 pounds of DBPC matches the worked example on the cited page."}
+{"code": "88ac87b3", "correct": "declined", "support": null, "note": "Assistant said it could not find the answer."}
+{"code": "df927f4b", "correct": "correct", "support": "yes", "note": "Table 14 shows hydrogen Doble 95% norm 511 vs IEEE 200."}
+{"code": "f7331f6e", "correct": "partly", "support": "yes", "note": "Lists five of the six load tap changer tests, omitting limit switch operation and continuity."}
+{"code": "8e147bcd", "correct": "correct", "support": "yes", "note": "Above 4% M/DW and 90 C stated on cited page (printed p57)."}
+{"code": "48ddac6e", "correct": "correct", "support": "yes", "note": "Table 11 shows 1,000 times at 40 C."}
+{"code": "7df4e036", "correct": "partly", "support": "yes", "note": "Gives the 3/8 in ribbon width but omits the 1/4 in gasket thickness asked for."}
+{"code": "df075a62", "correct": "correct", "support": "yes", "note": "Ethane ~250 C and ethylene ~350 C as shown on the page."}
+{"code": "a4fe328d", "correct": "correct", "support": "yes", "note": "3 to 5 years, reduced to 1 year as bushings age, shown on cited pages."}
+{"code": "fc851cbf", "correct": "partly", "support": "yes", "note": "Gives the operating procedure but omits the monthly sampling interval asked for."}
+{"code": "3c8c5bb6", "correct": "correct", "support": "yes", "note": "All six load tap changer tests listed, matching Table 17."}
+{"code": "3467c72c", "correct": "correct", "support": "yes", "note": "Around 500 psi alarm and 2,400 psi full shown on the page."}
+{"code": "ce27b9a9", "correct": "correct", "support": "yes", "note": "15 to 20 C low readings stated on cited page (printed p13)."}
+{"code": "08c66a84", "correct": "declined", "support": null, "note": "Assistant said it could not find the answer."}
+{"code": "6058fd08", "correct": "correct", "support": "yes", "note": "Methane solubility remains almost constant, stated on cited page."}
+{"code": "a4de5b79", "correct": "wrong", "support": "no", "note": "0.10 in is the compression amount, not the compressed thickness (~0.15 in)."}
+{"code": "0fd43cfb", "correct": "correct", "support": "yes", "note": "Gives 2.9 ft per psi (34.8 in = 2 ft 10.8 in), as stated on the cited page."}
+{"code": "ee5cb4a8", "correct": "correct", "support": "yes", "note": "Self-cooled, non-ventilated, no ports or fans, natural air circulation around the enclosure, matching the page."}
+{"code": "5ab3a8f2", "correct": "wrong", "support": "yes", "note": "Only says the rod is not always visible from floor level and never names the indicator (about 2 inches of exposed yellow/blue rod)."}
+{"code": "767b748d", "correct": "correct", "support": "yes", "note": "Mineral deposits that are almost impossible to remove and reduce cooling, as on the page; the fans alternative is extra."}
+{"code": "b8f64b31", "correct": "correct", "support": "yes", "note": "25 kV for high voltage transformers under 287.5 kV, stated in section 4.6.1 on the cited page."}
+{"code": "6506d373", "correct": "declined", "support": null, "note": "Unanswerable question, and the answer correctly declines."}
+{"code": "6d152d87", "correct": "correct", "support": "yes", "note": "Use the gas's detection limit as the denominator, as the cited page states."}
+{"code": "24997211", "correct": "correct", "support": "yes", "note": "511 vs 200, matching Table 14."}
+{"code": "82c743ab", "correct": "partly", "support": "yes", "note": "Gives the action but leaves out the daily sampling interval the question asked for."}
+{"code": "95d8d8ec", "correct": "correct", "support": "yes", "note": "About 2 years, as the cited page states."}
+{"code": "e91060d2", "correct": "correct", "support": "yes", "note": "Gives the 0.5%, 1.0% and 2% thresholds and their actions as in section 4.6.5."}
+{"code": "829fec72", "correct": "correct", "support": "yes", "note": "75 to 85% of the groove width, as on the cited page."}
+{"code": "839edf60", "correct": "correct", "support": "yes", "note": "Below 3, around 7 and above 10 are interpreted as on the cited pages."}
+{"code": "cee367a8", "correct": "correct", "support": "yes", "note": "0.3% by total weight of the oil; the page cites ASTM D-3487, which the answer repeats."}
+{"code": "2804b6ae", "correct": "correct", "support": "yes", "note": "Within 5% and 234.5 C for copper are both on the page, though the extra formula the answer adds is garbled compared with the manual."}
+{"code": "116f738d", "correct": "correct", "support": "yes", "note": "Matches page 42 text: cellulose decomposition begins at about 100 C or less."}
+{"code": "f12fb535", "correct": "correct", "support": "yes", "note": "CO, CO2 and O2 from paper, as stated on page 37."}
+{"code": "0374ae00", "correct": "declined", "support": null, "note": "Assistant said it could not find the answer."}
+{"code": "e8e2ce5a", "correct": "correct", "support": "yes", "note": "25 dynes/cm reclaim and 22 dynes/cm sludging are on page 62; the extra acid-number remarks are slightly garbled but are not what was asked."}
+{"code": "f3c58ad7", "correct": "partly", "support": "yes", "note": "Gives the new and service-aged values but leaves out the below-10-megohm reading that must be investigated."}
+{"code": "4e73dbb2", "correct": "correct", "support": "yes", "note": "Table 11 shows 1,000 times at 40 C."}
+{"code": "35a5c7c5", "correct": "correct", "support": "yes", "note": "Within 5% and 234.5 C for copper, both on page 76."}
+{"code": "787c66be", "correct": "partly", "support": "yes", "note": "Gives the 250 ppb investigate threshold accurately but does not say the manual gives no end-of-life level, so it could be read as the answer."}
+{"code": "b225a550", "correct": "correct", "support": "yes", "note": "Ethane about 250 C and ethylene about 350 C, per page 42."}
+{"code": "1f738857", "correct": "correct", "support": "yes", "note": "Table 9 case 7: code 0 2 1 is a thermal fault at 300-700 C."}
+{"code": "dd154ff6", "correct": "correct", "support": "yes", "note": "Within 24 hours, per the Gas Mixing paragraph."}
+{"code": "7c7da7f1", "correct": "correct", "support": "yes", "note": "Before welding and 24 hours after re-energizing, per page 8; its step list says 24 h after welding rather than after re-energizing, a small paraphrase slip."}
+{"code": "dc441c53", "correct": "correct", "support": "yes", "note": "Lawson Rubber Bonder No. 92081, per page 33."}
+{"code": "7fe20afa", "correct": "correct", "support": "yes", "note": "CO above 3,000 ppm and G1 met or exceeded, per page 71."}
+{"code": "886b4ce4", "correct": "correct", "support": "yes", "note": "Reclaim at 0.20 mg KOH/gm and sludging at 0.40, both on page 62."}
