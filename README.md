@@ -13,19 +13,39 @@ survive, the assistant says it could not find the answer.
 
 *Each claim links to its source, highlighted on the page. The last question is not in the manual, so it declines.*
 
-## In one minute
+## What we learned
 
-- **Result:** on 169 questions held out from development, over three public manuals, **80% of v2's answers are correct
-  and supported by what they cite, against 42% for v1**, a conventional retrieval-augmented pipeline. With the same
-  generator in both, v1 reaches 56%, so about 25 points of the gain is the pipeline (16 by the second judge).
-- **On a manual neither system had seen** (FIST 3-30, 104 questions), the registered test favoured v2 (+16 points), but
-  blind human grading showed the judge was harder on v1's answers. Corrected, the two are level (+4, not significant).
-  v2's checks, tuned on the first three manuals, removed true claims there. Details: [unseen manual](#unseen-manual).
-- **Against a stock RAG pipeline with the same generator** (Open WebUI's built-in knowledge base: Docling, hybrid
-  search, reranker), v2 leads by 27 points on the main test (0.805 against 0.533, every judge and reading agrees),
-  mostly on tables. On the unseen manual the two are level (0.80 against 0.82).
-  [Details](evals/results/owui/RESULTS.md).
-- **With a frontier generator** (Claude Opus 5.5) v2 scores 85% on test, 5 points above Qwen3.8; not significant.
+**v2 is much better than the alternatives on the three manuals it was developed on, and only as good as them on a manual
+it had never seen.** Its gains come from handling those manuals' tables, figures and procedures. Most of that has not
+carried over to a new manual yet.
+
+| Correct and supported (phi4 judge) | Main test: 169 questions, 3 manuals v2 was developed on | FIST 3-30: 104 questions, a manual neither system had seen |
+|---|---|---|
+| v1, old pipeline, 7B model | 0.42 | 0.64 (0.86 with human grades) |
+| v1, old pipeline, same model as v2 | 0.56 | 0.69 |
+| Stock Open WebUI RAG, same model as v2 | 0.53 | 0.82 |
+| **v2, same model** | **0.80** | 0.80 (0.90 with human grades) |
+| v2 with Claude Opus 5.5 | 0.85 | 0.86 |
+
+- **Main test** (registered before running): v2 leads every alternative, by 25 to 39 points with phi4 and 16 to 34 with
+  the second judge (mistral). Most of the lead is on tables (0.76 against 0.31 for stock RAG). The questions are held-out sections, but of the same manuals that
+  steered v2's design.
+- **Unseen manual:** the registered test favoured v2 over v1, but blind human grading showed the judge was harder on
+  v1's citations. With the human grades the two are level. Stock RAG is level with v2 too. v2's own checks, tuned on
+  the first three manuals, removed true claims there (since fixed: [unseen manual](#unseen-manual)).
+- **Generator:** a frontier model (Claude Opus 5.5) adds about 5 points, not significant. Swapping v1's 7B model for v2's
+  adds about 14 on the main test. The pipeline matters more than the model on the main test, but not on the unseen
+  manual.
+- **The judges:** local judges can be biased by citation style by up to 35 points on disputed answers, in either
+  direction, so every headline here was checked against blind human grades or several judges.
+- **What v2 gives regardless:** every claim is shown with a verbatim quote highlighted on the page, and answers are
+  repeatable (stock RAG gave the same answer three times for only 14% of test questions).
+
+Details: [Result](#result), [Unseen manual](#unseen-manual),
+[stock pipeline comparison](evals/results/owui/RESULTS.md), [`EVAL.md`](EVAL.md).
+
+## At a glance
+
 - **Public benchmark:** v2's retrieval scores NDCG@10 0.567 on ViDoRe V3's industrial manuals, placed 2nd of the 9 text
   retrievers in one vendor's published table when checked on 2026-11-09 (details below).
 - **Try it:** [in the browser](https://alex8642.github.io/LLM-chatbot/), replaying 14 recorded answers in the real
