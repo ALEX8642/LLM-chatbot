@@ -87,6 +87,8 @@ ran on it, registered in [`docs/prereg-unseen.md`](docs/prereg-unseen.md). Full 
   Corrected with the human grades, both judges give the same answer: level.
 - **v2's checks overfit the development manuals.** In 7 of its 10 real failures a check removed a true claim (a number
   taken from the question, a fraction written differently, misread table columns). On the main test that was 2 of 33.
+  Fixed after the run and re-run, v2 rises to 0.843 (phi4) / 0.865 (mistral); against v1's 0.647 / 0.856 the judges
+  still split, so the human-corrected "level" remains the best reading.
 - **Frontier generator:** v2 with Opus 5.5 scores 0.860 / 0.837 (phi4 / mistral) here against Qwen3.8's 0.804 / 0.817,
   and 0.849 / 0.870 on the main test against 0.805 / 0.805. None of the differences is significant. Opus's claims were
   removed by the checks 41 times against Qwen3.8's 11, so its score is a floor. Run with the Batch API
