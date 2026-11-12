@@ -99,6 +99,18 @@ on every claim recorded (`evals/check_audit.py`), the fix lets through 7 claims 
 rescue, fist-14, quotes a sentence that starts on the previous page. Those claims would still meet the meaning check, so
 what the fix does to the score needs a new run.
 
+**Re-run with the fixes** (v2 at commit 1827159, which also has two later check fixes from another manual; one repeat,
+since v2 gives the same answers each time; `results/raw/v2fix-fist.json`). The same 7 answers changed and no other. The
+meaning check removed none of the rescued claims.
+
+| Judge | v2 registered | v2 with fixes | v1 | Fixed v2 − v1 (95% interval) |
+|---|---|---|---|---|
+| phi4 | 0.804 | 0.843 | 0.647 | +0.196 (0.079 to 0.317), p 0.002 |
+| mistral | 0.817 | 0.865 | 0.856 | +0.010 (−0.071 to 0.097), p 1.0 |
+
+The two judges still disagree about v1 for the reason above, so the human-corrected comparison is the better guide:
+before the fix it had the systems level. The fixed answers have not been graded by a person.
+
 ## Other generators (not human-checked)
 
 Correct and supported, phi4 / mistral:
