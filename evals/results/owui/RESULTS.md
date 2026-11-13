@@ -53,6 +53,24 @@ is below its main-test 0.76: some of that is its checks misfiring on these table
 those removals are fixed since). With the fixes, a re-run of v2 scores 0.843 (phi4), still within reach of the stock
 pipeline's 0.824.
 
+## A second unseen manual (kept private)
+
+The same comparison was run on a second manual neither system was built on: 80 items, from another publisher and
+subject. The manual is copyrighted, so the manual, its items and its outputs are kept out of this repository. It was
+registered privately, with the same protocol, before the stock pipeline answered. Its answers ran on Open WebUI 0.13.3:
+the owner updated the server during the run, and the retrieval settings were unchanged.
+
+| Reading | v2 | Stock | Difference (95% interval) | p |
+|---|---|---|---|---|
+| phi4, majority of 3 (primary) | 0.779 | 0.636 | +0.143 (+0.013 to +0.278) | 0.043 |
+| mistral | 0.756 | 0.692 | +0.064 (−0.066 to +0.197) | 0.42 |
+| phi4, prompt v3 | 0.800 | 0.675 | +0.125 (0.000 to +0.254) | 0.064 |
+| correct alone | 0.831 | 0.727 | +0.104 (−0.025 to +0.235) | 0.17 |
+
+v2 leads on every reading, but the pre-stated rule (a lead on the primary alone is "not shown") applies, so it is not
+shown. The stock pipeline did worst on that manual's tables (0.49, against v2's 0.63 and v1's 0.76). Against v1 on the
+same manual, v2 was level (0.78 against 0.78; with blind Opus grades of the disputed answers, +0.08, not significant).
+
 ## Other observations (registered as descriptive)
 
 - **Long manuals fail to upload as is.** Open WebUI's Docling call gives up after 120 s, so the 114-page FAA handbook

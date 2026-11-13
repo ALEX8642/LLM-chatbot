@@ -30,6 +30,8 @@ carried over to a new manual yet.
 - **Main test** (registered before running): v2 leads every alternative, by 25 to 39 points with phi4 and 16 to 34 with
   the second judge (mistral). Most of the lead is on tables (0.76 against 0.31 for stock RAG). The questions are held-out sections, but of the same manuals that
   steered v2's design.
+- **A second unseen manual** (kept private for copyright, 80 questions): v2 level with v1, and ahead of stock RAG on every
+  reading but not by the pre-stated standard (+14 on the primary, p 0.04; +6 to +13 on the others).
 - **Unseen manual:** the registered test favoured v2 over v1, but blind human grading showed the judge was harder on
   v1's citations. With the human grades the two are level. Stock RAG is level with v2 too. v2's own checks, tuned on
   the first three manuals, removed true claims there (since fixed: [unseen manual](#unseen-manual)).
