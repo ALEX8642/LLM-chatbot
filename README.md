@@ -40,6 +40,9 @@ carried over to a new manual yet.
   manual.
 - **The judges:** local judges can be biased by citation style by up to 35 points on disputed answers, in either
   direction, so every headline here was checked against blind human grades or several judges.
+  A separate gauge study of these judges ([judge-msa](https://github.com/ALEX8642/judge-msa)) found that on randomly
+  drawn questions the registered judge is about 2 points from the human, and that each judge can resolve a v2-v1
+  difference only above about 20 points. The 38-point main-test lead clears that; a small lead would not.
 - **What v2 gives regardless:** every claim is shown with a verbatim quote highlighted on the page, and answers are
   repeatable (stock RAG gave the same answer three times for only 14% of test questions).
 

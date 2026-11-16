@@ -40,6 +40,10 @@ contrasts, the exploratory list and the analysis code ([`evals/analysis.py`](eva
   ([`evals/sessions/blind_grades.jsonl`](evals/sessions/blind_grades.jsonl)). It triggered the registered judge-validity
   warning: the judge misses support in v1's whole-page citations more often than in v2's. Details and an estimate
   allowing for it are in [`TEST.md`](evals/results/TEST.md).
+- **Gauge study of the judges** (after the fact, own protocol): repeatability, agreement between judges, bias against
+  the blind grades weighted for how that sample was drawn, and the smallest v2-v1 difference each judge can resolve
+  (about 19 to 21 points), in [judge-msa](https://github.com/ALEX8642/judge-msa/blob/main/study/llm-chatbot/README.md).
+  A blind regrade of 30 answers a week later reproduced 29 of the human's pass/fail verdicts.
 - **Misses:** every v2 failure labelled ([`v2-misses.jsonl`](evals/results/test/v2-misses.jsonl)).
 - **Public benchmark:** v2's retrieval on ViDoRe V3's industrial manuals, NDCG@10, with its standing at the time checked
   ([decision 005](docs/decisions/005-external-benchmark.md)).
@@ -63,6 +67,11 @@ Unseen-manual deviations are listed in [`evals/unseen/RESULTS.md`](evals/unseen/
 - That v2 is better on a manual it was not tuned on: on FIST 3-30 the registered result favoured v2, but blind grading
   showed it came from judge bias; corrected, the two are level ([`evals/unseen/RESULTS.md`](evals/unseen/RESULTS.md)).
 - Expert agreement: the human checks are by one non-expert.
+- That the judge's setup was controlled: the judge ran with Ollama's default context window, which was not chosen or
+  recorded at the time. It was 4,096 tokens (confirmed later), shorter than 23 of v1's 169 cited sources and none of
+  v2's. Re-running at 16,384 tokens changed 3 or 4 of 338 verdicts for each registered judge, in no consistent direction.
+- That a verdict is independent of how the question is put to the judge: at temperature 0, listing the same key facts
+  in a different order changed the verdict on about 7% of 58 answers checked.
 - Answer quality on a public benchmark: the published answer scores use a paid judge.
 - That the meaning check helps: it removed nothing on test.
 - Independence of authorship: Claude wrote the items, the code and the labels; the registration, the split and the human
